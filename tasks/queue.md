@@ -36,12 +36,6 @@ Only **one** task is executed per run, no matter the trigger.
 
 ### Content tasks
 
-- [ ] **Create first developer article.** Pick a high-value topic
-      (for example: "Designing a clean REST API in Go" or "Memory
-      management in modern C++") and publish it under
-      `docs/guides/`. Add an entry to `mkdocs.yml` navigation and
-      frontmatter tags.
-
 - [ ] **Create first project.** Add a self-contained, runnable
       project under `projects/`. It must include a `README.md`, an
       `index.md` and working source code. The project should be
