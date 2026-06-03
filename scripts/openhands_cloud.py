@@ -67,7 +67,7 @@ async def main() -> int:
     if push_token:
         push_block = (
             "\n\n---\n\n"
-            "IMPORTANT — How to push your changes:\n\n"
+            "IMPORTANT — How to push your changes AND trigger the site deploy:\n\n"
             "The OpenHands Cloud environment's default GITHUB_TOKEN is "
             "read-only and cannot push to this repository. To commit and "
             "push, use the token below (it has `contents: write`):\n\n"
@@ -80,9 +80,22 @@ async def main() -> int:
             "git commit -m 'OpenHands: <short description>'\n"
             f"git push origin {BRANCH}\n"
             "```\n\n"
-            "Do NOT echo or log the token. Do NOT commit it. Use it only "
-            "for the single push above, then forget it. The token is "
-            "ephemeral and dies with this workflow run.\n"
+            "AFTER the push succeeds, you MUST wake up the Pages deploy. "
+            "Pushes made with a GITHUB_TOKEN do NOT trigger workflows on "
+            "their own, so the site would not rebuild. Call the repository "
+            "dispatch API to fire a custom `agent-pushed` event (the Pages "
+            "workflow listens for it):\n\n"
+            "```bash\n"
+            "curl -fsS -X POST \\\n"
+            "  -H 'Accept: application/vnd.github+json' \\\n"
+            "  -H 'Authorization: Bearer " + push_token + "' \\\n"
+            f"  https://api.github.com/repos/{REPO}/dispatches \\\n"
+            "  -d '{\"event_type\":\"agent-pushed\"}'\n"
+            "```\n\n"
+            "Both steps are required. Do not skip the dispatch call.\n\n"
+            "Do NOT echo or log the token in your output. Do NOT commit it. "
+            "Use it only for the push and dispatch above, then forget it. "
+            "The token is ephemeral and dies with this workflow run.\n"
         )
         task_text = task_text + push_block
         print("Push instructions appended to task (token hidden in prompt).")
