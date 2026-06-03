@@ -1,0 +1,97 @@
+/* WikiCode — clean, organized layout */
+
+:root {
+  --wikicode-radius: 10px;
+  --wikicode-gap: 1.25rem;
+}
+
+/* Tighter, more focused main content */
+.md-grid {
+  max-width: 1200px;
+}
+
+/* Cleaner headings */
+.md-typeset h1 {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.md-typeset h2 {
+  font-weight: 600;
+  margin-top: 2.2em;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  padding-bottom: 0.25em;
+}
+
+/* Page metadata card (created / updated) */
+.wikicode-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin: 0 0 2rem 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: var(--wikicode-radius);
+  background: var(--md-code-bg-color);
+  font-size: 0.78rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.wikicode-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.wikicode-meta span::before {
+  content: "";
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--md-accent-fg-color);
+  opacity: 0.65;
+}
+
+.wikicode-meta .wikicode-meta-updated::before { background: #4caf50; }
+.wikicode-meta .wikicode-meta-created::before { background: #5c6bc0; }
+
+/* Cleaner cards / grids */
+.md-typeset .grid.cards {
+  grid-gap: var(--wikicode-gap);
+}
+
+.md-typeset .grid.cards > ul > li,
+.md-typeset .grid.cards > ol > li,
+.md-typeset .grid > .card {
+  border-radius: var(--wikicode-radius);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.md-typeset .grid.cards > ul > li:hover,
+.md-typeset .grid > .card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px -10px rgba(0,0,0,0.25);
+}
+
+/* Admonitions a touch softer */
+.md-typeset .admonition {
+  border-radius: var(--wikicode-radius);
+}
+
+/* Subtle separation between sections in long pages */
+.md-typeset hr {
+  border: none;
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+  margin: 2.5em 0;
+}
+
+/* Footer */
+.md-footer {
+  border-top: 1px solid var(--md-default-fg-color--lightest);
+}
+
+/* Hide the "Made with Material for MkDocs" generator (we already set generator: false) */
+.md-copyright {
+  font-size: 0.75rem;
+}

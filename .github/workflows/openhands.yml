@@ -1,0 +1,113 @@
+name: openhands
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * *"
+  issue_comment:
+    types: [created]
+  issues:
+    types: [opened, labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: openhands
+  cancel-in-progress: true
+
+jobs:
+  openhands:
+    name: OpenHands autonomous agent
+    if: |
+      (github.event_name == 'workflow_dispatch') ||
+      (github.event_name == 'schedule') ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@openhands')) ||
+      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'openhands'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install MkDocs and plugins
+        run: |
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet \
+            "mkdocs>=1.5" \
+            "mkdocs-material>=9.5" \
+            "mkdocs-awesome-pages-plugin>=2.9" \
+            "mkdocs-git-revision-date-localized-plugin>=1.2"
+          mkdocs --version
+
+      - name: Validate MkDocs configuration
+        run: mkdocs build --strict --clean
+
+      - name: Verify OpenHands secret is configured
+        env:
+          OPENHANDS_API_KEY: ${{ secrets.OPENHANDS_API_KEY }}
+        run: |
+          if [ -z "$OPENHANDS_API_KEY" ]; then
+            echo "::error::Secret OPENHANDS_API_KEY is not configured."
+            echo "Configure it in Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
+          echo "OpenHands API key is configured (length: ${#OPENHANDS_API_KEY})."
+          echo "Trigger: ${{ github.event_name }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Issue: ${{ github.event.issue.number }}"
+
+      - name: Detect existing content for the planned task
+        id: dedup
+        env:
+          TRIGGER: ${{ github.event_name }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          set -euo pipefail
+          echo "Existing section index (auto-discovered):"
+          echo
+          for section in docs/guides docs/reference docs/tools blog/posts projects snippets; do
+            if [ -d "$section" ]; then
+              echo "--- $section ---"
+              find "$section" -name 'index.md' -printf '%p\n' | sort
+            fi
+          done
+          echo
+          echo "Tasks already in the queue:"
+          cat tasks/queue.md || true
+          echo
+          echo "Tasks already completed:"
+          cat tasks/completed.md || true
+          echo
+          echo "Knowledge ledger:"
+          cat memory/knowledge.md || true
+          echo "dedup-context=ready" >> "$GITHUB_OUTPUT"
+
+      - name: Run OpenHands agent
+        env:
+          OPENHANDS_API_KEY: ${{ secrets.OPENHANDS_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_NAME: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          DEDUP_CONTEXT: ${{ steps.dedup.outputs.dedup-context }}
+        run: |
+          echo "OpenHands agent execution hook."
+          echo "The official OpenHands runner can be plugged in here."
+          echo "When configured, this step will:"
+          echo "  1. Read memory/, tasks/queue.md and AGENT.md"
+          echo "  2. Search the wiki for the planned topic to avoid duplicates"
+          echo "  3. Optionally use web research to gather fresh information"
+          echo "  4. Execute the next task and update the wiki"
+          echo "  5. Commit and push using GITHUB_TOKEN"
+          echo "  6. Trigger pages.yml via the new push"
