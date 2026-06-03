@@ -84,6 +84,34 @@ async def main() -> int:
     with open(TASK_FILE) as f:
         task_text = f.read()
 
+    # If a push token is provided, append explicit push instructions
+    # so the cloud agent can bypass its own read-only GITHUB_TOKEN.
+    push_token = os.environ.get("OPENHANDS_PUSH_TOKEN", "").strip()
+    if push_token:
+        push_block = (
+            "\n\n---\n\n"
+            "IMPORTANT — How to push your changes:\n\n"
+            "The OpenHands Cloud environment's default GITHUB_TOKEN is "
+            "read-only and cannot push to this repository. To commit and "
+            "push, use the token below (it has `contents: write`):\n\n"
+            "```bash\n"
+            "git remote set-url origin "
+            f"https://x-access-token:{push_token}@github.com/{REPO}.git\n"
+            "git config user.name 'wikicode-bot'\n"
+            "git config user.email 'wikicode-bot@users.noreply.github.com'\n"
+            "git add -A\n"
+            "git commit -m 'OpenHands: <short description>'\n"
+            f"git push origin {BRANCH}\n"
+            "```\n\n"
+            "Do NOT echo or log the token. Do NOT commit it. Use it only "
+            "for the single push above, then forget it. The token is "
+            "ephemeral and dies with this workflow run.\n"
+        )
+        task_text = task_text + push_block
+        print("Push instructions appended to task (token hidden in prompt).")
+    else:
+        print("No OPENHANDS_PUSH_TOKEN set; agent will try its own GITHUB_TOKEN.")
+
     repo = detect_repo_from_git() or REPO
     branch = detect_branch_from_git() or BRANCH
     print(f"Repository: {repo}")
