@@ -68,17 +68,21 @@ jobs:
           fi
           echo "OpenHands API key is configured (length: ${#OPENHANDS_API_KEY})."
 
-      - name: Install OpenHands SDK and CLI
+      - name: Install OpenHands CLI
         run: |
           python -m pip install --quiet --upgrade pip
-          python -m pip install --quiet "openhands>=1.0"
-          openhands --version || python -c "import openhands; print('openhands', openhands.__version__ if hasattr(openhands,'__version__') else 'installed')"
+          python -m pip install --quiet "openhands>=1.16"
+          openhands --version
 
       - name: Build task prompt
         run: |
           cat > /tmp/task.md <<'TASK_EOF'
-          You are the WikiCode autonomous maintainer agent. Your job is to grow
-          the wiki by doing one meaningful task per execution.
+          You are the WikiCode autonomous maintainer agent running in
+          OpenHands Cloud. Your job is to grow the wiki by doing one
+          meaningful task per execution.
+
+          The repository is already cloned at the current working directory
+          and git is configured with credentials. You have shell access.
 
           Steps:
           1. Read AGENT.md, memory/mission.md, memory/rules.md,
@@ -87,14 +91,14 @@ jobs:
           3. Run an anti-duplication check: use `git grep` and read the
              relevant section's `index.md` to confirm the topic is not
              already covered.
-          4. Execute the task. Make a REAL, useful change to the repository.
-             No placeholders, no fake data.
+          4. Execute the task. Make a REAL, useful change. No placeholders,
+             no fake data.
           5. Write a report in `docs/reports/YYYY-MM-DD-<slug>.md` with the
-             frontmatter and metadata card the rest of the site uses.
+             same frontmatter and metadata card the rest of the site uses.
           6. Update `tasks/queue.md` (remove the task) and
              `tasks/completed.md` (add it with a link to the report).
           7. Commit your changes with a clear, scoped message and push to
-             the current branch.
+             the current branch (`git push origin main`).
 
           Rules:
           - Do NOT touch LICENSE, README header, or any secret.
@@ -102,44 +106,36 @@ jobs:
           - Do NOT duplicate content that already exists.
           - Every Markdown file you create or modify must have frontmatter
             (title, description, created, tags, status).
+          - Do NOT commit anything under `site/` (it's gitignored build output).
           - After pushing, the site will rebuild automatically through
             .github/workflows/pages.yml.
           TASK_EOF
           echo "Task prompt written to /tmp/task.md"
 
-      - name: Run OpenHands agent
+      - name: Run OpenHands Cloud agent
         env:
           OPENHANDS_API_KEY: ${{ secrets.OPENHANDS_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENHANDS_WORKSPACE: ${{ github.workspace }}
-          OPENHANDS_TASK_FILE: /tmp/task.md
+          OPENHANDS_SUPPRESS_BANNER: "1"
         run: |
           set +e
-          echo "Invoking openhands CLI..."
-          openhands \
-            --task "$(cat /tmp/task.md)" \
-            --workspace "$OPENHANDS_WORKSPACE" \
-            2>&1 | tee /tmp/openhands.log
+          cd "$GITHUB_WORKSPACE"
+          echo "Invoking openhands cloud agent in $(pwd)..."
+          openhands cloud -f /tmp/task.md 2>&1 | tee /tmp/openhands.log
           OPENHANDS_EXIT=${PIPESTATUS[0]}
           echo "openhands exit code: $OPENHANDS_EXIT"
           if [ "$OPENHANDS_EXIT" -ne 0 ]; then
-            echo "::warning::OpenHands CLI exited with code $OPENHANDS_EXIT. Falling back to scripted commit if there are unstaged changes."
+            echo "::error::OpenHands Cloud CLI exited with code $OPENHANDS_EXIT."
+            exit "$OPENHANDS_EXIT"
           fi
 
-      - name: Fallback commit and push any uncommitted changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify repository was changed
         run: |
-          if [ -n "$(git status --porcelain)" ]; then
-            echo "Uncommitted changes detected:"
-            git status --short
-            git add -A
-            git commit -m "OpenHands: autonomous update ($(date -u +%Y-%m-%dT%H:%M:%SZ))" || true
-            git push origin HEAD:main
-            echo "Pushed uncommitted changes."
-          else
-            echo "No uncommitted changes to push."
-          fi
+          echo "Last 3 commits on main:"
+          git log --oneline -3
+          echo
+          echo "Files changed in the last commit:"
+          git show --stat HEAD~0 2>/dev/null | tail -20 || git diff --name-only HEAD~1 HEAD
 
       - name: Upload agent log
         if: always()
