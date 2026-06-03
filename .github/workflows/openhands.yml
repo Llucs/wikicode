@@ -115,17 +115,20 @@ jobs:
       - name: Run OpenHands Cloud agent
         env:
           OPENHANDS_API_KEY: ${{ secrets.OPENHANDS_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENHANDS_SUPPRESS_BANNER: "1"
+          OPENHANDS_TASK_FILE: /tmp/task.md
+          WIKICODE_REPO: Llucs/wikicode
+          WIKICODE_BRANCH: main
+          OPENHANDS_POLL_INTERVAL: "15"
+          OPENHANDS_POLL_TIMEOUT: "1500"
         run: |
           set +e
           cd "$GITHUB_WORKSPACE"
-          echo "Invoking openhands cloud agent in $(pwd)..."
-          openhands cloud -f /tmp/task.md 2>&1 | tee /tmp/openhands.log
+          echo "Calling OpenHands Cloud REST API directly..."
+          python scripts/openhands_cloud.py 2>&1 | tee /tmp/openhands.log
           OPENHANDS_EXIT=${PIPESTATUS[0]}
-          echo "openhands exit code: $OPENHANDS_EXIT"
+          echo "agent exit code: $OPENHANDS_EXIT"
           if [ "$OPENHANDS_EXIT" -ne 0 ]; then
-            echo "::error::OpenHands Cloud CLI exited with code $OPENHANDS_EXIT."
+            echo "::error::OpenHands Cloud agent exited with code $OPENHANDS_EXIT."
             exit "$OPENHANDS_EXIT"
           fi
 
