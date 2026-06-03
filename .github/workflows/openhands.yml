@@ -42,7 +42,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install MkDocs and plugins
         run: |
@@ -53,61 +53,99 @@ jobs:
       - name: Validate MkDocs configuration
         run: mkdocs build --strict --clean
 
+      - name: Configure git for commits
+        run: |
+          git config user.name "wikicode-bot"
+          git config user.email "wikicode-bot@users.noreply.github.com"
+
       - name: Verify OpenHands secret is configured
         env:
           OPENHANDS_API_KEY: ${{ secrets.OPENHANDS_API_KEY }}
         run: |
           if [ -z "$OPENHANDS_API_KEY" ]; then
             echo "::error::Secret OPENHANDS_API_KEY is not configured."
-            echo "Configure it in Settings -> Secrets and variables -> Actions."
             exit 1
           fi
           echo "OpenHands API key is configured (length: ${#OPENHANDS_API_KEY})."
-          echo "Trigger: ${{ github.event_name }}"
-          echo "Repository: ${{ github.repository }}"
-          echo "Issue: ${{ github.event.issue.number }}"
 
-      - name: Detect existing content for the planned task
-        id: dedup
-        env:
-          TRIGGER: ${{ github.event_name }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
-          COMMENT_BODY: ${{ github.event.comment.body }}
+      - name: Install OpenHands SDK and CLI
         run: |
-          set -euo pipefail
-          echo "Existing section index (auto-discovered):"
-          echo
-          for section in docs/guides docs/reference docs/tools blog/posts projects snippets; do
-            if [ -d "$section" ]; then
-              echo "--- $section ---"
-              find "$section" -name 'index.md' -printf '%p\n' | sort
-            fi
-          done
-          echo
-          echo "Tasks already in the queue:"
-          cat tasks/queue.md || true
-          echo
-          echo "Tasks already completed:"
-          cat tasks/completed.md || true
-          echo
-          echo "Knowledge ledger:"
-          cat memory/knowledge.md || true
-          echo "dedup-context=ready" >> "$GITHUB_OUTPUT"
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet "openhands>=1.0"
+          openhands --version || python -c "import openhands; print('openhands', openhands.__version__ if hasattr(openhands,'__version__') else 'installed')"
+
+      - name: Build task prompt
+        run: |
+          cat > /tmp/task.md <<'TASK_EOF'
+          You are the WikiCode autonomous maintainer agent. Your job is to grow
+          the wiki by doing one meaningful task per execution.
+
+          Steps:
+          1. Read AGENT.md, memory/mission.md, memory/rules.md,
+             memory/knowledge.md, memory/decisions.md.
+          2. Read tasks/queue.md and pick the FIRST unchecked task.
+          3. Run an anti-duplication check: use `git grep` and read the
+             relevant section's `index.md` to confirm the topic is not
+             already covered.
+          4. Execute the task. Make a REAL, useful change to the repository.
+             No placeholders, no fake data.
+          5. Write a report in `docs/reports/YYYY-MM-DD-<slug>.md` with the
+             frontmatter and metadata card the rest of the site uses.
+          6. Update `tasks/queue.md` (remove the task) and
+             `tasks/completed.md` (add it with a link to the report).
+          7. Commit your changes with a clear, scoped message and push to
+             the current branch.
+
+          Rules:
+          - Do NOT touch LICENSE, README header, or any secret.
+          - Do NOT run destructive git operations (force push, history rewrite).
+          - Do NOT duplicate content that already exists.
+          - Every Markdown file you create or modify must have frontmatter
+            (title, description, created, tags, status).
+          - After pushing, the site will rebuild automatically through
+            .github/workflows/pages.yml.
+          TASK_EOF
+          echo "Task prompt written to /tmp/task.md"
 
       - name: Run OpenHands agent
         env:
           OPENHANDS_API_KEY: ${{ secrets.OPENHANDS_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO_NAME: ${{ github.repository }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          DEDUP_CONTEXT: ${{ steps.dedup.outputs.dedup-context }}
+          OPENHANDS_WORKSPACE: ${{ github.workspace }}
+          OPENHANDS_TASK_FILE: /tmp/task.md
         run: |
-          echo "OpenHands agent execution hook."
-          echo "The official OpenHands runner can be plugged in here."
-          echo "When configured, this step will:"
-          echo "  1. Read memory/, tasks/queue.md and AGENT.md"
-          echo "  2. Search the wiki for the planned topic to avoid duplicates"
-          echo "  3. Optionally use web research to gather fresh information"
-          echo "  4. Execute the next task and update the wiki"
-          echo "  5. Commit and push using GITHUB_TOKEN"
-          echo "  6. Trigger pages.yml via the new push"
+          set +e
+          echo "Invoking openhands CLI..."
+          openhands \
+            --task "$(cat /tmp/task.md)" \
+            --workspace "$OPENHANDS_WORKSPACE" \
+            2>&1 | tee /tmp/openhands.log
+          OPENHANDS_EXIT=${PIPESTATUS[0]}
+          echo "openhands exit code: $OPENHANDS_EXIT"
+          if [ "$OPENHANDS_EXIT" -ne 0 ]; then
+            echo "::warning::OpenHands CLI exited with code $OPENHANDS_EXIT. Falling back to scripted commit if there are unstaged changes."
+          fi
+
+      - name: Fallback commit and push any uncommitted changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Uncommitted changes detected:"
+            git status --short
+            git add -A
+            git commit -m "OpenHands: autonomous update ($(date -u +%Y-%m-%dT%H:%M:%SZ))" || true
+            git push origin HEAD:main
+            echo "Pushed uncommitted changes."
+          else
+            echo "No uncommitted changes to push."
+          fi
+
+      - name: Upload agent log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: openhands-log
+          path: /tmp/openhands.log
+          if-no-files-found: ignore
+          retention-days: 7
