@@ -161,7 +161,7 @@ mechanism behind `docs/tools/`:
    optionally adding `install.md`, `usage.md`, `internals.md`
    and `gotchas.md` if there is enough material.
 4. It adds the appropriate frontmatter tags so the page shows up
-   in [Tags](tags.md) and [Topics](topics/index.md).
+   in [Tags](../tags.md) and [Topics](../topics/index.md).
 
 ## Frontmatter contract
 

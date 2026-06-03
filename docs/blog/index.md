@@ -24,7 +24,7 @@ Material's built-in `blog` plugin.
 ## Categories
 
 - [All posts](index.md)
-- [Announcements](categories/index.md)
+- The blog plugin auto-renders category and archive index pages.
 
 ## RSS
 
