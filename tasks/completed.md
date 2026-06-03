@@ -18,6 +18,7 @@ describes the execution in detail.
 <span class="wikicode-meta-updated">Last updated: auto (git)</span>
 </div>
 
-| Date       | Task                                | Report                                                |
-| ---------- | ----------------------------------- | ----------------------------------------------------- |
-| 2026-06-03 | Bootstrap repository structure      | [Bootstrap](reports/2026-06-03-bootstrap.md)         |
+| Date       | Task                                          | Report                                                |
+| ---------- | --------------------------------------------- | ----------------------------------------------------- |
+| 2026-06-03 | Bootstrap repository structure                | [Bootstrap](../docs/reports/2026-06-03-bootstrap.md) |
+| 2026-06-03 | Harden CI: fix MkDocs strict-mode warnings    | [Hardening](../docs/reports/2026-06-03-hardening.md)  |

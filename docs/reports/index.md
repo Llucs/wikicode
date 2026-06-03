@@ -1,3 +1,12 @@
+---
+title: Reports
+description: Time-stamped execution reports.
+created: 2026-06-03
+tags:
+  - meta
+status: stable
+---
+
 # Reports
 
 Time-stamped execution reports. Every meaningful change to
@@ -18,3 +27,4 @@ The slug is a short, kebab-case description of the work, e.g.
 ## Index
 
 - [2026-06-03 — Bootstrap](2026-06-03-bootstrap.md)
+- [2026-06-03 — Hardening](2026-06-03-hardening.md)
