@@ -31,7 +31,7 @@ jobs:
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@openhands')) ||
       (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'openhands'))
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -67,12 +67,6 @@ jobs:
             exit 1
           fi
           echo "OpenHands API key is configured (length: ${#OPENHANDS_API_KEY})."
-
-      - name: Install OpenHands CLI
-        run: |
-          python -m pip install --quiet --upgrade pip
-          python -m pip install --quiet "openhands>=1.16"
-          openhands --version
 
       - name: Build task prompt
         run: |
@@ -112,40 +106,34 @@ jobs:
           TASK_EOF
           echo "Task prompt written to /tmp/task.md"
 
-      - name: Run OpenHands Cloud agent
+      - name: Dispatch OpenHands Cloud agent (fire-and-forget)
         env:
           OPENHANDS_API_KEY: ${{ secrets.OPENHANDS_API_KEY }}
           OPENHANDS_PUSH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENHANDS_TASK_FILE: /tmp/task.md
           WIKICODE_REPO: Llucs/wikicode
           WIKICODE_BRANCH: main
-          OPENHANDS_POLL_INTERVAL: "15"
-          OPENHANDS_POLL_TIMEOUT: "2400"
         run: |
           set +e
           cd "$GITHUB_WORKSPACE"
-          echo "Calling OpenHands Cloud REST API directly..."
+          echo "Dispatching OpenHands Cloud agent (fire-and-forget)..."
           python scripts/openhands_cloud.py 2>&1 | tee /tmp/openhands.log
           OPENHANDS_EXIT=${PIPESTATUS[0]}
-          echo "agent exit code: $OPENHANDS_EXIT"
+          echo "dispatch exit code: $OPENHANDS_EXIT"
           if [ "$OPENHANDS_EXIT" -ne 0 ]; then
-            echo "::error::OpenHands Cloud agent exited with code $OPENHANDS_EXIT."
+            echo "::error::OpenHands Cloud dispatch failed with code $OPENHANDS_EXIT."
             exit "$OPENHANDS_EXIT"
           fi
-
-      - name: Verify repository was changed
-        run: |
-          echo "Last 3 commits on main:"
-          git log --oneline -3
           echo
-          echo "Files changed in the last commit:"
-          git show --stat HEAD~0 2>/dev/null | tail -20 || git diff --name-only HEAD~1 HEAD
+          echo "Agent dispatched. It will run asynchronously on OpenHands Cloud"
+          echo "and push to main when finished. The Pages workflow will pick up"
+          echo "the new commits automatically."
 
-      - name: Upload agent log
+      - name: Upload dispatch log
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: openhands-log
+          name: openhands-dispatch-log
           path: /tmp/openhands.log
           if-no-files-found: ignore
           retention-days: 7
