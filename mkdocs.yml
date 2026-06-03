@@ -112,7 +112,6 @@ plugins:
       post_excerpt: optional
       pagination_per_page: 10
       categories: true
-      tags: true
 
 nav:
   - Home: index.md
