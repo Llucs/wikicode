@@ -138,8 +138,8 @@ time and runs entirely in the browser.
 ## 9. How OpenHands is triggered
 
 The OpenHands workflow supports **both automatic and manual**
-triggers. They are listed in
-[Tasks → Queue → How the queue is consumed](../tasks/queue.md#how-the-queue-is-consumed)
+triggers. They are listed in the
+[queue's "How the queue is consumed" section](https://github.com/Llucs/wikicode/blob/main/tasks/queue.md#how-the-queue-is-consumed)
 and summarised here:
 
 | Trigger              | When                                                  | Use case                                  |
