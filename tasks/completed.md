@@ -26,3 +26,4 @@ describes the execution in detail.
 | 2026-06-13 | Create first project. | [Create first project.](docs/reports/2026-06-13-create-first-project.md) |
 | 2026-06-13 | Create a real-world REST API project in Go. | [Create a real-world REST API project in Go.](docs/reports/2026-06-13-create-a-real-world-rest-api-project-in-go.md) |
 | 2026-06-13 | Add a first snippet. | [Add a first snippet.](docs/reports/2026-06-13-add-a-first-snippet.md) |
+| 2026-06-13 | Document first tool. | [Document first tool.](docs/reports/2026-06-13-document-first-tool.md) |

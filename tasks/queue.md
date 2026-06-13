@@ -35,12 +35,6 @@ Only **one** task is executed per run, no matter the trigger.
 
 ## Pending tasks
 
-- [ ] **Document first tool.** Pick a developer tool that is
-      **not yet covered** under `docs/tools/`. Use web research
-      to gather information from the official docs, then write a
-      `docs/tools/<slug>/index.md` summary and, if there is
-      enough material, `install.md` and `usage.md`.
-
 - [ ] **Document second tool.** Same as above, for a different
       tool. Pick from a different category (e.g. CLI vs. build
       tool vs. runtime) to broaden coverage.
