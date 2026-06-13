@@ -178,67 +178,73 @@ def classify_task(task: dict) -> str:
 
 def generate_content(task: dict, research: str, memory: dict) -> str:
     kind = classify_task(task)
-    mission = memory.get("mission", "")[:2000]
-    rules = memory.get("rules", "")[:2000]
 
     system = (
-        "You are WikiCode Agent, an AI that produces a high-quality developer wiki. "
-        "You write REAL, USEFUL, SUBSTANTIVE content for professional developers. "
-        "Every file MUST start with YAML frontmatter:\n"
-        "---\ntitle: <Title>\ndescription: <One sentence>\n"
-        "created: <YYYY-MM-DD>\ntags:\n  - <tag>\nstatus: draft\n---\n\n"
-        "After frontmatter, write the content. "
-        "Output ONLY the file content — no chat, no fences, no explanation."
+        "You are WikiCode Agent. You produce a high-quality developer wiki. "
+        "You write REAL, USEFUL, SUBSTANTIVE content for professional developers.\n\n"
+        "RULES:\n"
+        "1. Output ONLY one complete Markdown file per message.\n"
+        "2. Start with YAML frontmatter:\n"
+        "   ---\n"
+        "   title: <Exact descriptive title>\n"
+        "   description: <One sentence summary>\n"
+        "   created: <YYYY-MM-DD>\n"
+        "   tags:\n"
+        "     - <tag1>\n"
+        "     - <tag2>\n"
+        "   status: draft\n"
+        "   ---\n"
+        "3. After frontmatter, write the content with Markdown headings.\n"
+        "4. Include REAL code blocks with proper syntax highlighting.\n"
+        "5. Do NOT include mission/rules/knowledge text in the output.\n"
+        "6. Do NOT include chat, commentary, or explanation outside the file.\n"
+        "7. Do NOT wrap the output in code fences (```).\n"
     )
 
     if kind == "project":
         system += (
-            "\n\nYou are creating a REAL developer project. "
-            "Pick a specific, useful technology (e.g., a Rust CLI tool, a Go HTTP server, "
-            "a Python data pipeline, a TypeScript React component). "
-            "Include actual source code, a README with build/run instructions, "
-            "and an index.md with architecture notes. "
-            "The project must be runnable. Use real APIs, real libraries. "
-            "No hello world, no todo lists, no calculators."
+            "\nPROJECT GENERATION:\n"
+            "Generate an index.md for a runnable developer project.\n"
+            "- Pick a real technology (Go Gin API, Rust CLI, Python FastAPI, etc.)\n"
+            "- Include actual code blocks (handlers, models, tests)\n"
+            "- Document architecture, endpoints, setup, and usage\n"
+            "- The project folder already exists; write ONLY index.md\n"
+            "- index.md must be a complete MkDocs page for the wiki\n"
+            "- Do NOT reference memory/, tasks/, or internal repo paths\n"
         )
     elif kind == "snippet":
         system += (
-            "\n\nYou are creating a REAL code snippet. "
-            "Pick a specific, practical problem (e.g., parsing JSON in Rust, "
-            "rate-limiting in Go, async file I/O in Python). "
-            "Include the code, a short explanation, and usage examples. "
-            "The snippet must be copy-paste-ready and solve a real problem."
+            "\nSNIPPET GENERATION:\n"
+            "Generate an index.md for a practical code snippet.\n"
+            "- Pick a real problem (JSON parsing, HTTP requests, file I/O)\n"
+            "- Include the code with explanation\n"
+            "- Make it copy-paste-ready with example usage\n"
         )
     elif kind == "tool":
         system += (
-            "\n\nYou are documenting a REAL developer tool. "
-            "Pick a specific tool that exists (check the research provided). "
-            "Write about what it does, how to install it, key commands/API, "
-            "and realistic usage examples. "
-            "If web research results are provided, use them as factual source."
+            "\nTOOL DOCUMENTATION:\n"
+            "Generate an index.md documenting a real developer tool.\n"
+            "- Use the web research for factual info\n"
+            "- Cover: what, why, install, basic usage, key features\n"
+            "- Include realistic command examples\n"
         )
     else:
         system += (
-            "\n\nYou are writing a REAL technical article for developers. "
-            "Pick a specific, useful topic (e.g., how Docker multi-stage builds work, "
-            "profiling Python with py-spy, designing REST APIs). "
-            "Be substantive: include code examples, diagrams (ASCII), trade-offs, "
-            "and links to further reading."
+            "\nARTICLE GENERATION:\n"
+            "Generate a Markdown article for a developer audience.\n"
+            "- Pick a specific, non-trivial topic\n"
+            "- Include code examples, trade-offs, best practices\n"
         )
 
     user = (
         f"Task: {task['title']}\n"
         f"Description: {task['desc']}\n"
-        f"Date: {TODAY}\n\n"
-        f"Mission:\n{mission}\n\n"
-        f"Rules:\n{rules}\n"
+        f"Today: {TODAY}\n\n"
+        f"WikiCode is a developer wiki. The project goes under projects/<slug>/.\n"
     )
     if research:
         user += f"\nWeb research:\n{research}\n"
-    user += (
-        "\nGenerate the complete Markdown file(s). "
-        "Be specific, technical, and useful. Real content only."
-    )
+    user += "\nGenerate the complete Markdown file now."
 
     log(f"Generating {kind}: {task['title']}")
     return ollama(user, system)
