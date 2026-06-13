@@ -40,11 +40,11 @@ For people who keep the wiki healthy.
 
 ## Path 3 — Autonomous agent operator
 
-For operators of OpenHands and similar agents.
+For operators of AI agents and automated workflows.
 
 1. [AGENT.md](https://github.com/Llucs/wikicode/blob/main/AGENT.md)
 2. [Memory](https://github.com/Llucs/wikicode/blob/main/memory/knowledge.md)
-3. [OpenHands workflow](reference/architecture.md#5-anti-duplication)
+3. [Agent workflow](reference/architecture.md#5-anti-duplication)
 4. [Reports](reports/index.md)
 
 ## How to add a new path

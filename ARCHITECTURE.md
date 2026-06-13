@@ -67,16 +67,16 @@ Plain Markdown. Authoring requires no special tooling.
 
 ### 4. Automation
 
-- `openhands.yml` is the autonomous agent workflow. The agent reads
-  `memory/` and `tasks/queue.md`, executes **one** task, updates
-  the repository and pushes the change. The push triggers
-  `pages.yml`.
+- `wikicode-agent.yml` is the autonomous agent workflow. It installs
+  Ollama, pulls the Qwen2.5 model, and runs `scripts/agent.py` to
+  read `memory/`, pick a task from `tasks/queue.md`, research the
+  topic, generate content, validate with `mkdocs build`, and push.
 
 ## Secrets
 
 | Secret              | Purpose                                            | Source                |
 | ------------------- | -------------------------------------------------- | --------------------- |
 | `GITHUB_TOKEN`      | Repository access inside workflows.                | Built-in.             |
-| `OPENHANDS_API_KEY` | OpenHands agent API access.                        | Repository secret.    |
+
 
 No credentials are stored in the repository.

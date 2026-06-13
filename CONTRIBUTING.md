@@ -94,4 +94,4 @@ What becomes easier, what becomes harder?
 
 Open an issue with a clear, minimal reproduction. For agent-related
 problems, include the relevant report from `reports/` and the
-output of the OpenHands workflow run.
+output of the wikicode-agent workflow run.

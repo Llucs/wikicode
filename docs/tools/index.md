@@ -22,11 +22,9 @@ gotchas).
 
 ## How tools are added
 
-OpenHands and human contributors both follow the same recipe:
+Both the local AI agent and human contributors follow the same recipe:
 
-1. Pick a tool that is **not yet covered** in this section. The
-   list below is auto-discovered from `docs/tools/<slug>/index.md`.
-2. Research the tool. OpenHands can use its web research
+2. Research the tool. The agent uses DuckDuckGo and Wikipedia
    capability to fetch the official docs, release notes and
    reputable third-party write-ups.
 3. Write a `docs/tools/<slug>/index.md` summary.

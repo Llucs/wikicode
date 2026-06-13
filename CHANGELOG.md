@@ -18,7 +18,7 @@ for the full bootstrap report.
 - MkDocs (Material) site generation with `search`, `awesome-pages`,
   `git-revision-date-localized` and `blog` plugins.
 - `pages.yml` workflow: build + deploy on every push to `main`.
-- `openhands.yml` workflow: autonomous agent, secret-based.
+- `wikicode-agent.yml` workflow: local AI agent via Ollama + Qwen2.5.
 - GitHub Pages enabled with workflow build type and HTTPS enforced.
 - Content sections: `docs/`, `projects/`, `snippets/`, `blog/`,
   `memory/`, `tasks/`, `reports/`.

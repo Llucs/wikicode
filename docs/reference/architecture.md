@@ -27,20 +27,22 @@ agents fit into the loop.
 │                                                              │
 │   docs/        projects/    snippets/                        │
 │   memory/      tasks/       reports/                         │
-│   blog/        AGENT.md     mkdocs.yml                       │
+│   blog/        scripts/     mkdocs.yml                       │
 │                                                              │
 └─────────────┬──────────────────────────────┬────────────────┘
               │                              │
-              │  push to main                │  OpenHands run
+              │  push to main                │  Agent run
               │                              │  (manual, schedule,
-              │                              │   @openhands, label)
+              │                              │   @agent, label)
               ▼                              ▼
       ┌──────────────────┐         ┌──────────────────────┐
-      │  pages.yml       │         │  openhands.yml       │
-      │  ─ mkdocs build  │         │  ─ dedup check       │
-      │  ─ upload Pages  │         │  ─ read context      │
-      │    artifact      │         │  ─ web research*     │
-      └────────┬─────────┘         │  ─ execute one task  │
+      │  pages.yml       │         │  wikicode-agent.yml  │
+      │  ─ mkdocs build  │         │  ─ install Ollama    │
+      │  ─ upload Pages  │         │  ─ pull Qwen2.5      │
+      │    artifact      │         │  ─ read context      │
+      └────────┬─────────┘         │  ─ web research*     │
+               │                  │  ─ generate content  │
+               │                  │  ─ validate build    │
                │                  │  ─ commit & push     │
                │                  └──────────┬───────────┘
                │                             │
@@ -51,8 +53,8 @@ agents fit into the loop.
        new commit on main  ◄─────────────────┘
 ```
 
-`*` OpenHands can use web research to gather information about
-tools, libraries and patterns before documenting them.
+`*` The agent uses DuckDuckGo and Wikipedia APIs for web research,
+no API keys required.
 
 ## Layers
 
@@ -97,36 +99,34 @@ Plain Markdown. Authoring requires no special tooling.
 
 #### Daily growth
 
-`openhands.yml` runs on a **daily schedule** (`0 6 * * *`,
-06:00 UTC) and on manual triggers. Each run is a single, scoped
+`wikicode-agent.yml` runs on a **daily schedule** (`0 12 * * *`,
+12:00 UTC) and on manual triggers. Each run is a single, scoped
 change so the wiki grows a little every day.
 
 The expected loop per run:
 
-1. The workflow runs.
-2. It checks out the repository and lists the current state of
-   every section, the task queue and the knowledge ledger
-   (`Detect existing content for the planned task` step).
-3. The agent reads the queue, picks the next task (or proposes a
-   new one if the queue is empty), verifies it is not duplicated,
-   and executes it.
-4. The agent commits the change and pushes it. `pages.yml`
-   rebuilds and deploys the site.
-5. The next day's run sees a slightly larger wiki and continues
-   the loop.
+1. The workflow starts. Ollama is installed and the Qwen2.5 model
+   is pulled from cache (or downloaded on first run).
+2. `scripts/agent.py` reads `memory/` for context, picks the next
+   task from `tasks/queue.md`, and researches it on the web.
+3. The local LLM generates the content (Markdown with frontmatter).
+4. The agent writes the files, runs `mkdocs build --clean` to
+   validate, then commits and pushes.
+5. `pages.yml` rebuilds and deploys the site.
+6. The next day's run sees a slightly larger wiki and continues.
 
 #### Triggers
 
 | Trigger                  | Use case                                                |
 | ------------------------ | ------------------------------------------------------- |
-| `schedule`               | The default daily growth run.                           |
-| `workflow_dispatch`      | Manual run from the Actions tab.                        |
-| `issue_comment`          | `@openhands` mention on an issue or PR comment.         |
-| `issues` with label      | Issues labeled `openhands`.                             |
+| `schedule`               | The default daily growth run (12:00 UTC).               |
+| `workflow_dispatch`      | Manual run from the Actions tab.                         |
+| `issue_comment`          | `@agent` mention on an issue or PR comment.             |
+| `issues` with label      | Issues labeled `agent`.                                 |
 
 #### Concurrency
 
-`concurrency: openhands` is set with `cancel-in-progress: true`
+`concurrency: wikicode-agent` is set with `cancel-in-progress: true`
 so that overlapping runs do not double-write the repository.
 
 ### 5. Anti-duplication
@@ -138,10 +138,9 @@ deduplication mechanism has three parts:
    lists its current contents. The `awesome-pages` plugin
    auto-discovers the list from the file system, so it is always
    accurate.
-2. **`git grep` fallback.** The OpenHands workflow's
-   `Detect existing content for the planned task` step emits
-   the section indexes and the task list, which the agent can
-   combine with `git grep` to confirm a topic is new.
+2. **`git grep` fallback.** The agent script scans section indexes
+   and the task list, then uses `git grep` to confirm a topic is
+   new before generating content.
 3. **Knowledge ledger.** `memory/knowledge.md` lists the major
    pieces of content and the rules for adding new ones.
 
@@ -150,13 +149,13 @@ page instead of writing a new one (rule 11 in `AGENT.md`).
 
 ### 6. Web research for tools
 
-OpenHands can use its web research capability to gather
-information about tools, libraries and patterns. This is the
-mechanism behind `docs/tools/`:
+The agent uses DuckDuckGo Instant Answer and Wikipedia APIs to
+gather information about tools, libraries and patterns. This is
+the mechanism behind `docs/tools/`:
 
 1. The agent picks a tool that is not yet covered.
-2. It uses web research to fetch the official docs, the README
-   and reputable third-party write-ups.
+2. It queries the web APIs to fetch official docs, README and
+   reputable third-party write-ups (no API keys required).
 3. It summarizes the tool under `docs/tools/<slug>/index.md`,
    optionally adding `install.md`, `usage.md`, `internals.md`
    and `gotchas.md` if there is enough material.
@@ -187,7 +186,6 @@ tag-based browsing. `status` signals the maturity of the page.
 | Secret              | Purpose                                            | Source                |
 | ------------------- | -------------------------------------------------- | --------------------- |
 | `GITHUB_TOKEN`      | Repository access inside workflows.                | Built-in.             |
-| `OPENHANDS_API_KEY` | OpenHands agent API access.                        | Repository secret.    |
 
 No credentials are stored in the repository.
 

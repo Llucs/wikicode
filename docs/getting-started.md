@@ -25,7 +25,7 @@ Everything you need to read, build and contribute to WikiCode.
 ├── .github/
 │   └── workflows/
 │       ├── pages.yml    # Builds and deploys the site on push to main
-│       └── openhands.yml# Autonomous agent workflow
+│       └── wikicode-agent.yml# Autonomous agent workflow
 ├── docs/                # Site content (articles, guides)
 │   ├── assets/css/      # Custom styling
 │   ├── index.md
@@ -56,7 +56,7 @@ published output) is edited by hand.
    full site.
 5. GitHub Pages serves the new build.
 
-OpenHands (or any autonomous agent) plugs into this loop by writing
+The local AI agent (or any contributor) plugs into this loop by writing
 to the repository. The site then picks up the change with no manual
 intervention.
 
@@ -135,21 +135,20 @@ time and runs entirely in the browser.
   and blog posts.
 - See [Search](search.md) for full details and tips.
 
-## 9. How OpenHands is triggered
+## 9. How the agent is triggered
 
-The OpenHands workflow supports **both automatic and manual**
-triggers. They are listed in the
-[queue's "How the queue is consumed" section](https://github.com/Llucs/wikicode/blob/main/tasks/queue.md#how-the-queue-is-consumed)
-and summarised here:
+The wikicode-agent workflow supports **both automatic and manual**
+triggers:
 
 | Trigger              | When                                                  | Use case                                  |
 | -------------------- | ----------------------------------------------------- | ----------------------------------------- |
-| `schedule`           | Daily at 06:00 UTC.                                   | Default "grow a little every day" run.    |
+| `schedule`           | Daily at 12:00 UTC.                                   | Default "grow a little every day" run.    |
 | `workflow_dispatch`  | Manually from the Actions tab.                        | On-demand run, useful for unblocking.     |
-| `issue_comment`      | When someone writes `@openhands` on an issue.         | Turn an issue into a contribution.        |
-| `issues` with label  | When an issue is labeled `openhands`.                 | Operator-curated batch runs.              |
+| `issue_comment`      | When someone writes `@agent` on an issue.             | Turn an issue into a contribution.        |
+| `issues` with label  | When an issue is labeled `agent`.                     | Operator-curated batch runs.              |
 
-Only **one** task is executed per run.
+Only **one** task is executed per run. The AI runs locally via
+Ollama — no external API keys needed.
 
 ## 10. Conventions
 
@@ -159,5 +158,5 @@ Only **one** task is executed per run.
 - Decisions about architecture, tools or workflow are recorded in
   `memory/decisions.md`.
 - No credentials, tokens or private data are ever committed.
-- OpenHands reads its API key from `secrets.OPENHANDS_API_KEY` and
-  uses `secrets.GITHUB_TOKEN` to commit and push.
+- The local AI agent uses `secrets.GITHUB_TOKEN` (built-in) to
+  commit and push. No external API keys are required.

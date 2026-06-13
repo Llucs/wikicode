@@ -68,7 +68,7 @@ The site is **never edited directly**. It is regenerated from the
 repository on every push to `main`:
 
 ```
-OpenHands / contributor
+Local AI agent (Ollama + Qwen2.5) / contributor
         │
         ▼
    commit + push to main
@@ -83,10 +83,11 @@ OpenHands / contributor
    GitHub Pages (public site)
 ```
 
-When OpenHands (or any contributor) updates a Markdown file, adds a
-project folder, writes a snippet, publishes a blog post or moves a
-task from `queue.md` to `completed.md`, the next push to `main`
-triggers a fresh build and the published site reflects the change.
+When the local AI agent (or any contributor) updates a Markdown file,
+adds a project folder, writes a snippet, publishes a blog post or
+moves a task from `queue.md` to `completed.md`, the next push to
+`main` triggers a fresh build and the published site reflects the
+change.
 
 ## Where to start
 

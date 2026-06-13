@@ -21,20 +21,19 @@ task to `tasks/completed.md` with a reference to the report.
 
 ## How the queue is consumed
 
-The OpenHands workflow consumes the queue through **two triggers**:
+The wikicode-agent workflow consumes the queue through the
+following triggers:
 
 | Trigger              | When                                                  | Use case                                  |
 | -------------------- | ----------------------------------------------------- | ----------------------------------------- |
-| `schedule`           | Daily at 06:00 UTC.                                   | Default "grow a little every day" run.    |
+| `schedule`           | Daily at 12:00 UTC.                                   | Default "grow a little every day" run.    |
 | `workflow_dispatch`  | Manually from the Actions tab.                        | On-demand run, useful for unblocking.     |
-| `issue_comment`      | When someone writes `@openhands` on an issue.         | Turn an issue into a contribution.        |
-| `issues` with label  | When an issue is labeled `openhands`.                 | Operator-curated batch runs.              |
+| `issue_comment`      | When someone writes `@agent` on an issue.             | Turn an issue into a contribution.        |
+| `issues` with label  | When an issue is labeled `agent`.                     | Operator-curated batch runs.              |
 
 Only **one** task is executed per run, no matter the trigger.
 
-## Initial queue
-
-### Content tasks
+## Pending tasks
 
 - [ ] **Create first project.** Add a self-contained, runnable
       project under `projects/`. It must include a `README.md`, an
@@ -55,8 +54,6 @@ Only **one** task is executed per run, no matter the trigger.
       tool. Pick from a different category (e.g. CLI vs. build
       tool vs. runtime) to broaden coverage.
 
-### Structural tasks
-
 - [ ] **Improve navigation.** Audit the site and ensure the top
       navigation, side navigation and section indexes make sense.
       Add cross-links between related pages.
@@ -65,17 +62,6 @@ Only **one** task is executed per run, no matter the trigger.
       small set of foundational guides (architecture overview,
       contribution workflow, glossary). Update `mkdocs.yml`
       accordingly.
-
-### Operational tasks
-
-- [ ] **First manual OpenHands run.** Trigger
-      `.github/workflows/openhands.yml` via `workflow_dispatch`
-      on a small task (e.g. the first developer article) and
-      verify that the site is updated automatically as a result.
-
-- [ ] **First daily scheduled run.** Confirm that the daily
-      schedule (`0 6 * * *`) fires, picks a task from the queue
-      and produces a new commit + a new site build.
 
 ## How to add a task
 

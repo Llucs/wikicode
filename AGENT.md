@@ -66,14 +66,16 @@ wiki that grows a little every day.
 - Do not rewrite history on the default branch.
 - Do not run destructive automation (force push, mass delete,
   etc.).
-- Do not store secrets in the repository. Use GitHub Secrets:
-  - `OPENHANDS_API_KEY` for the OpenHands agent.
-  - `GITHUB_TOKEN` (built-in) for repository access.
+- Do not store secrets in the repository.
+- No external API keys are required. The AI runs locally via
+  Ollama inside the CI runner.
 
 ## Triggers
 
 - `workflow_dispatch` — manual run from the Actions tab.
-- `schedule` — daily at 06:00 UTC, the "grow a little every day"
+- `schedule` — daily at 12:00 UTC, the "grow a little every day"
   run.
-- `issue_comment` with `@openhands` mention.
-- `issues` labeled `openhands`.
+- `push` to `main` — runs after every merge to keep the wiki
+  evolving.
+- `issue_comment` with `@agent` mention.
+- `issues` labeled `agent`.

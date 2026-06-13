@@ -31,10 +31,9 @@ Initial production-oriented structure.
   the repository on every push to `main` via
   `.github/workflows/pages.yml`. Nothing in the published site is
   edited by hand.
-- **OpenHands integration.** `.github/workflows/openhands.yml` runs
-  the autonomous agent using `secrets.OPENHANDS_API_KEY` and the
-  built-in `GITHUB_TOKEN`. No credentials are stored in the
-  repository.
+- **Local AI agent (Ollama + Qwen2.5).** `.github/workflows/wikicode-agent.yml`
+  runs the autonomous agent entirely on the CI runner. No external API
+  keys needed. Ollama serves Qwen2.5 locally for content generation.
 - **GitHub Pages.** Enabled with the workflow build type and HTTPS
   enforced.
 - **Content sections.**
@@ -67,6 +66,5 @@ Initial production-oriented structure.
 
 - The site is live at the URL provided by GitHub Pages once the
   first `pages.yml` run completes successfully.
-- The OpenHands secret must be configured by the repository owner
-  in *Settings → Secrets and variables → Actions* before the
-  agent can run.
+- No external API keys are required. The agent uses `GITHUB_TOKEN`
+  (built-in) for repository access and Ollama for local LLM inference.

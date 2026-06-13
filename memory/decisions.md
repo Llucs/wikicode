@@ -69,24 +69,43 @@ reports/   execution reports
 
 ---
 
-## 0003 — OpenHands integration through GitHub Secrets
+## 0003 — Local LLM agent via Ollama (replaces OpenHands Cloud)
 
-**Date:** 2026-06-03
+**Date:** 2026-06-13
 **Status:** Accepted
+**Supersedes:** 0003 (original OpenHands decision)
 
 **Context**
-Autonomous agents must be able to run through GitHub Actions. Any
-token used by the agent is sensitive and must not be committed.
+The original agent integration relied on the OpenHands Cloud REST API,
+which required a paid API key, depended on an external cloud service,
+and ran asynchronously (fire-and-forget). The agent had no ability
+to validate content before pushing.
 
 **Decision**
-The OpenHands workflow (`.github/workflows/openhands.yml`) reads its
-API key from `secrets.OPENHANDS_API_KEY` and uses
-`secrets.GITHUB_TOKEN` for repository access. Neither value is ever
-written to the repository or logged.
+Replace the OpenHands Cloud API with a fully local inference stack
+running inside the GitHub Actions runner:
+
+1. **Ollama** serves as the local LLM server.
+2. **Qwen2.5:7b** provides the intelligence (CPU-optimized 4-bit
+   quantized model, ~4.5 GB RAM).
+3. **`scripts/agent.py`** orchestrates the agent loop: read memory →
+   pick task → research (web) → generate content → validate →
+   commit → push.
+
+The model is cached via `actions/cache` so subsequent runs skip the
+download. Web research is performed through DuckDuckGo Instant
+Answer and Wikipedia APIs — no additional tokens needed.
 
 **Consequences**
-- A missing or invalid secret fails the workflow loudly.
-- The repository remains safe to fork and audit.
+- Zero API costs. The agent runs entirely on the CI runner's CPU and
+  RAM (standard GitHub-hosted runner: 7 GB RAM; larger runner: 16 GB).
+- Synchronous execution: the agent validates the MkDocs build before
+  pushing, preventing broken commits.
+- The model file is cached across runs (GitHub Actions cache), so
+  only the first run downloads the full model (~4.5 GB).
+- Smaller models can be used by setting the `OLLAMA_MODEL` env var
+  (e.g., `qwen2.5:3b` for faster inference on standard runners).
+- The agent no longer depends on any external AI service.
 
 ---
 
@@ -111,5 +130,5 @@ through the official GitHub Pages actions.
 **Consequences**
 - Contributors (humans or agents) only ever edit the repository.
 - The published site is always derived state and never drifts.
-- OpenHands grows the wiki by writing to the repo; the site picks up
-  the change automatically on the next push.
+- The local AI agent grows the wiki by writing to the repo; the site
+  picks up the change automatically on the next push.

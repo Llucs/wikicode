@@ -64,10 +64,10 @@ task per execution.</dd>
 site. Every change to the published site happens via this
 mechanism.</dd>
 
-<dt markdown>**OpenHands run**</dt>
-<dd markdown>A triggered execution of `.github/workflows/openhands.yml`,
-either by `workflow_dispatch`, by an `@openhands` mention on an
-issue, or by an issue labeled `openhands`.</dd>
+<dt markdown>**Agent run**</dt>
+<dd markdown>A triggered execution of `.github/workflows/wikicode-agent.yml`,
+either by `workflow_dispatch`, by an `@agent` mention on an
+issue, or by an issue labeled `agent`.</dd>
 
 <dt markdown>**Frontmatter**</dt>
 <dd markdown>YAML metadata at the top of a Markdown file, delimited

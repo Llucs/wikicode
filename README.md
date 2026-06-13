@@ -12,7 +12,10 @@ knowledge, real projects, code snippets and developer resources in a
 single, searchable place.
 
 The site is generated with [MkDocs](https://www.mkdocs.org/) (Material
-theme) and published automatically through GitHub Pages.
+theme) and published automatically through GitHub Pages. All content
+is created by a fully local AI agent that runs inside the CI runner
+using [Ollama](https://ollama.com/) + [Qwen2.5](https://qwenlm.github.io/blog/qwen2.5/)
+— no external API keys, no cloud AI costs.
 
 <div class="wikicode-meta" markdown>
 <span class="wikicode-meta-created">Created: 2026-06-03</span>
@@ -38,9 +41,12 @@ entry is meant to be self-contained, accurate and useful.
 ├── AGENT.md
 ├── mkdocs.yml
 ├── .gitignore
+├── requirements.txt
 ├── .github/workflows/
 │   ├── pages.yml
-│   └── openhands.yml
+│   └── wikicode-agent.yml
+├── scripts/
+│   └── agent.py
 ├── docs/
 │   ├── assets/css/extra.css
 │   ├── index.md
@@ -60,6 +66,7 @@ entry is meant to be self-contained, accurate and useful.
 
 | Path           | Purpose                                                                 |
 | -------------- | ----------------------------------------------------------------------- |
+| `scripts/`     | Agent orchestration (`agent.py` — the autonomous AI agent).             |
 | `docs/`        | Source for the static site (articles, guides, references).              |
 | `projects/`    | End-to-end projects with their own README, structure and code.          |
 | `snippets/`    | Small, focused, runnable code snippets grouped by language or topic.    |
@@ -69,24 +76,23 @@ entry is meant to be self-contained, accurate and useful.
 
 ## Autonomous workflow
 
-WikiCode is designed to be evolved by autonomous agents, with a
-human maintaining final review and merge rights.
+WikiCode is evolved by a fully local AI agent that runs inside
+GitHub Actions — no external API keys, no cloud costs.
 
-1. An agent reads `memory/` to understand the mission and rules.
-2. It picks **one** task from `tasks/queue.md`.
-3. It performs the task, updates the wiki and writes a report in
-   `reports/`.
-4. It moves the task to `tasks/completed.md` and proposes a new
-   entry in `memory/decisions.md` if an architectural choice was
-   made.
-5. The change is committed and pushed. The site rebuilds
-   automatically through `.github/workflows/pages.yml`.
-6. OpenHands is triggered manually (workflow dispatch) or by
-   commenting `@openhands` on an issue.
+1. The workflow (`wikicode-agent.yml`) starts on schedule, push,
+   or manual trigger.
+2. Ollama starts inside the runner and pulls the Qwen2.5 model
+   (cached for subsequent runs).
+3. `scripts/agent.py` reads `memory/` to understand mission and
+   rules, then picks the first task from `tasks/queue.md`.
+4. It researches the topic via DuckDuckGo / Wikipedia, generates
+   content using the local LLM, and writes the files.
+5. It validates with `mkdocs build --clean` before committing.
+6. It moves the task to `tasks/completed.md`, commits, and pushes.
+7. The Pages workflow (`pages.yml`) rebuilds and deploys the site.
 
-The OpenHands workflow lives in `.github/workflows/openhands.yml`
-and consumes its key from `secrets.OPENHANDS_API_KEY`, so no
-credentials are stored in the repository.
+Trigger the agent manually from the Actions tab by running the
+**wikicode-agent** workflow, or by commenting `@agent` on an issue.
 
 ## Contribution philosophy
 
