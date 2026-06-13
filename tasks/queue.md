@@ -35,10 +35,6 @@ Only **one** task is executed per run, no matter the trigger.
 
 ## Pending tasks
 
-- [ ] **Add a first snippet.** Add a focused, runnable snippet
-      under `snippets/`. It should be short enough to be read in
-      under a minute and copy-paste-ready.
-
 - [ ] **Document first tool.** Pick a developer tool that is
       **not yet covered** under `docs/tools/`. Use web research
       to gather information from the official docs, then write a
