@@ -35,13 +35,6 @@ Only **one** task is executed per run, no matter the trigger.
 
 ## Pending tasks
 
-- [ ] **Document Docker — containerization tool.** Write a tool
-      page under `docs/tools/docker/`. Cover: what Docker is, how
-      to install it on Ubuntu/macOS, basic commands (run, ps, exec,
-      build, compose), Dockerfile syntax, and a real example running
-      a web server. Use web research for accurate commands and
-      installation steps.
-
 - [ ] **Document git — version control system.** Write a tool page
       under `docs/tools/git/`. Cover: what git is, basic workflow
       (clone, add, commit, push, pull, branch, merge), useful flags,
