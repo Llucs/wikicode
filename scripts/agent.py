@@ -247,7 +247,9 @@ def generate_content(task: dict, research: str, memory: dict) -> str:
     elif kind == "tool":
         system += (
             "\nTOOL DOCUMENTATION:\n"
-            "Generate an index.md documenting a real developer tool.\n"
+            "Generate an index.md documenting a REAL, well-known developer tool.\n"
+            "DO NOT invent a fictional tool or document this repository itself.\n"
+            "- The task description tells you which tool to document\n"
             "- Use the web research for factual info\n"
             "- Cover: what, why, install, basic usage, key features\n"
             "- Include realistic command examples\n"
