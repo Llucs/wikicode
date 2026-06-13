@@ -28,3 +28,4 @@ describes the execution in detail.
 | 2026-06-13 | Add a first snippet. | [Add a first snippet.](docs/reports/2026-06-13-add-a-first-snippet.md) |
 | 2026-06-13 | Document first tool. | [Document first tool.](docs/reports/2026-06-13-document-first-tool.md) |
 | 2026-06-13 | Document Docker — containerization tool. | [Document Docker — containerization tool.](docs/reports/2026-06-13-document-docker-containerization-tool.md) |
+| 2026-06-13 | Document git — version control system. | [Document git — version control system.](docs/reports/2026-06-13-document-git-version-control-system.md) |

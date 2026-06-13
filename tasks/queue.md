@@ -35,11 +35,6 @@ Only **one** task is executed per run, no matter the trigger.
 
 ## Pending tasks
 
-- [ ] **Document git — version control system.** Write a tool page
-      under `docs/tools/git/`. Cover: what git is, basic workflow
-      (clone, add, commit, push, pull, branch, merge), useful flags,
-      and common patterns like rebase vs merge. Use web research.
-
 - [ ] **Improve navigation.** Audit the site and ensure the top
       navigation, side navigation and section indexes make sense.
       Add cross-links between related pages.
