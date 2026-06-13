@@ -35,9 +35,12 @@ Only **one** task is executed per run, no matter the trigger.
 
 ## Pending tasks
 
-      project under `projects/`. It must include a `README.md`, an
-      `index.md` and working source code. The project should be
-      small enough to be read end-to-end in one sitting.
+- [ ] **Create a real-world REST API project in Go.** Build a complete,
+      self-contained REST API in Go under `projects/go-rest-api/`. It
+      must include a `README.md`, `index.md`, working source code with
+      handlers, models, tests, and a Makefile. Use the `net/http` standard
+      library or a lightweight router like `chi`. Document the architecture,
+      endpoints, and how to run it with `go run`.
 
 - [ ] **Add a first snippet.** Add a focused, runnable snippet
       under `snippets/`. It should be short enough to be read in
