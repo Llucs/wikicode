@@ -21,7 +21,8 @@ concurrency:
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: "false"
-  OLLAMA_MODEL: qwen2.5:7b
+  OLLAMA_MODEL: qwen2.5:3b
+  OLLAMA_MODEL_SAFE: qwen2.5-3b
 
 jobs:
   agent:
@@ -61,12 +62,20 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.ollama/
-          key: ollama-${{ env.OLLAMA_MODEL }}
+          key: ollama-${{ env.OLLAMA_MODEL_SAFE }}-v1
 
-      - name: Pull model
+      - name: Wait for Ollama and pull model
         run: |
-          ollama pull ${{ env.OLLAMA_MODEL }}
-          echo "Model pulled: $(ollama list | grep ${{ env.OLLAMA_MODEL }})"
+          for i in $(seq 1 10); do
+            if curl -fsS http://localhost:11434/api/tags > /dev/null 2>&1; then
+              echo "Ollama is ready"
+              break
+            fi
+            echo "Waiting for Ollama... attempt $i"
+            sleep 3
+          done
+          ollama pull ${{ env.OLLAMA_MODEL }} 2>&1
+          echo "Model pulled: $(ollama list | grep '${{ env.OLLAMA_MODEL }}' || echo 'NOT FOUND')"
 
       - name: Validate initial MkDocs build
         run: mkdocs build --strict --clean 2>&1 || true
