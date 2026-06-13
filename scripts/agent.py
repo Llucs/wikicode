@@ -35,9 +35,25 @@ def git(*args: str) -> str:
     return subprocess.check_output(["git"] + list(args), cwd=WORKSPACE, text=True).strip()
 
 
+def ollama_ensure_running() -> bool:
+    for i in range(10):
+        try:
+            r = httpx.get(f"{OLLAMA_BASE}/api/tags", timeout=5)
+            return True
+        except Exception:
+            log(f"Ollama not reachable, restarting... ({i+1})")
+            subprocess.Popen(
+                ["ollama", "serve"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
+            time.sleep(3)
+    return False
+
+
 def ollama(prompt: str, system: str = "", max_retries: int = 3) -> str:
     for attempt in range(1, max_retries + 1):
         try:
+            if not ollama_ensure_running():
+                raise RuntimeError("Ollama not running")
             resp = httpx.post(
                 f"{OLLAMA_BASE}/api/generate",
                 json={
@@ -49,6 +65,14 @@ def ollama(prompt: str, system: str = "", max_retries: int = 3) -> str:
                 },
                 timeout=600,
             )
+            if resp.status_code == 500:
+                detail = resp.text[:500]
+                log(f"Ollama 500: {detail}")
+                if "not found" in detail.lower():
+                    log("Model not found, pulling...")
+                    subprocess.run(["ollama", "pull", MODEL], timeout=300)
+                time.sleep(5)
+                continue
             resp.raise_for_status()
             return resp.json()["response"].strip()
         except Exception as e:
