@@ -35,7 +35,6 @@ Only **one** task is executed per run, no matter the trigger.
 
 ## Pending tasks
 
-- [ ] **Create first project.** Add a self-contained, runnable
       project under `projects/`. It must include a `README.md`, an
       `index.md` and working source code. The project should be
       small enough to be read end-to-end in one sitting.
