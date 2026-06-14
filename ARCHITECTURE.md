@@ -16,15 +16,15 @@
 │   blog/        AGENT.md     mkdocs.yml                       │
 │                                                              │
 └─────────────┬──────────────────────────────┬────────────────┘
-              │                              │
-              │  push to main                │  OpenHands run
-              ▼                              ▼
-      ┌──────────────────┐         ┌──────────────────────┐
-      │  pages.yml       │         │  openhands.yml       │
-      │  ─ mkdocs build  │         │  ─ read context      │
-      │  ─ upload Pages  │         │  ─ execute one task  │
-      │    artifact      │         │  ─ commit & push     │
-      └────────┬─────────┘         └──────────┬───────────┘
+               │                              │
+               │  push to main                │  Agent run
+               ▼                              ▼
+       ┌──────────────────┐         ┌──────────────────────┐
+       │  pages.yml       │         │  wikicode-agent.yml  │
+       │  ─ mkdocs build  │         │  ─ read context      │
+       │  ─ upload Pages  │         │  ─ execute one task  │
+       │    artifact      │         │  ─ commit & push     │
+       └────────┬─────────┘         └──────────┬───────────┘
                │                              │
                ▼                              │
        GitHub Pages                           │
@@ -67,10 +67,11 @@ Plain Markdown. Authoring requires no special tooling.
 
 ### 4. Automation
 
-- `wikicode-agent.yml` is the autonomous agent workflow. It installs
-  Ollama, pulls the Qwen2.5 model, and runs `scripts/agent.py` to
-  read `memory/`, pick a task from `tasks/queue.md`, research the
-  topic, generate content, validate with `mkdocs build`, and push.
+- `wikicode-agent.yml` is the autonomous agent workflow. It
+  installs Python dependencies and runs `scripts/agent.py` to
+  read `memory/`, discover and pick a task, research the
+  topic via web search + API, generate content using the OpenCode
+  API, validate with `mkdocs build`, and push.
 
 ## Secrets
 

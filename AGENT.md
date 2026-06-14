@@ -67,14 +67,14 @@ wiki that grows a little every day.
 - Do not run destructive automation (force push, mass delete,
   etc.).
 - Do not store secrets in the repository.
-- No external API keys are required. The AI runs locally via
-  Ollama inside the CI runner.
+- No external API keys are required. The agent uses the OpenCode
+  API with a public key for content generation.
 
 ## Triggers
 
 - `workflow_dispatch` — manual run from the Actions tab.
-- `schedule` — daily at 12:00 UTC, the "grow a little every day"
-  run.
+- `schedule` — twice daily at 06:00 and 18:00 UTC, the "grow a
+  little every day" run.
 - `push` to `main` — runs after every merge to keep the wiki
   evolving.
 - `issue_comment` with `@agent` mention.

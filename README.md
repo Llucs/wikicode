@@ -13,9 +13,8 @@ single, searchable place.
 
 The site is generated with [MkDocs](https://www.mkdocs.org/) (Material
 theme) and published automatically through GitHub Pages. All content
-is created by a fully local AI agent that runs inside the CI runner
-using [Ollama](https://ollama.com/) + [Qwen2.5](https://qwenlm.github.io/blog/qwen2.5/)
-— no external API keys, no cloud AI costs.
+is created by an autonomous AI agent that uses the OpenCode API for
+intelligent content generation — no local LLM required, fast and reliable.
 
 <div class="wikicode-meta" markdown>
 <span class="wikicode-meta-created">Created: 2026-06-03</span>
@@ -76,20 +75,20 @@ entry is meant to be self-contained, accurate and useful.
 
 ## Autonomous workflow
 
-WikiCode is evolved by a fully local AI agent that runs inside
-GitHub Actions — no external API keys, no cloud costs.
+WikiCode is evolved by an autonomous AI agent that runs inside
+GitHub Actions. It self-discovers what to document next.
 
-1. The workflow (`wikicode-agent.yml`) starts on schedule, push,
-   or manual trigger.
-2. Ollama starts inside the runner and pulls the Qwen2.5 model
-   (cached for subsequent runs).
-3. `scripts/agent.py` reads `memory/` to understand mission and
-   rules, then picks the first task from `tasks/queue.md`.
-4. It researches the topic via DuckDuckGo / Wikipedia, generates
-   content using the local LLM, and writes the files.
-5. It validates with `mkdocs build --clean` before committing.
-6. It moves the task to `tasks/completed.md`, commits, and pushes.
-7. The Pages workflow (`pages.yml`) rebuilds and deploys the site.
+1. The workflow (`wikicode-agent.yml`) runs twice daily (06:00 and
+   18:00 UTC), or on push, or manually.
+2. `scripts/agent.py` reads `memory/` for context, then checks the
+   task queue. If the queue is empty, it proactively discovers new
+   developer tools and projects to document using the OpenCode API.
+3. It researches the topic via the API, generates content, and
+   writes the files.
+4. It validates with `mkdocs build --clean` before committing.
+5. It moves the completed task to `tasks/completed.md`, commits,
+   and pushes.
+6. The Pages workflow (`pages.yml`) rebuilds and deploys the site.
 
 Trigger the agent manually from the Actions tab by running the
 **wikicode-agent** workflow, or by commenting `@agent` on an issue.
@@ -127,4 +126,4 @@ The static output is written to `site/`.
 
 ## License
 
-Released under the MIT License. See [LICENSE](LICENSE).
+Released under the Apache License 2.0. See [LICENSE](LICENSE).

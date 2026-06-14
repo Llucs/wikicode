@@ -26,7 +26,7 @@ repository and published automatically on every push to `main`.
 
 There is no CMS and no separate database. The site is generated
 from the repository by MkDocs and deployed by GitHub Pages.
-Autonomous agents (Ollama + Qwen2.5 today) grow the wiki
+Autonomous agents (OpenCode API) grow the wiki
 by writing to the repository.
 
 ## What is next

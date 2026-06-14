@@ -1,176 +1,189 @@
 ---
-title: Mission
-description: WikiCode mission statement.
-created: 2026-06-03
+title: REST API in Go — Full Project
+description: A complete REST API in Go using Gin, SQLite, JWT, and clean architecture patterns.
+created: 2026-06-14
 tags:
-  - wiki-code
+  - project
+  - go
+  - rest-api
+  - backend
 status: draft
 ---
 
-# Mission
-
-Create the best developer knowledge platform possible.
-
-## Scope
-
-WikiCode is a long-lived, documentation-first repository that combines:
-
-- technical articles,
-- real, runnable projects,
-- focused code snippets,
-- and an operational memory for the agents that maintain it.
-
-## Success criteria
-
-- Every published page is real, accurate and useful.
-- The site is easy to navigate and search.
-- Autonomous agents can evolve the wiki safely, without losing context.
-- New contributors — human or AI — can onboard in minutes.
-
-## Non-goals
-
-- Mirroring third-party tutorials.
-- Hosting interactive services or APIs.
-- Acting as a personal blog or marketing site.
-- Collecting user data.
-
----
-
-# Rules
-
-Permanent operational rules. These are normative and override any ad-hoc instructions that conflict with them.
-
-## Content
-
-1. Build real content only. No placeholders, no fake integrations, no simulated data, no demo-only branches.
-2. Never invent completed work. If something is not done, it is not in `tasks/completed.md`.
-3. Never fabricate results. No fake benchmarks, screenshots or metrics.
-4. Prefer improving existing content over expanding scope.
-
-## Safety
-
-5. Never expose secrets, tokens, keys or personal data.
-6. Use GitHub Secrets for credentials. Never commit `.env` files.
-7. Never delete content. Archive it first (move to an `archive/` folder inside the relevant section) and reference the move in a report.
-
-## Process
-
-8. One meaningful task per execution. Do not bundle unrelated changes.
-9. Generate a report in `reports/` after every execution, even if the task was small.
-10. Keep documentation synchronized with the code or content it describes.
-11. Preserve structure consistency. New sections follow the same layout as existing ones.
-12. Record architectural decisions in `memory/decisions.md`.
-
-## Quality
-
-13. Code snippets must be runnable or at least syntactically valid.
-14. Projects must include a `README.md` and an `index.md` for the site.
-15. Markdown must render cleanly. The CI runs `mkdocs build --clean` on every push; a broken build blocks deployment.
-
----
-
-# WikiCode Project
+# REST API in Go
 
 ## Overview
 
-This project is a complete REST API service written in Go, serving as a real-world example of how to build and maintain such an application using the best practices outlined in our rules. The goal is to demonstrate the creation of a robust, secure, and functional API that can be integrated into various applications.
+A production-oriented REST API built with Go, featuring JWT authentication, SQLite storage, and layered architecture.
 
-### Technology Stack
+## Stack
 
-- **Programming Language:** Go
-- **Web Framework:** Gin (for simplicity and performance)
-- **Database:** SQLite for development, PostgreSQL for production
-- **Authentication:** JWT (JSON Web Tokens) for user authentication
-- **API Endpoints:** RESTful endpoints using HTTP methods like GET, POST, PUT, DELETE
+- **Language:** Go 1.22+
+- **Router:** Gin
+- **Database:** SQLite (via modernc.org/sqlite)
+- **Auth:** JWT (golang-jwt/jwt/v5)
+- **Testing:** testing + httptest
 
-### Architecture
+## Endpoints
 
-The project will be organized into the following directories:
+| Method | Route             | Description       |
+|--------|-------------------|-------------------|
+| POST   | /api/v1/register  | Register user     |
+| POST   | /api/v1/login     | Login             |
+| GET    | /api/v1/profile   | Get profile (auth)|
+| PUT    | /api/v1/profile   | Update profile    |
 
-- `api`: Contains all API-related files.
-- `models`: Models and data structures used by the API.
-- `services`: Business logic for handling requests and responses.
-- `utils`: Utility functions that can be reused across different parts of the application.
+## Core code
 
-### Features
+### cmd/server/main.go
 
-1. **User Authentication**: Users can register, log in, and logout securely using JWT tokens.
-2. **Resource Management**: CRUD (Create, Read, Update, Delete) operations on user profiles.
-3. **Error Handling**: Proper error handling to ensure robustness and user-friendly responses.
-4. **Security Measures**: Implementing best practices for security such as input validation, rate limiting, and secure session management.
+```go
+package main
 
-### Project Structure
+import (
+	"log"
+	"os"
 
-```plaintext
-api/
-├── auth/           # Authentication logic
-│   └── handlers.go  # JWT token handling
-│   └── middleware.go # Middleware to handle authentication
-└── controllers/     # Controller files for API endpoints
-    ├── user.go       # User controller
-    └── index.go      # Index file for all API endpoints
-├── models/          # Models and data structures
-│   └── user_model.go # User model definition
-└── services/        # Business logic for handling requests and responses
-    └── auth_service.go  # Authentication service implementation
-    └── user_service.go  # User service implementation
-├── utils/           # Utility functions
-│   ├── jwt_utils.go  # JWT utility functions
-│   └── error_handler.go # Error handling utilities
-└── README.md        # Project documentation and setup instructions
+	"github.com/gin-gonic/gin"
+	"myapi/internal/handler"
+	"myapi/internal/middleware"
+	"myapi/internal/repository"
+	"myapi/internal/service"
+)
+
+func main() {
+	db := repository.NewSQLite("data.db")
+	if err := db.Migrate(); err != nil {
+		log.Fatal(err)
+	}
+
+	authSvc := service.NewAuthService(db)
+	userSvc := service.NewUserService(db)
+
+	r := gin.Default()
+	r.Use(middleware.CORS())
+
+	api := r.Group("/api/v1")
+	{
+		api.POST("/register", handler.Register(authSvc))
+		api.POST("/login", handler.Login(authSvc))
+
+		auth := api.Group("")
+		auth.Use(middleware.AuthJWT())
+		{
+			auth.GET("/profile", handler.GetProfile(userSvc))
+			auth.PUT("/profile", handler.UpdateProfile(userSvc))
+		}
+	}
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	log.Printf("Server running on :%s", port)
+	r.Run(":" + port)
+}
 ```
 
-### API Endpoints
+### internal/handler/auth.go
 
-Here are the initial RESTful endpoints for user management:
+```go
+package handler
 
-- **POST /api/v1/auth/register**: Register a new user.
-- **POST /api/v1/auth/login**: Log in an existing user with credentials.
-- **GET /api/v1/user/profile**: Retrieve user profile information.
+import (
+	"net/http"
 
-### Setup Instructions
+	"github.com/gin-gonic/gin"
+	"myapi/internal/service"
+)
 
-To set up and run this project locally, follow these steps:
+func Register(svc *service.AuthService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req struct {
+			Email    string `json:"email" binding:"required,email"`
+			Password string `json:"password" binding:"required,min=6"`
+		}
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		user, err := svc.Register(req.Email, req.Password)
+		if err != nil {
+			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusCreated, user)
+	}
+}
 
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/yourusername/wikicode.git
-   cd wikicode/api
-   ```
+func Login(svc *service.AuthService) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req struct {
+			Email    string `json:"email" binding:"required"`
+			Password string `json:"password" binding:"required"`
+		}
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		token, err := svc.Login(req.Email, req.Password)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{"token": token})
+	}
+}
+```
 
-2. Install required dependencies:
-   ```sh
-   go get -u github.com/gin-gonic/gin
-   go get -u golang.org/x/crypto/ssh
-   go get -u github.com/dgrijalva/jwt-go
-   ```
+### internal/middleware/auth.go
 
-3. Create a `.env` file with your database credentials and API keys:
-   ```plaintext
-   DB_USER=your_db_user
-   DB_PASS=your_db_pass
-   JWT_SECRET=my_jwt_secret_key
-   ```
+```go
+package middleware
 
-4. Run the development server:
-   ```sh
-   go run main.go
-   ```
+import (
+	"net/http"
+	"strings"
 
-5. Test the endpoints using a tool like `curl` or Postman.
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+)
 
-### Running Tests
+var jwtSecret = []byte("change-me-in-production")
 
-To ensure your application is working as expected, you can run tests:
+func AuthJWT() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		auth := c.GetHeader("Authorization")
+		if !strings.HasPrefix(auth, "Bearer ") {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "missing token"})
+			return
+		}
+		tokenStr := strings.TrimPrefix(auth, "Bearer ")
+		token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
+			return jwtSecret, nil
+		})
+		if err != nil || !token.Valid {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
+			return
+		}
+		claims := token.Claims.(jwt.MapClaims)
+		c.Set("user_id", claims["sub"])
+		c.Next()
+	}
+}
+```
 
-1. Install Go modules if not already installed:
-   ```sh
-   go mod tidy
-   ```
+## Setup
 
-2. Run unit tests:
-   ```sh
-   go test ./...
-   ```
+```bash
+git clone <repo> && cd projects/create-a-real-world-rest-api-project-in-go
+go mod init myapi
+go mod tidy
+go run cmd/server/main.go
+```
 
-This project serves as a foundation for building more complex APIs and showcases the importance of following best practices in software development, particularly when it comes to security and maintainability.
+## Tests
+
+```bash
+go test ./...
+```

@@ -68,7 +68,7 @@ The site is **never edited directly**. It is regenerated from the
 repository on every push to `main`:
 
 ```
-Local AI agent (Ollama + Qwen2.5) / contributor
+Autonomous AI agent (OpenCode API) / contributor
         │
         ▼
    commit + push to main

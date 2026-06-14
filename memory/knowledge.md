@@ -27,14 +27,14 @@ issue, article).
 - **Dates:** `mkdocs-git-revision-date-localized-plugin` for created / last updated.
 - **Blog:** Material's built-in `blog` plugin.
 - **Hosting:** GitHub Pages (workflow deployment).
-- **Automation:** GitHub Actions, Ollama + Qwen2.5 local agent.
+- **Automation:** GitHub Actions, OpenCode API agent.
 
 ## Agent capabilities
 
-The local AI agent (`scripts/agent.py`) runs entirely inside the GitHub
-Actions runner — no external API calls, no cloud service. It has:
+The AI agent (`scripts/agent.py`) runs entirely inside the GitHub
+Actions runner. It has:
 
-- **Local LLM inference** via Ollama (`qwen2.5:7b` model, CPU-only).
+- **AI inference** via the OpenCode API.
 - **Shell access** to run `git`, `mkdocs`, `python`, etc.
 - **File editing.** It creates and modifies Markdown files inside the
   repository.
@@ -69,18 +69,17 @@ The procedure is:
 
 ## Daily execution loop
 
-The wikicode-agent workflow runs on a daily schedule (`0 12 * * *`,
-12:00 UTC) and on manual / push triggers. The expected loop is:
+The wikicode-agent workflow runs twice daily (`0 6,18 * * *`,
+06:00 and 18:00 UTC) and on manual / push triggers. The expected loop is:
 
 1. The workflow runs.
 2. It checks out the repository and installs dependencies.
-3. Ollama starts, pulls (or loads from cache) the Qwen2.5 model.
-4. The agent reads the queue, picks the next task, researches it
-   on the web, and generates content using the local LLM.
-5. The agent writes the content, validates with `mkdocs build`,
-   commits, and pushes.
-6. The Pages workflow rebuilds and deploys the site.
-7. The next day's run continues the loop.
+3. The agent reads memory, checks the queue, and researches the
+   topic via web search + API.
+4. The agent generates content using the OpenCode API, writes the
+   content, validates with `mkdocs build`, commits, and pushes.
+5. The Pages workflow rebuilds and deploys the site.
+6. The next run continues the loop.
 
 This is what makes the wiki "grow a little every day" — without
 spending any API credits.
@@ -91,8 +90,8 @@ spending any API credits.
 | ---------- | ----------------------------------------------------------------------- |
 | WikiCode   | The repository and the site it produces.                                |
 | Agent      | The autonomous `scripts/agent.py` process that follows `AGENT.md`.      |
-| Ollama     | Local LLM server that runs inside the CI runner.                        |
-| Qwen2.5    | The 7B-parameter language model used for content generation.            |
+| Ollama     | Local LLM server (no longer used, replaced by OpenCode API). |
+| Qwen2.5    | Language model (no longer used, replaced by OpenCode API).    |
 | Task       | A single unit of work listed in `tasks/queue.md`.                       |
 | Report     | A time-stamped Markdown file in `reports/` describing an execution.     |
 | Decision   | An architectural or operational choice recorded in `decisions.md`.      |

@@ -69,43 +69,35 @@ reports/   execution reports
 
 ---
 
-## 0003 — Local LLM agent via Ollama (replaces OpenHands Cloud)
+## 0003 — API-based agent via OpenCode API (replaces Ollama)
 
-**Date:** 2026-06-13
-**Status:** Accepted
-**Supersedes:** 0003 (original OpenHands decision)
+**Date:** 2026-06-14
+**Status:** Superseded
+**Supersedes:** 0003 (original Ollama decision)
 
 **Context**
-The original agent integration relied on the OpenHands Cloud REST API,
-which required a paid API key, depended on an external cloud service,
-and ran asynchronously (fire-and-forget). The agent had no ability
-to validate content before pushing.
+The original agent used a local Ollama inference stack inside the CI
+runner, which required a ~4.5 GB model download on first run, had
+slow CPU-only inference, and consumed significant CI time and memory.
 
 **Decision**
-Replace the OpenHands Cloud API with a fully local inference stack
-running inside the GitHub Actions runner:
+Replace Ollama with the OpenCode API (`opencode.ai/zen/v1`) for all
+content generation:
 
-1. **Ollama** serves as the local LLM server.
-2. **Qwen2.5:7b** provides the intelligence (CPU-optimized 4-bit
-   quantized model, ~4.5 GB RAM).
-3. **`scripts/agent.py`** orchestrates the agent loop: read memory →
-   pick task → research (web) → generate content → validate →
-   commit → push.
-
-The model is cached via `actions/cache` so subsequent runs skip the
-download. Web research is performed through DuckDuckGo Instant
-Answer and Wikipedia APIs — no additional tokens needed.
+1. **OpenCode API** serves as the AI backend with the
+   `deepseek-v4-flash-free` model.
+2. **`scripts/agent.py`** orchestrates the agent loop: read memory →
+   discover/probe queue → research (web + API) → generate content →
+   validate → commit → push.
+3. Web research is performed through DuckDuckGo Instant Answer and
+   Wikipedia APIs — no additional tokens needed.
 
 **Consequences**
-- Zero API costs. The agent runs entirely on the CI runner's CPU and
-  RAM (standard GitHub-hosted runner: 7 GB RAM; larger runner: 16 GB).
-- Synchronous execution: the agent validates the MkDocs build before
-  pushing, preventing broken commits.
-- The model file is cached across runs (GitHub Actions cache), so
-  only the first run downloads the full model (~4.5 GB).
-- Smaller models can be used by setting the `OLLAMA_MODEL` env var
-  (e.g., `qwen2.5:3b` for faster inference on standard runners).
-- The agent no longer depends on any external AI service.
+- No model download or caching required; inference is instant.
+- Faster execution: runs complete in minutes instead of 20+ minutes.
+- The agent proactively discovers tools and projects when the queue
+  is empty, making the wiki truly self-evolving.
+- The agent no longer depends on local CPU inference.
 
 ---
 

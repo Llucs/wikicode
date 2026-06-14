@@ -1,3 +1,7 @@
-# Create first project.
+# CLI Grep Tool em Rust
 
-Add a self-contained, runnable
+Um grep simples em Rust.
+
+```bash
+rustc src/main.rs -o greptool && ./greptool padrao arquivo.txt
+```

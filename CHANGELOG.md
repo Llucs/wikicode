@@ -18,13 +18,13 @@ for the full bootstrap report.
 - MkDocs (Material) site generation with `search`, `awesome-pages`,
   `git-revision-date-localized` and `blog` plugins.
 - `pages.yml` workflow: build + deploy on every push to `main`.
-- `wikicode-agent.yml` workflow: local AI agent via Ollama + Qwen2.5.
+- `wikicode-agent.yml` workflow: autonomous AI agent via OpenCode API.
 - GitHub Pages enabled with workflow build type and HTTPS enforced.
 - Content sections: `docs/`, `projects/`, `snippets/`, `blog/`,
   `memory/`, `tasks/`, `reports/`.
 - Top-level guides: glossary, architecture, changelog, learning
   paths.
 - Tag system, frontmatter contract, per-page date card.
-- `OPENHANDS_API_KEY` configured as a repository secret.
+- `GITHUB_TOKEN` configured for repository access.
 - Initial decisions 0001–0004 recorded.
 - Initial task queue with four items.

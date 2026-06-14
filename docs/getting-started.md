@@ -147,8 +147,8 @@ triggers:
 | `issue_comment`      | When someone writes `@agent` on an issue.             | Turn an issue into a contribution.        |
 | `issues` with label  | When an issue is labeled `agent`.                     | Operator-curated batch runs.              |
 
-Only **one** task is executed per run. The AI runs locally via
-Ollama — no external API keys needed.
+Only **one** task is executed per run. The AI uses the OpenCode API
+for content generation — no external API keys needed.
 
 ## 10. Conventions
 

@@ -37,11 +37,11 @@ agents fit into the loop.
               ▼                              ▼
       ┌──────────────────┐         ┌──────────────────────┐
       │  pages.yml       │         │  wikicode-agent.yml  │
-      │  ─ mkdocs build  │         │  ─ install Ollama    │
-      │  ─ upload Pages  │         │  ─ pull Qwen2.5      │
-      │    artifact      │         │  ─ read context      │
-      └────────┬─────────┘         │  ─ web research*     │
-               │                  │  ─ generate content  │
+      │  ─ mkdocs build  │         │  ─ install deps      │
+      │  ─ upload Pages  │         │  ─ read context      │
+      │    artifact      │         │  ─ web research*     │
+      └────────┬─────────┘         │  ─ generate content  │
+               │                  │  (OpenCode API)      │
                │                  │  ─ validate build    │
                │                  │  ─ commit & push     │
                │                  └──────────┬───────────┘
@@ -99,27 +99,28 @@ Plain Markdown. Authoring requires no special tooling.
 
 #### Daily growth
 
-`wikicode-agent.yml` runs on a **daily schedule** (`0 12 * * *`,
-12:00 UTC) and on manual triggers. Each run is a single, scoped
-change so the wiki grows a little every day.
+`wikicode-agent.yml` runs on a **twice-daily schedule** (`0 6,18 * * *`,
+06:00 and 18:00 UTC) and on manual triggers. Each run is a single,
+scoped change so the wiki grows a little every day.
 
 The expected loop per run:
 
-1. The workflow starts. Ollama is installed and the Qwen2.5 model
-   is pulled from cache (or downloaded on first run).
-2. `scripts/agent.py` reads `memory/` for context, picks the next
-   task from `tasks/queue.md`, and researches it on the web.
-3. The local LLM generates the content (Markdown with frontmatter).
+1. The workflow starts. Python dependencies are installed.
+2. `scripts/agent.py` reads `memory/` for context. If the task queue
+   is empty, it proactively discovers new tools and projects to
+   document via web search + the OpenCode API.
+3. The agent researches the chosen topic and generates content
+   (Markdown with frontmatter) using the OpenCode API.
 4. The agent writes the files, runs `mkdocs build --clean` to
    validate, then commits and pushes.
 5. `pages.yml` rebuilds and deploys the site.
-6. The next day's run sees a slightly larger wiki and continues.
+6. The next run's execution sees a slightly larger wiki and continues.
 
 #### Triggers
 
 | Trigger                  | Use case                                                |
 | ------------------------ | ------------------------------------------------------- |
-| `schedule`               | The default daily growth run (12:00 UTC).               |
+| `schedule`               | The default growth run (06:00 and 18:00 UTC).          |
 | `workflow_dispatch`      | Manual run from the Actions tab.                         |
 | `issue_comment`          | `@agent` mention on an issue or PR comment.             |
 | `issues` with label      | Issues labeled `agent`.                                 |

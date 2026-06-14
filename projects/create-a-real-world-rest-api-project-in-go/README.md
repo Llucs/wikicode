@@ -1,3 +1,7 @@
-# Create a real-world REST API project in Go.
+# REST API in Go
 
-Build a complete,
+A complete REST API built with Go, Gin, SQLite and JWT.
+
+```bash
+go run cmd/server/main.go
+```

@@ -25,11 +25,8 @@ growth, with the published site auto-updating on every push to
 - Created two GitHub Actions workflows:
   - `pages.yml` — builds and deploys the site on every push to
     `main`.
-  - `openhands.yml` — autonomous agent workflow, triggered manually
-    or by an `@openhands` mention.
-- Configured `OPENHANDS_API_KEY` as a repository secret so the
-  OpenHands workflow can run without ever reading credentials from
-  the repo.
+  - `wikicode-agent.yml` — autonomous agent workflow, triggered
+    on schedule, push, or `@agent` mention.
 - Enabled GitHub Pages with the workflow build type and HTTPS
   enforced.
 - Initialized the agent memory (`mission`, `rules`, `knowledge`,
@@ -55,7 +52,7 @@ growth, with the published site auto-updating on every push to
 
 - `.github/workflows/pages.yml` — site build and GitHub Pages
   deployment.
-- `.github/workflows/openhands.yml` — OpenHands agent workflow.
+- `.github/workflows/wikicode-agent.yml` — autonomous agent workflow.
 
 ### Site content
 
@@ -97,14 +94,14 @@ growth, with the published site auto-updating on every push to
    and every page has a `created:` frontmatter field for the
    creation date.
 5. **Two separate workflows.** `pages.yml` handles site delivery
-   on every push. `openhands.yml` is dedicated to the autonomous
+   on every push. `wikicode-agent.yml` is dedicated to the autonomous
    agent. Keeping them separate keeps permissions tight and logs
    readable.
-6. **OpenHands secrets.** The agent reads `OPENHANDS_API_KEY` from
-   repository secrets and `GITHUB_TOKEN` (built-in) for repository
-   access. No credentials are stored in the repository.
+6. **API-based agent.** The agent uses the OpenCode API for content
+   generation and research. `GITHUB_TOKEN` (built-in) provides
+   repository access. No credentials are stored in the repository.
 7. **Repository-first publication.** The site is generated from the
-   repository on every push. OpenHands grows the wiki by writing to
+   repository on every push. The agent grows the wiki by writing to
    the repo; the site picks up the change automatically.
 
 ## What is intentionally not done
@@ -119,10 +116,8 @@ growth, with the published site auto-updating on every push to
 - Directory layout matches the specification.
 - `mkdocs.yml` references the correct `docs_dir`, theme and
   plugins.
-- Both workflows are valid and reference `secrets.OPENHANDS_API_KEY`
-  / `secrets.GITHUB_TOKEN` only; no literal credentials appear in
-  any committed file.
-- `gh secret list` confirms `OPENHANDS_API_KEY` is configured.
+- Both workflows are valid and reference `secrets.GITHUB_TOKEN`
+  only; no literal credentials appear in any committed file.
 - `gh api` confirms GitHub Pages is enabled with
   `build_type: workflow` and `https_enforced: true`.
 - The task queue contains the four initial tasks requested by the
