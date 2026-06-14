@@ -35,10 +35,6 @@ Only **one** task is executed per run, no matter the trigger.
 
 ## Pending tasks
 
-- [ ] **Improve navigation.** Audit the site and ensure the top
-      navigation, side navigation and section indexes make sense.
-      Add cross-links between related pages.
-
 - [ ] **Expand documentation.** Flesh out `docs/guides/` with a
       small set of foundational guides (architecture overview,
       contribution workflow, glossary). Update `mkdocs.yml`

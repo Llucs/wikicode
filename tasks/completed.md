@@ -29,3 +29,4 @@ describes the execution in detail.
 | 2026-06-13 | Document first tool. | [Document first tool.](docs/reports/2026-06-13-document-first-tool.md) |
 | 2026-06-13 | Document Docker — containerization tool. | [Document Docker — containerization tool.](docs/reports/2026-06-13-document-docker-containerization-tool.md) |
 | 2026-06-13 | Document git — version control system. | [Document git — version control system.](docs/reports/2026-06-13-document-git-version-control-system.md) |
+| 2026-06-14 | Improve navigation. | [Improve navigation.](docs/reports/2026-06-14-improve-navigation.md) |
