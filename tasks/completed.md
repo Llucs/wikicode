@@ -31,3 +31,4 @@ describes the execution in detail.
 | 2026-06-13 | Document git — version control system. | [Document git — version control system.](docs/reports/2026-06-13-document-git-version-control-system.md) |
 | 2026-06-14 | Improve navigation. | [Improve navigation.](docs/reports/2026-06-14-improve-navigation.md) |
 | 2026-06-14 | Visual Studio Code.. | [Visual Studio Code..](docs/reports/2026-06-14-visual-studio-code.md) |
+| 2026-06-14 | npm.. | [npm..](docs/reports/2026-06-14-npm.md) |
