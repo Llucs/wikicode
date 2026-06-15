@@ -34,3 +34,4 @@ describes the execution in detail.
 | 2026-06-14 | npm.. | [npm..](docs/reports/2026-06-14-npm.md) |
 | 2026-06-15 | Jest.. | [Jest..](docs/reports/2026-06-15-jest.md) |
 | 2026-06-15 | Jenkins.. | [Jenkins..](docs/reports/2026-06-15-jenkins.md) |
+| 2026-06-15 | Postman.. | [Postman..](docs/reports/2026-06-15-postman.md) |
