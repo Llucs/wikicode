@@ -20,5 +20,3 @@ searching for popular developer tools and projects on the web.
 ## Pending tasks
 
 *No predefined tasks. The agent discovers what to document next.*
-
-- [ ] **Heimdall..** Heimdall is a cross-platform open-source tool suite used to flash firmware (aka ROMs) onto Samsung Galaxy devices. (Benjamin-Dobell)
