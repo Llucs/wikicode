@@ -52,7 +52,7 @@ def web_search_deep(query):
         resp = httpx.get(
             "https://html.duckduckgo.com/html/",
             params={"q": query},
-            headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Mozilla/5.0"},
+            headers={"User-Agent": "Mozilla/5.0"},
             timeout=20,
         )
         if resp.status_code == 200:
@@ -116,7 +116,7 @@ def web_search_deep(query):
 
 def ai_research(query):
     messages = [
-        {"role": "system", "content": "You are a thorough research assistant. Provide detailed, factual information about the given topic. Include what it is, key features, history, use cases, installation, and basic usage. Be as comprehensive as possible. Up to 3000 characters."},
+        {"role": "system", "content": "You are a thorough research assistant. Provide detailed, factual information about the given topic. Include what it is, key features, history, use cases, installation, and basic usage. Up to 3000 characters."},
         {"role": "user", "content": f"Research this topic thoroughly: {query}"},
     ]
     try:
@@ -126,10 +126,14 @@ def ai_research(query):
         return ""
 
 def slugify(text):
-    s = text.lower().replace(" ", "-")
+    s = text.lower().strip(" .:;,!?")
+    s = s.replace(" ", "-")
     s = re.sub(r"[^a-z0-9\u00e0-\u00ff-]", "", s)
     s = re.sub(r"-+", "-", s).strip("-")
     return s or "untitled"
+
+def clean_title(text):
+    return text.strip().rstrip(" .:;,!?")
 
 def read_memory():
     files = {}
@@ -150,12 +154,12 @@ def parse_queue():
     current = None
     task_block_start = 0
     for i, line in enumerate(lines):
-        m = re.match(r"(-\s+\[\s*\]\s+\*\*(.+?)\*\*\s*(.*))", line)
+        m = re.match(r"(-\s+\[\s*\]\s+\*\*(.+?)\*\*)\s*(.*)", line)
         if m:
             if current:
                 current["block"] = "\n".join(lines[task_block_start:i])
                 tasks.append(current)
-            current = {"title": m.group(2).strip(), "desc": m.group(3).strip(), "block": "", "start": task_block_start}
+            current = {"title": clean_title(m.group(2)), "desc": m.group(3).strip(), "block": "", "start": task_block_start}
             task_block_start = i
             in_task = True
         elif in_task and line.strip() and not line.startswith("- ") and not line.startswith("#") and not line.startswith("---"):
@@ -178,8 +182,6 @@ def topic_exists(slug):
         for subdir in section.rglob("*"):
             if subdir.is_dir() and subdir.name == slug:
                 return True
-            if subdir.is_dir() and subdir.name.startswith(slug[:20]):
-                return True
         try:
             result = subprocess.run(
                 ["git", "grep", "-l", "-i", slug.replace("-", " "), "--", str(section)],
@@ -199,7 +201,8 @@ def classify_task(task):
         return "project"
     if "snippet" in combined:
         return "snippet"
-    if any(w in combined for w in ["tool", "technology", "framework", "container", "database", "cli", "library", "platform", "orchestrator", "dashboard", "monitoring", "observability", "proxy", "server", "engine", "manager", "runner", "tracker", "formatter", "linter", "compiler", "bundler", "runner"]):
+    tool_keywords = ["tool", "technology", "framework", "container", "database", "cli", "library", "platform", "orchestrator", "dashboard", "monitoring", "observability", "proxy", "server", "engine", "manager", "runner", "linter", "compiler", "bundler", "formatter"]
+    if any(w in combined for w in tool_keywords):
         return "tool"
     return "article"
 
@@ -215,46 +218,51 @@ def list_documented_projects():
         return []
     return [d.name for d in proj_dir.iterdir() if d.is_dir()]
 
+def parse_tool_list(raw):
+    tasks = []
+    seen = set()
+    for line in raw.split("\n"):
+        m = re.match(r"-\s+\*\*(.+?)\*\*[.:]?\s*(.*)", line)
+        if m:
+            title = clean_title(m.group(1))
+            desc = m.group(2).strip() if m.group(2) else ""
+            slug = slugify(title)
+            if slug and slug not in seen and not topic_exists(slug):
+                seen.add(slug)
+                tasks.append({"title": title, "desc": desc})
+    return tasks
+
 def discover_deep():
     existing = list_documented_tools()
     existing_str = "\n".join(f"- {t}" for t in existing) if existing else "None yet."
-
     categories = [
-        "monitoring and observability tools (Grafana, Prometheus, Datadog, Heimdall)",
-        "container and orchestration tools (Docker, Kubernetes, Podman, containerd)",
-        "CI/CD and automation tools (Jenkins, GitHub Actions, ArgoCD, Ansible)",
-        "database and storage tools (PostgreSQL, Redis, SQLite, MongoDB, MinIO)",
-        "developer productivity tools (tmux, zsh, fzf, ripgrep, fd, lazygit)",
-        "networking and proxy tools (nginx, Traefik, Caddy, HAProxy, Cloudflare)",
-        "security tools (Vault, Let's Encrypt, OWASP ZAP, Trivy, SonarQube)",
-        "frontend tools (Vite, Webpack, esbuild, Tailwind, shadcn/ui)",
-        "backend and API tools (FastAPI, Express, Gin, Fiber, gRPC, GraphQL)",
-        "infrastructure as code (Terraform, Pulumi, Crossplane, OpenTofu)",
+        "monitoring and observability tools (Grafana, Prometheus, Datadog, Heimdall, Nagios, Zabbix)",
+        "container and orchestration tools (Docker, Kubernetes, Podman, containerd, Nomad)",
+        "CI/CD and automation tools (Jenkins, GitHub Actions, ArgoCD, Ansible, GitLab CI)",
+        "database and storage tools (PostgreSQL, Redis, SQLite, MongoDB, MinIO, CockroachDB)",
+        "developer productivity tools (tmux, zsh, fzf, ripgrep, fd, lazygit, tig, bat)",
+        "networking and proxy tools (nginx, Traefik, Caddy, HAProxy, Cloudflare, Envoy)",
+        "security tools (Vault, Let's Encrypt, OWASP ZAP, Trivy, SonarQube, Fail2Ban)",
+        "frontend tools (Vite, Webpack, esbuild, Tailwind, shadcn/ui, Astro, Next.js)",
+        "backend and API tools (FastAPI, Express, Gin, Fiber, gRPC, GraphQL, Apollo)",
+        "infrastructure as code (Terraform, Pulumi, Crossplane, OpenTofu, Ansible, Chef)",
     ]
-
     all_suggestions = []
     seen_titles = set()
-
     for cat_text in categories:
         messages = [
-            {"role": "system", "content": f"You are a deep tool researcher. From the category '{cat_text}', suggest 2 specific developer tools that are real and well-known. Output each as exactly: - **Tool Name.** One-sentence description containing the word 'tool'. Do NOT suggest anything already documented."},
+            {"role": "system", "content": f"From the category '{cat_text}', suggest 2 specific developer tools that are real and well-known. Output each as exactly: - **Tool Name.** One-sentence description containing the word 'tool'. Do NOT suggest anything already documented."},
             {"role": "user", "content": f"Already documented:\n{existing_str}\n\nSuggest 2 tools from this category."},
         ]
         try:
             raw = api_chat(messages)
-            for line in raw.split("\n"):
-                m = re.match(r"-\s+\*\*(.+?)\*\*[.:]?\s*(.*)", line)
-                if m:
-                    title = m.group(1).strip()
-                    desc = m.group(2).strip() if m.group(2) else ""
-                    slug = slugify(title)
-                    if slug not in seen_titles and not topic_exists(slug):
-                        seen_titles.add(slug)
-                        all_suggestions.append({"title": title, "desc": desc})
+            for t in parse_tool_list(raw):
+                if t["title"] not in seen_titles:
+                    seen_titles.add(t["title"])
+                    all_suggestions.append(t)
         except Exception as e:
-            log(f"Category '{cat_text}' failed: {e}")
-
-    log(f"Deep discovery found {len(all_suggestions)} new tools")
+            log(f"Category failed: {e}")
+    log(f"Deep discovery: {len(all_suggestions)} new tools")
     return all_suggestions
 
 def discover_tools():
@@ -266,19 +274,7 @@ def discover_tools():
         {"role": "user", "content": f"Already documented:\n{existing_str}\n\nWeb research:\n{web_data}\n\nSuggest 4 diverse tools."},
     ]
     try:
-        raw = api_chat(messages)
-        tasks = []
-        seen = set()
-        for line in raw.split("\n"):
-            m = re.match(r"-\s+\*\*(.+?)\*\*[.:]?\s*(.*)", line)
-            if m:
-                title = m.group(1).strip()
-                desc = m.group(2).strip() if m.group(2) else ""
-                slug = slugify(title)
-                if slug not in seen and not topic_exists(slug):
-                    seen.add(slug)
-                    tasks.append({"title": title, "desc": desc})
-        return tasks
+        return parse_tool_list(api_chat(messages))
     except Exception as e:
         log(f"Tool discovery failed: {e}")
         return []
@@ -288,20 +284,19 @@ def discover_projects():
     existing_str = "\n".join(f"- {p}" for p in existing) if existing else "None yet."
     web_data = web_search_deep("interesting developer projects to build 2026")
     messages = [
-        {"role": "system", "content": "Using web research, suggest 2 real-world developer project ideas worth documenting. Each must use a real technology stack. Include diverse tech (not all web frameworks). Output exactly: - **Project Name.** One-sentence description containing the word 'project'."},
+        {"role": "system", "content": "Using web research, suggest 2 real-world developer project ideas worth documenting. Each must use a real technology stack. Output exactly: - **Project Name.** One-sentence description containing the word 'project'."},
         {"role": "user", "content": f"Existing:\n{existing_str}\n\nWeb research:\n{web_data}\n\nSuggest 2 new projects."},
     ]
     try:
-        raw = api_chat(messages)
         tasks = []
         seen = set()
-        for line in raw.split("\n"):
+        for line in api_chat(messages).split("\n"):
             m = re.match(r"-\s+\*\*(.+?)\*\*[.:]?\s*(.*)", line)
             if m:
-                title = m.group(1).strip()
+                title = clean_title(m.group(1))
                 desc = m.group(2).strip() if m.group(2) else ""
                 slug = slugify(title)
-                if slug not in seen and not topic_exists(slug):
+                if slug and slug not in seen and not topic_exists(slug):
                     seen.add(slug)
                     tasks.append({"title": f"Create {title} project", "desc": desc})
         return tasks
@@ -318,6 +313,7 @@ def ensure_tools_section_populated():
         add_task_to_queue(t["title"], t["desc"])
 
 def add_task_to_queue(title, desc):
+    title = clean_title(title)
     qpath = WORKSPACE / "tasks" / "queue.md"
     if not qpath.exists():
         return
