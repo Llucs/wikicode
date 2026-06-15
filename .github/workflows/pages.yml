@@ -5,7 +5,7 @@ on:
     branches: [main]
   workflow_dispatch:
   workflow_run:
-    workflows: [wikicode-agent]
+    workflows: [wikicode-agent-tools, wikicode-agent-content]
     types: [completed]
 
 permissions:
