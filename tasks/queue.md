@@ -21,6 +21,5 @@ searching for popular developer tools and projects on the web.
 
 *No predefined tasks. The agent discovers what to document next.*
 
-- [ ] **Jest..** A delightful JavaScript testing framework developed by Facebook that is a widely used tool for unit testing.
 - [ ] **Jenkins..** An automation server tool for continuous integration and continuous delivery.
 - [ ] **Postman..** An API platform tool for building and testing APIs.

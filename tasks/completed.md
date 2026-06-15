@@ -32,3 +32,4 @@ describes the execution in detail.
 | 2026-06-14 | Improve navigation. | [Improve navigation.](docs/reports/2026-06-14-improve-navigation.md) |
 | 2026-06-14 | Visual Studio Code.. | [Visual Studio Code..](docs/reports/2026-06-14-visual-studio-code.md) |
 | 2026-06-14 | npm.. | [npm..](docs/reports/2026-06-14-npm.md) |
+| 2026-06-15 | Jest.. | [Jest..](docs/reports/2026-06-15-jest.md) |
