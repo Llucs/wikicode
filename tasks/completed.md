@@ -33,4 +33,3 @@ describes the execution in detail.
 | 2026-06-15 | Grafana. | [Grafana.](docs/reports/2026-06-15-grafana.md) |
 | 2026-06-15 | Heimdall. | [Heimdall.](docs/reports/2026-06-15-heimdall.md) |
 | 2026-06-15 | ArgoCD | [ArgoCD](docs/reports/2026-06-15-argocd.md) |
-| 2026-06-15 | Create Briefmind AI Notes project | [Create Briefmind AI Notes project](docs/reports/2026-06-15-create-briefmind-ai-notes-project.md) |

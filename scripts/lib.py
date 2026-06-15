@@ -179,8 +179,8 @@ def discover_one_tool():
     existing_str = "\n".join(f"- {t}" for t in existing) if existing else "None yet."
     web_data = web_search_deep("best developer tools 2026")
     messages = [
-        {"role": "system", "content": "You are a tool curator. Using the web research, suggest 1 real developer tool worth documenting that is NOT already documented. Output exactly: - **Tool Name.** One-sentence description containing the word 'tool'."},
-        {"role": "user", "content": f"Already documented:\n{existing_str}\n\nWeb research:\n{web_data}\n\nSuggest 1 tool."},
+        {"role": "system", "content": "You are a tool curator. Using the web research, suggest 1 real developer tool worth documenting that is NOT already documented. Output exactly:\n- **Tool Name.** One-sentence description containing the word 'tool'.\nONLY suggest well-known real tools (e.g. Kubernetes, Docker, Redis, Postman, Grafana, etc.). Do NOT invent or combine tools."},
+        {"role": "user", "content": f"Already documented:\n{existing_str}\n\nWeb research:\n{web_data}\n\nSuggest 1 real tool."},
     ]
     try:
         raw = api_chat(messages)
@@ -198,10 +198,10 @@ def discover_one_tool():
 def discover_one_project():
     existing = list_documented_projects()
     existing_str = "\n".join(f"- {p}" for p in existing) if existing else "None yet."
-    web_data = web_search_deep("developer project ideas 2026")
+    web_data = web_search_deep("most popular open source projects on GitHub")
     messages = [
-        {"role": "system", "content": "Using web research, suggest 1 real developer project idea worth documenting with a real technology stack. Output exactly: - **Project Name.** One-sentence description containing the word 'project'."},
-        {"role": "user", "content": f"Existing:\n{existing_str}\n\nWeb research:\n{web_data}\n\nSuggest 1 project."},
+        {"role": "system", "content": "You are a project curator. From the web search results, pick ONE real, well-known open-source project that is NOT already documented. Output exactly:\n- **Project Name.** One-sentence description of what the project does and its primary language.\nONLY pick real projects with 10k+ GitHub stars."},
+        {"role": "user", "content": f"Already documented:\n{existing_str}\n\nWeb research:\n{web_data}\n\nPick 1 real project from the search results."},
     ]
     try:
         raw = api_chat(messages)
@@ -211,7 +211,7 @@ def discover_one_project():
                 title = clean_title(m.group(1))
                 desc = m.group(2).strip() if m.group(2) else ""
                 if not topic_exists(slugify(title)):
-                    return {"title": f"Create {title} project", "desc": desc}
+                    return {"title": f"Analyze {title} project", "desc": desc}
     except Exception as e:
         log(f"Project discovery failed: {e}")
     return None
@@ -220,10 +220,10 @@ def discover_one_article():
     existing_titles = set()
     for f in (WORKSPACE / "docs").rglob("*.md"):
         existing_titles.add(f.stem)
-    web_data = web_search_deep("interesting software development topics to write about")
+    web_data = web_search_deep("best software architecture and development articles 2026")
     messages = [
-        {"role": "system", "content": "You are a content curator. Using the web research, suggest 1 developer article topic worth writing about. It should be a non-trivial technical topic (design patterns, architecture, best practices, performance, etc.). Output exactly: - **Article Title.** One-sentence description."},
-        {"role": "user", "content": f"Web research:\n{web_data}\n\nSuggest 1 article topic."},
+        {"role": "system", "content": "You are a content curator. From the web search results, pick ONE real technical article topic that would be useful for developers and is NOT already documented. Output exactly:\n- **Article Title.** One-sentence description.\nONLY pick well-established topics (design patterns, system design, performance, security, etc.)."},
+        {"role": "user", "content": f"Web research:\n{web_data}\n\nPick 1 real article topic."},
     ]
     try:
         raw = api_chat(messages)
@@ -304,11 +304,11 @@ def generate_content(task, research, memory):
         "4. Do NOT wrap output in ``` fences.",
     ]
     if kind == "project":
-        parts += ["", "Generate an index.md for a runnable project. Include architecture, setup, code examples."]
+        parts += ["", "Document a REAL open-source project's architecture. Cover: tech stack, project structure, how it works internally, setup guide, key code insights. DO NOT invent fictional projects."]
     elif kind == "snippet":
         parts += ["", "Generate an index.md for a code snippet. Include code with explanation, copy-paste-ready."]
     elif kind == "tool":
-        parts += ["", "Document a REAL developer tool. Cover: what, why, install, basic usage, key features with command examples. DO NOT invent fictional tools or document this repository."]
+        parts += ["", "Document a REAL developer tool. Cover: what, why, install, usage, key features with command examples. DO NOT invent fictional tools."]
     else:
         parts += ["", "Generate a developer article with code examples and best practices."]
     system = "\n".join(parts)
@@ -429,5 +429,14 @@ def commit_and_push(files, task):
     log(f"Committed: {msg}")
     if GITHUB_TOKEN and GITHUB_REPO:
         git("remote", "set-url", "origin", f"https://x-access-token:{GITHUB_TOKEN}@github.com/{GITHUB_REPO}.git")
-    git("push", "origin", "HEAD")
-    log("Pushed.")
+    for attempt in range(3):
+        try:
+            git("pull", "--rebase", "origin", "main")
+            git("push", "origin", "HEAD")
+            log("Pushed.")
+            return
+        except subprocess.CalledProcessError as e:
+            log(f"Push attempt {attempt+1}/3 failed: {e}")
+            if attempt < 2:
+                time.sleep(5)
+    raise RuntimeError("Failed to push after 3 attempts")
