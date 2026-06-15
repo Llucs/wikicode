@@ -21,5 +21,4 @@ searching for popular developer tools and projects on the web.
 
 *No predefined tasks. The agent discovers what to document next.*
 
-- [ ] **Jenkins..** An automation server tool for continuous integration and continuous delivery.
 - [ ] **Postman..** An API platform tool for building and testing APIs.
