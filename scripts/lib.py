@@ -190,7 +190,7 @@ def discover_one_tool():
                 title = clean_title(m.group(1))
                 desc = m.group(2).strip() if m.group(2) else ""
                 if not topic_exists(slugify(title)):
-                    return {"title": title, "desc": desc}
+                    return {"title": title, "desc": desc, "kind": "tool"}
     except Exception as e:
         log(f"Tool discovery failed: {e}")
     return None
@@ -211,7 +211,7 @@ def discover_one_project():
                 title = clean_title(m.group(1))
                 desc = m.group(2).strip() if m.group(2) else ""
                 if not topic_exists(slugify(title)):
-                    return {"title": f"Analyze {title} project", "desc": desc}
+                    return {"title": f"Analyze {title} project", "desc": desc, "kind": "project"}
     except Exception as e:
         log(f"Project discovery failed: {e}")
     return None
@@ -233,7 +233,7 @@ def discover_one_article():
                 title = clean_title(m.group(1))
                 desc = m.group(2).strip() if m.group(2) else ""
                 if slugify(title) not in existing_titles and not topic_exists(slugify(title)):
-                    return {"title": title, "desc": desc}
+                    return {"title": title, "desc": desc, "kind": "article"}
     except Exception as e:
         log(f"Article discovery failed: {e}")
     return None
@@ -275,17 +275,7 @@ def research_topic(topic, kind):
     return "\n\n".join(parts)
 
 def generate_content(task, research, memory):
-    kind = "tool"  # default
-    title = task["title"].lower()
-    desc = task["desc"].lower()
-    combined = title + " " + desc
-    if "project" in combined:
-        kind = "project"
-    elif "snippet" in combined:
-        kind = "snippet"
-    tool_kw = ["tool","technology","framework","container","database","cli","library","platform","orchestrator","dashboard","monitoring","proxy","engine"]
-    if any(w in combined for w in tool_kw):
-        kind = "tool"
+    kind = task.get("kind", "tool")
     parts = [
         "You are WikiCode Agent. You produce a high-quality developer wiki page with REAL, USEFUL content.",
         "RULES:",
@@ -320,15 +310,7 @@ def generate_content(task, research, memory):
     return api_chat([{"role": "system", "content": system}, {"role": "user", "content": user}])
 
 def write_files(task, content):
-    kind = "tool"
-    combined = (task["title"] + " " + task.get("desc", "")).lower()
-    if "project" in combined:
-        kind = "project"
-    elif "snippet" in combined:
-        kind = "snippet"
-    tool_kw = ["tool","technology","framework","container","database","cli","library","platform","orchestrator","dashboard","monitoring","proxy","engine"]
-    if any(w in combined for w in tool_kw):
-        kind = "tool"
+    kind = task.get("kind", "tool")
     slug = slugify(task["title"])
     created = []
     if kind == "project":

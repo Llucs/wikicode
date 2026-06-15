@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: wikicode-agent-content
+  group: wikicode-agent
   cancel-in-progress: true
 
 jobs:
