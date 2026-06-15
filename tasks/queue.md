@@ -21,6 +21,8 @@ searching for popular developer tools and projects on the web.
 
 *No predefined tasks. The agent discovers what to document next.*
 
+
+- [ ] **Heimdall..** Heimdall is a cross-platform open-source tool suite used to flash firmware (aka ROMs) onto Samsung Galaxy devices
 - [ ] **ArgoCD..** This tool implements GitOps for continuous delivery by synchronizing applications with Git repositories.
 - [ ] **PostgreSQL..** An open-source relational database management tool emphasizing extensibility and SQL compliance.
 - [ ] **Redis..** An in-memory data structure store tool used as a database, cache, and message broker.
