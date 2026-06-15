@@ -15,7 +15,7 @@ Thumbs.db
 .mypy_cache/
 .pytest_cache/
 node_modules/
-brokkr/
-heimdall/
-prootkit/
-thor/
+/brokkr/
+/heimdall/
+/prootkit/
+/thor/
