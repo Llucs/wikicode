@@ -174,68 +174,121 @@ def list_documented_projects():
     pd = WORKSPACE / "projects"
     return [d.name for d in pd.iterdir() if d.is_dir()] if pd.exists() else []
 
+TOOL_SEARCHES = [
+    ("monitoring and observability", "monitoring and observability tools Prometheus Grafana Loki"),
+    ("container and orchestration", "container orchestration tools Docker Kubernetes Podman"),
+    ("CI/CD and automation", "CI/CD automation and pipeline tools Jenkins ArgoCD Ansible"),
+    ("database and storage", "database storage tools PostgreSQL Redis MongoDB SQLite"),
+    ("developer productivity", "developer productivity CLI terminal tools fzf ripgrep lazygit"),
+    ("networking and proxy", "networking reverse proxy tools nginx Traefik Caddy HAProxy"),
+    ("security and secrets", "security secrets vulnerability tools Vault Trivy SonarQube"),
+    ("frontend build tools", "frontend web build tools Vite Webpack esbuild Tailwind"),
+    ("backend and API tools", "backend API framework tools FastAPI Express Gin Kafka GraphQL"),
+    ("infrastructure as code", "infrastructure as code tools Terraform Pulumi Ansible Vagrant"),
+]
+
 def discover_one_tool():
     existing = list_documented_tools()
-    existing_str = "\n".join(f"- {t}" for t in existing) if existing else "None yet."
-    web_data = web_search_deep("best developer tools 2026")
-    messages = [
-        {"role": "system", "content": "You are a tool curator. Using the web research, suggest 1 real developer tool worth documenting that is NOT already documented. Output exactly:\n- **Tool Name.** One-sentence description containing the word 'tool'.\nONLY suggest well-known real tools (e.g. Kubernetes, Docker, Redis, Postman, Grafana, etc.). Do NOT invent or combine tools."},
-        {"role": "user", "content": f"Already documented:\n{existing_str}\n\nWeb research:\n{web_data}\n\nSuggest 1 real tool."},
-    ]
-    try:
-        raw = api_chat(messages)
-        for line in raw.split("\n"):
-            m = re.match(r"-\s+\*\*(.+?)\*\*[.:]?\s*(.*)", line)
-            if m:
-                title = clean_title(m.group(1))
-                desc = m.group(2).strip() if m.group(2) else ""
-                if not topic_exists(slugify(title)):
+    existing_lower = [t.lower() for t in existing]
+
+    for cat_name, search_query in TOOL_SEARCHES:
+        web_data = web_search_deep(search_query)
+        if not web_data:
+            continue
+        existing_str = "\n".join(f"- {t}" for t in existing) if existing else "None yet."
+        messages = [
+            {"role": "system", "content": "You are a tool curator reading web search results. Pick ONE real developer tool mentioned in the results that is NOT already documented. Output exactly:\n- **Tool Name.** One-sentence description containing the word 'tool'.\nONLY pick a tool that appears in the search results. NEVER invent or suggest article topics."},
+            {"role": "user", "content": f"Already documented:\n{existing_str}\n\nWeb search results for '{cat_name}':\n{web_data}\n\nPick 1 real tool from these results."},
+        ]
+        try:
+            raw = api_chat(messages)
+            for line in raw.split("\n"):
+                m = re.match(r"-\s+\*\*(.+?)\*\*[.:]?\s*(.*)", line)
+                if m:
+                    title = clean_title(m.group(1))
+                    desc = m.group(2).strip() if m.group(2) else ""
+                    slug = slugify(title)
+                    if topic_exists(slug):
+                        continue
                     return {"title": title, "desc": desc, "kind": "tool"}
-    except Exception as e:
-        log(f"Tool discovery failed: {e}")
+        except Exception as e:
+            log(f"Tool discovery '{cat_name}' failed: {e}")
     return None
+
+PROJECT_SEARCHES = [
+    ("most popular frontend framework", "most popular frontend JavaScript framework React Vue Angular Svelte"),
+    ("most popular backend framework", "most popular backend framework Django Express Spring Boot FastAPI"),
+    ("popular programming language", "popular programming language Rust Go TypeScript Zig adoption"),
+    ("state management library", "popular state management library Redux Zustand TanStack Query Zustand"),
+    ("testing library framework", "most popular testing library framework Jest Vitest Playwright Cypress"),
+    ("build tool bundler", "most popular build tool bundler Webpack Vite esbuild Rollup Turborepo"),
+    ("CSS framework library", "popular CSS framework library Tailwind Styled Components Sass"),
+    ("mobile cross platform framework", "popular mobile cross platform framework React Native Flutter"),
+    ("machine learning framework", "popular machine learning AI framework TensorFlow PyTorch LangChain"),
+]
 
 def discover_one_project():
     existing = list_documented_projects()
-    existing_str = "\n".join(f"- {p}" for p in existing) if existing else "None yet."
-    web_data = web_search_deep("most popular open source projects on GitHub")
-    messages = [
-        {"role": "system", "content": "You are a project curator. From the web search results, pick ONE real, well-known open-source project that is NOT already documented. Output exactly:\n- **Project Name.** One-sentence description of what the project does and its primary language.\nONLY pick real projects with 10k+ GitHub stars."},
-        {"role": "user", "content": f"Already documented:\n{existing_str}\n\nWeb research:\n{web_data}\n\nPick 1 real project from the search results."},
-    ]
-    try:
-        raw = api_chat(messages)
-        for line in raw.split("\n"):
-            m = re.match(r"-\s+\*\*(.+?)\*\*[.:]?\s*(.*)", line)
-            if m:
-                title = clean_title(m.group(1))
-                desc = m.group(2).strip() if m.group(2) else ""
-                if not topic_exists(slugify(title)):
-                    return {"title": f"Analyze {title} project", "desc": desc, "kind": "project"}
-    except Exception as e:
-        log(f"Project discovery failed: {e}")
+    existing_lower = [t.lower() for t in existing]
+
+    for cat_name, search_query in PROJECT_SEARCHES:
+        web_data = web_search_deep(search_query)
+        if not web_data:
+            continue
+        existing_str = "\n".join(f"- {p}" for p in existing) if existing else "None yet."
+        messages = [
+            {"role": "system", "content": "You are a project curator reading web search results. Pick ONE real open-source project from the results that is NOT already documented. Output exactly:\n- **Project Name.** One-sentence description of what it does and its primary language.\nONLY pick a real project mentioned in the search results."},
+            {"role": "user", "content": f"Already documented:\n{existing_str}\n\nWeb search results for '{cat_name}':\n{web_data}\n\nPick 1 real project from these results."},
+        ]
+        try:
+            raw = api_chat(messages)
+            for line in raw.split("\n"):
+                m = re.match(r"-\s+\*\*(.+?)\*\*[.:]?\s*(.*)", line)
+                if m:
+                    title = clean_title(m.group(1))
+                    desc = m.group(2).strip() if m.group(2) else ""
+                    if not topic_exists(slugify(title)):
+                        return {"title": f"Analyze {title} project", "desc": desc, "kind": "project"}
+        except Exception as e:
+            log(f"Project discovery '{cat_name}' failed: {e}")
     return None
+
+ARTICLE_SEARCHES = [
+    ("software architecture patterns", "software architecture patterns microservices event driven CQRS clean architecture"),
+    ("design patterns", "software design patterns explained Singleton Factory Observer Strategy"),
+    ("system design", "system design concepts load balancing caching database sharding CAP theorem"),
+    ("performance optimization", "web performance optimization techniques lazy loading code splitting caching"),
+    ("security best practices", "web security best practices OAuth JWT authentication SQL injection prevention"),
+    ("DevOps practices", "DevOps practices GitOps immutable infrastructure CI CD blue green deployment"),
+    ("testing strategies", "software testing strategies unit testing integration testing TDD"),
+    ("API design", "API design best practices REST GraphQL API versioning WebSocket gRPC"),
+]
 
 def discover_one_article():
     existing_titles = set()
     for f in (WORKSPACE / "docs").rglob("*.md"):
         existing_titles.add(f.stem)
-    web_data = web_search_deep("best software architecture and development articles 2026")
-    messages = [
-        {"role": "system", "content": "You are a content curator. From the web search results, pick ONE real technical article topic that would be useful for developers and is NOT already documented. Output exactly:\n- **Article Title.** One-sentence description.\nONLY pick well-established topics (design patterns, system design, performance, security, etc.)."},
-        {"role": "user", "content": f"Web research:\n{web_data}\n\nPick 1 real article topic."},
-    ]
-    try:
-        raw = api_chat(messages)
-        for line in raw.split("\n"):
-            m = re.match(r"-\s+\*\*(.+?)\*\*[.:]?\s*(.*)", line)
-            if m:
-                title = clean_title(m.group(1))
-                desc = m.group(2).strip() if m.group(2) else ""
-                if slugify(title) not in existing_titles and not topic_exists(slugify(title)):
-                    return {"title": title, "desc": desc, "kind": "article"}
-    except Exception as e:
-        log(f"Article discovery failed: {e}")
+
+    for cat_name, search_query in ARTICLE_SEARCHES:
+        web_data = web_search_deep(search_query)
+        if not web_data:
+            continue
+        existing_str = "\n".join(f"- {t}" for t in existing_titles) if existing_titles else "None yet."
+        messages = [
+            {"role": "system", "content": "You are a content curator reading web search results. Pick ONE technical article topic from the results that is NOT already documented. Output exactly:\n- **Article Title.** One-sentence description.\nONLY pick a real topic mentioned in the search results."},
+            {"role": "user", "content": f"Already documented topics:\n{existing_str}\n\nWeb search results for '{cat_name}':\n{web_data}\n\nPick 1 real article topic from these results."},
+        ]
+        try:
+            raw = api_chat(messages)
+            for line in raw.split("\n"):
+                m = re.match(r"-\s+\*\*(.+?)\*\*[.:]?\s*(.*)", line)
+                if m:
+                    title = clean_title(m.group(1))
+                    desc = m.group(2).strip() if m.group(2) else ""
+                    if slugify(title) not in existing_titles and not topic_exists(slugify(title)):
+                        return {"title": title, "desc": desc, "kind": "article"}
+        except Exception as e:
+            log(f"Article discovery '{cat_name}' failed: {e}")
     return None
 
 def add_task_to_queue(title, desc):
