@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os, re, subprocess, sys, time
+import os, re, subprocess, sys, time, html as html_mod
 from datetime import date
 from pathlib import Path
 import httpx
@@ -39,35 +39,91 @@ def api_chat(messages, max_retries=3):
                 time.sleep(10)
     raise RuntimeError(f"API call failed after {max_retries} attempts")
 
-def web_search(query):
+def web_search_deep(query):
     results = []
+    seen = set()
+    def add(text, source):
+        key = text[:100].lower()
+        if key not in seen:
+            seen.add(key)
+            results.append(f"- [{source}] {text[:600]}")
+
     try:
         resp = httpx.get(
-            "https://api.duckduckgo.com/",
-            params={"q": query, "format": "json", "no_html": 1, "skip_disambig": 1},
+            "https://html.duckduckgo.com/html/",
+            params={"q": query},
+            headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) Mozilla/5.0"},
+            timeout=20,
+        )
+        if resp.status_code == 200:
+            for m in re.finditer(r'class="result__snippet"[^>]*>(.*?)</(?:a|span|td)', resp.text, re.DOTALL):
+                text = html_mod.unescape(re.sub(r'<[^>]+>', '', m.group(1))).strip()
+                if text and len(text) > 30:
+                    add(text[:500], "DDG")
+            for m in re.finditer(r'class="result__title"[^>]*>.*?href="(.*?)".*?>(.*?)</a>', resp.text, re.DOTALL):
+                title = html_mod.unescape(re.sub(r'<[^>]+>', '', m.group(2))).strip()
+                if title and len(title) > 10:
+                    add(title[:300], "DDG-title")
+    except Exception as e:
+        log(f"DDG html error: {e}")
+
+    try:
+        resp = httpx.get(
+            "https://en.wikipedia.org/w/api.php",
+            params={"action": "opensearch", "search": query, "limit": 5, "format": "json"},
             timeout=15,
         )
         if resp.status_code == 200:
             data = resp.json()
-            if data.get("AbstractText"):
-                results.append(f"- {data.get('AbstractSource', 'source')}: {data['AbstractText'][:1000]}")
-            for topic in data.get("RelatedTopics", [])[:5]:
-                if "Text" in topic:
-                    results.append(f"- {topic['Text'][:500]}")
+            if len(data) > 2:
+                for title, desc in zip(data[1][:3], data[2][:3]):
+                    if desc:
+                        add(f"{title}: {desc[:500]}", "Wiki")
     except Exception as e:
-        log(f"DuckDuckGo error: {e}")
+        log(f"Wiki search error: {e}")
+
+    try:
+        resp = httpx.get(
+            "https://en.wikipedia.org/api/rest_v1/page/summary/" + query.replace(" ", "_"),
+            timeout=15,
+        )
+        if resp.status_code == 200:
+            wd = resp.json()
+            extract = wd.get("extract", "")[:1500]
+            if extract:
+                add(extract, "Wiki-summary")
+    except Exception:
+        pass
+
     if not results:
         try:
             resp = httpx.get(
-                "https://en.wikipedia.org/api/rest_v1/page/summary/" + query.replace(" ", "_"),
+                "https://api.duckduckgo.com/",
+                params={"q": query, "format": "json", "no_html": 1, "skip_disambig": 1},
                 timeout=15,
             )
             if resp.status_code == 200:
-                wd = resp.json()
-                results.append(f"- Wikipedia: {wd.get('extract', '')[:1500]}")
-        except Exception as e:
-            log(f"Wikipedia error: {e}")
+                data = resp.json()
+                if data.get("AbstractText"):
+                    add(data["AbstractText"][:1000], "DDG-IA")
+                for topic in data.get("RelatedTopics", [])[:5]:
+                    if "Text" in topic:
+                        add(topic["Text"][:500], "DDG-rel")
+        except Exception:
+            pass
+
     return "\n".join(results)
+
+def ai_research(query):
+    messages = [
+        {"role": "system", "content": "You are a thorough research assistant. Provide detailed, factual information about the given topic. Include what it is, key features, history, use cases, installation, and basic usage. Be as comprehensive as possible. Up to 3000 characters."},
+        {"role": "user", "content": f"Research this topic thoroughly: {query}"},
+    ]
+    try:
+        return api_chat(messages)
+    except Exception as e:
+        log(f"AI research failed: {e}")
+        return ""
 
 def slugify(text):
     s = text.lower().replace(" ", "-")
@@ -143,7 +199,7 @@ def classify_task(task):
         return "project"
     if "snippet" in combined:
         return "snippet"
-    if any(w in combined for w in ["tool", "technology", "framework", "container", "database", "cli", "library", "platform"]):
+    if any(w in combined for w in ["tool", "technology", "framework", "container", "database", "cli", "library", "platform", "orchestrator", "dashboard", "monitoring", "observability", "proxy", "server", "engine", "manager", "runner", "tracker", "formatter", "linter", "compiler", "bundler", "runner"]):
         return "tool"
     return "article"
 
@@ -159,23 +215,68 @@ def list_documented_projects():
         return []
     return [d.name for d in proj_dir.iterdir() if d.is_dir()]
 
+def discover_deep():
+    existing = list_documented_tools()
+    existing_str = "\n".join(f"- {t}" for t in existing) if existing else "None yet."
+
+    categories = [
+        "monitoring and observability tools (Grafana, Prometheus, Datadog, Heimdall)",
+        "container and orchestration tools (Docker, Kubernetes, Podman, containerd)",
+        "CI/CD and automation tools (Jenkins, GitHub Actions, ArgoCD, Ansible)",
+        "database and storage tools (PostgreSQL, Redis, SQLite, MongoDB, MinIO)",
+        "developer productivity tools (tmux, zsh, fzf, ripgrep, fd, lazygit)",
+        "networking and proxy tools (nginx, Traefik, Caddy, HAProxy, Cloudflare)",
+        "security tools (Vault, Let's Encrypt, OWASP ZAP, Trivy, SonarQube)",
+        "frontend tools (Vite, Webpack, esbuild, Tailwind, shadcn/ui)",
+        "backend and API tools (FastAPI, Express, Gin, Fiber, gRPC, GraphQL)",
+        "infrastructure as code (Terraform, Pulumi, Crossplane, OpenTofu)",
+    ]
+
+    all_suggestions = []
+    seen_titles = set()
+
+    for cat_text in categories:
+        messages = [
+            {"role": "system", "content": f"You are a deep tool researcher. From the category '{cat_text}', suggest 2 specific developer tools that are real and well-known. Output each as exactly: - **Tool Name.** One-sentence description containing the word 'tool'. Do NOT suggest anything already documented."},
+            {"role": "user", "content": f"Already documented:\n{existing_str}\n\nSuggest 2 tools from this category."},
+        ]
+        try:
+            raw = api_chat(messages)
+            for line in raw.split("\n"):
+                m = re.match(r"-\s+\*\*(.+?)\*\*[.:]?\s*(.*)", line)
+                if m:
+                    title = m.group(1).strip()
+                    desc = m.group(2).strip() if m.group(2) else ""
+                    slug = slugify(title)
+                    if slug not in seen_titles and not topic_exists(slug):
+                        seen_titles.add(slug)
+                        all_suggestions.append({"title": title, "desc": desc})
+        except Exception as e:
+            log(f"Category '{cat_text}' failed: {e}")
+
+    log(f"Deep discovery found {len(all_suggestions)} new tools")
+    return all_suggestions
+
 def discover_tools():
     existing = list_documented_tools()
     existing_str = "\n".join(f"- {t}" for t in existing) if existing else "None yet."
-    web_data = web_search("popular developer tools 2026 must know")
+    web_data = web_search_deep("best developer tools 2026 most used open source")
     messages = [
-        {"role": "system", "content": "You are a developer tool curator. Using the web research, suggest 3 real, well-known developer tools worth documenting. Do NOT suggest tools already in the list. For each, output exactly: - **Tool Name.** One-sentence description containing the word 'tool'."},
-        {"role": "user", "content": f"Already documented:\n{existing_str}\n\nWeb research:\n{web_data}\n\nSuggest 3 new tools."},
+        {"role": "system", "content": "You are a developer tool curator. Using the web research below, suggest 4 real developer tools worth documenting. Include BOTH very popular AND lesser-known but powerful tools. Do NOT suggest already documented tools. Output exactly: - **Tool Name.** One-sentence description containing the word 'tool'."},
+        {"role": "user", "content": f"Already documented:\n{existing_str}\n\nWeb research:\n{web_data}\n\nSuggest 4 diverse tools."},
     ]
     try:
         raw = api_chat(messages)
         tasks = []
+        seen = set()
         for line in raw.split("\n"):
             m = re.match(r"-\s+\*\*(.+?)\*\*[.:]?\s*(.*)", line)
             if m:
                 title = m.group(1).strip()
                 desc = m.group(2).strip() if m.group(2) else ""
-                if not topic_exists(slugify(title)):
+                slug = slugify(title)
+                if slug not in seen and not topic_exists(slug):
+                    seen.add(slug)
                     tasks.append({"title": title, "desc": desc})
         return tasks
     except Exception as e:
@@ -185,20 +286,23 @@ def discover_tools():
 def discover_projects():
     existing = list_documented_projects()
     existing_str = "\n".join(f"- {p}" for p in existing) if existing else "None yet."
-    web_data = web_search("interesting open source projects to build learn 2026")
+    web_data = web_search_deep("interesting developer projects to build 2026")
     messages = [
-        {"role": "system", "content": "You are a developer project curator. Using the web research, suggest 2 real developer project ideas worth documenting. Each must use a real technology stack. For each, output exactly: - **Project Name.** One-sentence description containing the word 'project'."},
+        {"role": "system", "content": "Using web research, suggest 2 real-world developer project ideas worth documenting. Each must use a real technology stack. Include diverse tech (not all web frameworks). Output exactly: - **Project Name.** One-sentence description containing the word 'project'."},
         {"role": "user", "content": f"Existing:\n{existing_str}\n\nWeb research:\n{web_data}\n\nSuggest 2 new projects."},
     ]
     try:
         raw = api_chat(messages)
         tasks = []
+        seen = set()
         for line in raw.split("\n"):
             m = re.match(r"-\s+\*\*(.+?)\*\*[.:]?\s*(.*)", line)
             if m:
                 title = m.group(1).strip()
                 desc = m.group(2).strip() if m.group(2) else ""
-                if not topic_exists(slugify(title)):
+                slug = slugify(title)
+                if slug not in seen and not topic_exists(slug):
+                    seen.add(slug)
                     tasks.append({"title": f"Create {title} project", "desc": desc})
         return tasks
     except Exception as e:
@@ -207,10 +311,10 @@ def discover_projects():
 
 def ensure_tools_section_populated():
     tools = list_documented_tools()
-    if len(tools) >= 5:
+    if len(tools) >= 10:
         return
-    log(f"Tools section sparse ({len(tools)} tools) — discovering more")
-    for t in discover_tools():
+    log(f"Tools section sparse ({len(tools)} tools) — deep discovering")
+    for t in discover_deep():
         add_task_to_queue(t["title"], t["desc"])
 
 def add_task_to_queue(title, desc):
@@ -240,16 +344,14 @@ def enrich_task(task):
     return task
 
 def research_topic(topic, kind):
-    web_data = web_search(topic)
-    messages = [
-        {"role": "system", "content": "You are a research assistant. Using the web research, produce concise factual info about this developer topic: what it is, key features, installation, basic usage. Keep under 2000 chars."},
-        {"role": "user", "content": f"Topic: {topic}\n\nWeb research:\n{web_data}\n\nSummarize key facts."},
-    ]
-    try:
-        return api_chat(messages)
-    except Exception as e:
-        log(f"Research failed: {e}")
-        return web_data
+    web_data = web_search_deep(topic)
+    ai_data = ai_research(topic)
+    combined = ""
+    if web_data:
+        combined += f"=== Web Research ===\n{web_data}\n\n"
+    if ai_data:
+        combined += f"=== AI Knowledge ===\n{ai_data}\n"
+    return combined.strip()
 
 def generate_content(task, research, memory):
     kind = classify_task(task)
@@ -405,7 +507,7 @@ def main():
     log(f"Pending: {len(tasks)}")
 
     if not tasks:
-        log("Queue empty — discovering new content via web search + API")
+        log("Queue empty — deep discovering new content")
         for t in discover_tools():
             add_task_to_queue(t["title"], t["desc"])
         for t in discover_projects():
