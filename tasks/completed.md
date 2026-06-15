@@ -31,9 +31,7 @@ describes the execution in detail.
 | 2026-06-15 | Jenkins. | [Jenkins.](docs/reports/2026-06-15-jenkins.md) |
 | 2026-06-15 | Postman. | [Postman.](docs/reports/2026-06-15-postman.md) |
 | 2026-06-15 | Grafana. | [Grafana.](docs/reports/2026-06-15-grafana.md) |
-| 2026-06-15 | Heimdall. | [Heimdall.](docs/reports/2026-06-15-heimdall.md) |
 | 2026-06-15 | ArgoCD | [ArgoCD](docs/reports/2026-06-15-argocd.md) |
 | 2026-06-15 | Analyze Appwrite project | [Analyze Appwrite project](docs/reports/2026-06-15-analyze-appwrite-project.md) |
 | 2026-06-15 | Podman | [Podman](docs/reports/2026-06-15-podman.md) |
-| 2026-06-15 | Heimdall | [Heimdall](docs/reports/2026-06-15-heimdall.md) |
 | 2026-06-15 | Portainer | [Portainer](docs/reports/2026-06-15-portainer.md) |
