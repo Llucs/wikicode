@@ -36,3 +36,4 @@ describes the execution in detail.
 | 2026-06-15 | Podman | [Podman](docs/reports/2026-06-15-podman.md) |
 | 2026-06-15 | Portainer | [Portainer](docs/reports/2026-06-15-portainer.md) |
 | 2026-06-15 | Heimdall | [Heimdall](docs/reports/2026-06-15-heimdall.md) |
+| 2026-06-15 | Analyze FastAPI project | [Analyze FastAPI project](docs/reports/2026-06-15-analyze-fastapi-project.md) |
