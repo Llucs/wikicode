@@ -20,3 +20,5 @@ searching for popular developer tools and projects on the web.
 ## Pending tasks
 
 *(Queue is empty — the agent auto-discovers new tasks on each run.)*
+
+- [ ] **SpeedCool** SpeedCool boosts performance, reduces RAM usage, and improves thermal management.
