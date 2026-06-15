@@ -19,7 +19,6 @@ searching for popular developer tools and projects on the web.
 
 ## Pending tasks
 
-- [ ] **ArgoCD.** This tool implements GitOps for continuous delivery by synchronizing applications with Git repositories.
 - [ ] **PostgreSQL.** An open-source relational database management tool emphasizing extensibility and SQL compliance.
 - [ ] **Redis.** An in-memory data structure store tool used as a database, cache, and message broker.
 - [ ] **ripgrep.** This command-line search tool recursively searches files for regex patterns with exceptional speed.
@@ -39,3 +38,8 @@ searching for popular developer tools and projects on the web.
 - [ ] **Caddy.** An open-source web server tool that automatically provisions HTTPS and simplifies deployment with a focus on security and ease of use.
 - [ ] **Trivy.** An open-source vulnerability scanner tool for container images, file systems, and Git repositories.
 - [ ] **SonarQube.** A continuous code quality and security analysis tool that detects bugs, vulnerabilities, and code smells.
+- [ ] **Podman.** Podman is a tool for managing and running containers without requiring a daemon, providing a Docker-compatible command-line interface.
+- [ ] **fzf.** A command-line fuzzy finder tool that enables quick searching and filtering of files, command history, and other lists.
+- [ ] **HAProxy.** A reliable TCP/HTTP load balancing and proxying tool designed for high availability.
+- [ ] **OWASP ZAP.** A widely-used security tool for automatically finding security vulnerabilities in web applications.
+- [ ] **Next.js.** A React framework tool for building server-side rendered and static web applications.
