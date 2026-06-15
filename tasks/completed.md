@@ -34,3 +34,4 @@ describes the execution in detail.
 | 2026-06-15 | Heimdall. | [Heimdall.](docs/reports/2026-06-15-heimdall.md) |
 | 2026-06-15 | ArgoCD | [ArgoCD](docs/reports/2026-06-15-argocd.md) |
 | 2026-06-15 | Analyze Appwrite project | [Analyze Appwrite project](docs/reports/2026-06-15-analyze-appwrite-project.md) |
+| 2026-06-15 | Navigating AI's Dual Nature in Software Architecture | [Navigating AI's Dual Nature in Software Architecture](docs/reports/2026-06-15-navigating-ais-dual-nature-in-software-architecture.md) |
