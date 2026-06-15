@@ -437,12 +437,16 @@ def update_task_lists(task, report):
             content = content.replace(block, "")
             content = re.sub(r"\n{3,}", "\n\n", content).strip() + "\n"
         qpath.write_text(content, encoding="utf-8")
-    row = f"| {TODAY} | {task['title']} | [{task['title']}]({report.relative_to(WORKSPACE)}) |\n"
+    report_rel = os.path.relpath(report, cpath.parent)
+    slug = slugify(task["title"])
     if cpath.exists():
         content = cpath.read_text(encoding="utf-8")
-        if row.strip() not in content:
-            content = content.rstrip() + "\n" + row
-            cpath.write_text(content, encoding="utf-8")
+        if slug in content.lower():
+            log(f"Task already in completed list: {task['title']}")
+            return
+        row = f"| {TODAY} | {task['title']} | [{task['title']}]({report_rel}) |\n"
+        content = content.rstrip() + "\n" + row
+        cpath.write_text(content, encoding="utf-8")
 
 def validate():
     log("Running mkdocs build validation...")

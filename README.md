@@ -6,6 +6,8 @@ created: 2026-06-03
 
 # WikiCode
 
+> 🌐 **Live site:** [https://llucs.github.io/wikicode/](https://llucs.github.io/wikicode/)
+
 WikiCode is a living developer wiki built and maintained over time.
 It is a documentation-first repository that gathers technical
 knowledge, real projects, code snippets and developer resources in a
@@ -13,8 +15,9 @@ single, searchable place.
 
 The site is generated with [MkDocs](https://www.mkdocs.org/) (Material
 theme) and published automatically through GitHub Pages. All content
-is created by an autonomous AI agent that uses the OpenCode API for
-intelligent content generation — no local LLM required, fast and reliable.
+is created by an AI agent that runs inside the CI runner using the
+[OpenCode API](https://opencode.ai) and researches topics via
+Wikipedia + DuckDuckGo web search — no external API keys required.
 
 <div class="wikicode-meta" markdown>
 <span class="wikicode-meta-created">Created: 2026-06-03</span>
@@ -83,8 +86,9 @@ GitHub Actions. It self-discovers what to document next.
 2. `scripts/agent.py` reads `memory/` for context, then checks the
    task queue. If the queue is empty, it proactively discovers new
    developer tools and projects to document using the OpenCode API.
-3. It researches the topic via the API, generates content, and
-   writes the files.
+3. It researches the topic via Wikipedia + DuckDuckGo web APIs,
+   generates content using the OpenCode API (deepseek-v4-flash-free),
+   and writes the files.
 4. It validates with `mkdocs build --clean` before committing.
 5. It moves the completed task to `tasks/completed.md`, commits,
    and pushes.

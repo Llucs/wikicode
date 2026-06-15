@@ -32,7 +32,9 @@ Initial production-oriented structure.
   `.github/workflows/pages.yml`. Nothing in the published site is
   edited by hand.
 - **AI agent (OpenCode API).** `.github/workflows/wikicode-agent.yml`
-  runs the autonomous agent on CI. No external API keys needed.
+  runs the autonomous agent on the CI runner. Content generation via
+  OpenCode API (`deepseek-v4-flash-free`), web research via Wikipedia
+  and DuckDuckGo APIs. No external API keys needed.
 - **GitHub Pages.** Enabled with the workflow build type and HTTPS
   enforced.
 - **Content sections.**
@@ -66,4 +68,5 @@ Initial production-oriented structure.
 - The site is live at the URL provided by GitHub Pages once the
   first `pages.yml` run completes successfully.
 - No external API keys are required. The agent uses `GITHUB_TOKEN`
-   (built-in) for repository access and the OpenCode API for AI inference.
+  (built-in) for repository access and the OpenCode API for content
+  generation.

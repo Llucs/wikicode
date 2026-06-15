@@ -13,24 +13,27 @@
 │                                                              │
 │   docs/        projects/    snippets/                        │
 │   memory/      tasks/       reports/                         │
-│   blog/        AGENT.md     mkdocs.yml                       │
+│   blog/        scripts/     mkdocs.yml                       │
 │                                                              │
 └─────────────┬──────────────────────────────┬────────────────┘
-               │                              │
-               │  push to main                │  Agent run
-               ▼                              ▼
-       ┌──────────────────┐         ┌──────────────────────┐
-       │  pages.yml       │         │  wikicode-agent.yml  │
-       │  ─ mkdocs build  │         │  ─ read context      │
-       │  ─ upload Pages  │         │  ─ execute one task  │
-       │    artifact      │         │  ─ commit & push     │
-       └────────┬─────────┘         └──────────┬───────────┘
-               │                              │
-               ▼                              │
-       GitHub Pages                           │
-       (public site)                          │
-                                              │
-       new commit on main  ◄──────────────────┘
+              │                              │
+              │  push to main                │  Agent run
+              │                              │  (manual, schedule)
+              ▼                              ▼
+      ┌──────────────────┐         ┌──────────────────────┐
+      │  pages.yml       │         │  wikicode-agent.yml  │
+      │  ─ mkdocs build  │         │  ─ read context      │
+      │  ─ upload Pages  │         │  ─ web research      │
+      │    artifact      │         │  ─ generate content  │
+      └────────┬─────────┘         │  ─ validate build    │
+               │                  │  ─ commit & push     │
+               │                  └──────────┬───────────┘
+               │                             │
+               ▼                             │
+       GitHub Pages                          │
+       (public site)                         │
+                                             │
+       new commit on main  ◄─────────────────┘
 ```
 
 ## Layers
@@ -69,9 +72,10 @@ Plain Markdown. Authoring requires no special tooling.
 
 - `wikicode-agent.yml` is the autonomous agent workflow. It
   installs Python dependencies and runs `scripts/agent.py` to
-  read `memory/`, discover and pick a task, research the
-  topic via web search + API, generate content using the OpenCode
-  API, validate with `mkdocs build`, and push.
+  read `memory/`, discover and pick a task from `tasks/queue.md`,
+  research the topic via Wikipedia + DuckDuckGo APIs, generate
+  content using the OpenCode API, validate with `mkdocs build`,
+  and push.
 
 ## Secrets
 

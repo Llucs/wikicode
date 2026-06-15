@@ -52,7 +52,8 @@ growth, with the published site auto-updating on every push to
 
 - `.github/workflows/pages.yml` — site build and GitHub Pages
   deployment.
-- `.github/workflows/wikicode-agent.yml` — autonomous agent workflow.
+- `.github/workflows/wikicode-agent.yml` — autonomous agent workflow
+  (originally `openhands.yml`, renamed during migration to OpenCode API).
 
 ### Site content
 

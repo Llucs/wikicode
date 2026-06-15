@@ -67,8 +67,8 @@ wiki that grows a little every day.
 - Do not run destructive automation (force push, mass delete,
   etc.).
 - Do not store secrets in the repository.
-- No external API keys are required. The agent uses the OpenCode
-  API with a public key for content generation.
+- No external API keys are required. The agent uses the OpenCode API
+  (free public key) and web research via Wikipedia / DuckDuckGo.
 
 ## Triggers
 

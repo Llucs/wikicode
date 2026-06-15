@@ -41,7 +41,6 @@ agents fit into the loop.
       │  ─ upload Pages  │         │  ─ read context      │
       │    artifact      │         │  ─ web research*     │
       └────────┬─────────┘         │  ─ generate content  │
-               │                  │  (OpenCode API)      │
                │                  │  ─ validate build    │
                │                  │  ─ commit & push     │
                │                  └──────────┬───────────┘
@@ -53,7 +52,7 @@ agents fit into the loop.
        new commit on main  ◄─────────────────┘
 ```
 
-`*` The agent uses DuckDuckGo and Wikipedia APIs for web research,
+`*` The agent uses Wikipedia and DuckDuckGo APIs for web research,
 no API keys required.
 
 ## Layers
@@ -108,9 +107,9 @@ The expected loop per run:
 1. The workflow starts. Python dependencies are installed.
 2. `scripts/agent.py` reads `memory/` for context. If the task queue
    is empty, it proactively discovers new tools and projects to
-   document via web search + the OpenCode API.
-3. The agent researches the chosen topic and generates content
-   (Markdown with frontmatter) using the OpenCode API.
+   document. It then researches the chosen topic via Wikipedia +
+   DuckDuckGo APIs.
+3. The OpenCode API generates the content (Markdown with frontmatter).
 4. The agent writes the files, runs `mkdocs build --clean` to
    validate, then commits and pushes.
 5. `pages.yml` rebuilds and deploys the site.
@@ -148,20 +147,21 @@ deduplication mechanism has three parts:
 If a duplicate is detected, the agent must improve the existing
 page instead of writing a new one (rule 11 in `AGENT.md`).
 
-### 6. Web research for tools
+### 6. Web research
 
-The agent uses DuckDuckGo Instant Answer and Wikipedia APIs to
-gather information about tools, libraries and patterns. This is
-the mechanism behind `docs/tools/`:
+The agent uses Wikipedia and DuckDuckGo APIs to gather information
+about any topic it needs to document. This is the mechanism that
+keeps the generated content factual and up-to-date:
 
-1. The agent picks a tool that is not yet covered.
-2. It queries the web APIs to fetch official docs, README and
-   reputable third-party write-ups (no API keys required).
-3. It summarizes the tool under `docs/tools/<slug>/index.md`,
-   optionally adding `install.md`, `usage.md`, `internals.md`
-   and `gotchas.md` if there is enough material.
-4. It adds the appropriate frontmatter tags so the page shows up
-   in [Tags](../tags.md) and [Topics](../topics/index.md).
+1. `research_topic()` in `scripts/agent.py` runs both a Wikipedia
+   search and a DuckDuckGo Instant Answer query for the topic.
+2. Wikipedia returns article titles + introductory extracts (plain
+   text, up to 2000 chars).
+3. DuckDuckGo returns the abstract and related topics.
+4. If both return empty, the agent falls back to the LLM's training
+   knowledge.
+5. The gathered research text is injected into the content generation
+   prompt so the LLM writes from real-world information.
 
 ## Frontmatter contract
 

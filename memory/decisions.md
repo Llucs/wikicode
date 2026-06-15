@@ -69,35 +69,37 @@ reports/   execution reports
 
 ---
 
-## 0003 — API-based agent via OpenCode API (replaces Ollama)
+## 0003 — OpenCode API agent (replaces Ollama local inference)
 
-**Date:** 2026-06-14
-**Status:** Superseded
+**Date:** 2026-06-15
+**Status:** Accepted
 **Supersedes:** 0003 (original Ollama decision)
 
 **Context**
-The original agent used a local Ollama inference stack inside the CI
-runner, which required a ~4.5 GB model download on first run, had
-slow CPU-only inference, and consumed significant CI time and memory.
+The local Ollama + Qwen2.5 stack required ~4.5 GB model downloads,
+consumed significant CPU/RAM on the CI runner, and the model quality
+was limited for technical content generation. Web research via
+DuckDuckGo/Wikipedia was described but never implemented in code.
 
 **Decision**
-Replace Ollama with the OpenCode API (`opencode.ai/zen/v1`) for all
-content generation:
+Replace the local Ollama inference with the OpenCode API
+(`deepseek-v4-flash-free` model), a free cloud LLM service:
 
-1. **OpenCode API** serves as the AI backend with the
-   `deepseek-v4-flash-free` model.
-2. **`scripts/agent.py`** orchestrates the agent loop: read memory →
-   discover/probe queue → research (web + API) → generate content →
-   validate → commit → push.
-3. Web research is performed through DuckDuckGo Instant Answer and
-   Wikipedia APIs — no additional tokens needed.
+1. **`scripts/agent.py`** orchestrates the agent loop: read memory →
+   pick task → research (web) → generate content → validate →
+   commit → push.
+2. **Web research** is implemented via Wikipedia API (page search +
+   extract retrieval) and DuckDuckGo Instant Answer API — both free
+   and requiring no API keys.
+3. **Content generation** uses the OpenCode API at
+   `https://opencode.ai/zen/v1/chat/completions`.
 
 **Consequences**
-- No model download or caching required; inference is instant.
-- Faster execution: runs complete in minutes instead of 20+ minutes.
-- The agent proactively discovers tools and projects when the queue
-  is empty, making the wiki truly self-evolving.
-- The agent no longer depends on local CPU inference.
+- Zero cost. The OpenCode API uses a free public key.
+- Higher quality content generation with `deepseek-v4-flash-free`.
+- No model downloads, no CPU/RAM pressure on the CI runner.
+- Real web research via Wikipedia + DuckDuckGo APIs.
+- The agent depends on the OpenCode cloud service being available.
 
 ---
 

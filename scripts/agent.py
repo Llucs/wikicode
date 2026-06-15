@@ -53,12 +53,17 @@ def run():
     memory = read_memory()
     research = research_topic(task["title"], FOCUS)
     content = generate_content(task, research, memory)
+    if not content:
+        log("No content generated.")
+        sys.exit(1)
+
     files = write_files(task, content)
     report = write_report(task, files)
     update_task_lists(task, report)
 
     if not validate():
         git("checkout", "--", ".")
+        git("clean", "-fd")
         log("Build failed — reverted all changes.")
         sys.exit(1)
 

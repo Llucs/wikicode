@@ -27,21 +27,19 @@ issue, article).
 - **Dates:** `mkdocs-git-revision-date-localized-plugin` for created / last updated.
 - **Blog:** Material's built-in `blog` plugin.
 - **Hosting:** GitHub Pages (workflow deployment).
-- **Automation:** GitHub Actions, OpenCode API agent.
+- **Automation:** GitHub Actions + OpenCode API (deepseek-v4-flash-free).
 
 ## Agent capabilities
 
-The AI agent (`scripts/agent.py`) runs entirely inside the GitHub
-Actions runner. It has:
+The AI agent (`scripts/agent.py`) runs inside the GitHub Actions runner
+using the OpenCode API. It has:
 
-- **AI inference** via the OpenCode API.
+- **Content generation** via OpenCode API (`deepseek-v4-flash-free` model).
+- **Web research** via Wikipedia API and DuckDuckGo Instant Answer API — no API keys needed.
 - **Shell access** to run `git`, `mkdocs`, `python`, etc.
-- **File editing.** It creates and modifies Markdown files inside the
-  repository.
-- **Web research** via DuckDuckGo Instant Answer API and Wikipedia API.
+- **File editing.** It creates and modifies Markdown files inside the repository.
 - **Git operations** to commit and push changes back to the repository.
-- **Validation.** It runs `mkdocs build --clean` before every commit to
-  ensure nothing is broken.
+- **Validation.** It runs `mkdocs build --clean` before every commit to ensure nothing is broken.
 
 ## Anti-duplication
 
@@ -75,14 +73,13 @@ The wikicode-agent workflow runs twice daily (`0 6,18 * * *`,
 1. The workflow runs.
 2. It checks out the repository and installs dependencies.
 3. The agent reads memory, checks the queue, and researches the
-   topic via web search + API.
+   topic via Wikipedia + DuckDuckGo APIs.
 4. The agent generates content using the OpenCode API, writes the
    content, validates with `mkdocs build`, commits, and pushes.
 5. The Pages workflow rebuilds and deploys the site.
 6. The next run continues the loop.
 
-This is what makes the wiki "grow a little every day" — without
-spending any API credits.
+This is what makes the wiki "grow a little every day".
 
 ## Glossary
 
@@ -90,8 +87,7 @@ spending any API credits.
 | ---------- | ----------------------------------------------------------------------- |
 | WikiCode   | The repository and the site it produces.                                |
 | Agent      | The autonomous `scripts/agent.py` process that follows `AGENT.md`.      |
-| Ollama     | Local LLM server (no longer used, replaced by OpenCode API). |
-| Qwen2.5    | Language model (no longer used, replaced by OpenCode API).    |
+| OpenCode   | Cloud LLM API (deepseek-v4-flash-free) used for content generation.    |
 | Task       | A single unit of work listed in `tasks/queue.md`.                       |
 | Report     | A time-stamped Markdown file in `reports/` describing an execution.     |
 | Decision   | An architectural or operational choice recorded in `decisions.md`.      |
@@ -103,6 +99,5 @@ spending any API credits.
 - MkDocs documentation: https://www.mkdocs.org/
 - Material for MkDocs: https://squidfunk.github.io/mkdocs-material/
 - GitHub Pages: https://docs.github.com/en/pages
-- Ollama: https://ollama.com/
-- Qwen2.5: https://qwenlm.github.io/blog/qwen2.5/
+- OpenCode: https://opencode.ai/
 - GitHub Actions: https://docs.github.com/en/actions
