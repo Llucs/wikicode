@@ -66,6 +66,7 @@ Plain Markdown. Authoring requires no special tooling.
 | `docs/`          | Articles, guides, reference, the things you read on the site.      |
 | `docs/guides/`   | Long-form, topic-oriented guides.                                  |
 | `docs/tools/`    | One folder per documented developer tool.                          |
+| `docs/analyses/` | Technical analysis and architectural studies of platforms/libs.    |
 | `docs/reference/`| Glossary, architecture, changelog.                                 |
 | `docs/topics/`   | Topic index.                                                       |
 | `projects/`      | Real, runnable projects. Each one is a self-contained unit.        |
@@ -73,7 +74,7 @@ Plain Markdown. Authoring requires no special tooling.
 | `blog/`          | Longer write-ups, announcements, post-mortems.                     |
 | `memory/`        | Long-term context for agents (mission, rules, decisions).         |
 | `tasks/`         | Work pipeline (queue + completed).                                 |
-| `reports/`       | Time-stamped execution reports.                                    |
+| `reports/`       | Time-stamped execution reports, organized by year/month.           |
 
 ### 2. Generation
 
@@ -145,7 +146,7 @@ deduplication mechanism has three parts:
    pieces of content and the rules for adding new ones.
 
 If a duplicate is detected, the agent must improve the existing
-page instead of writing a new one (rule 11 in `AGENT.md`).
+page instead of writing a new one (rule 16 in `memory/rules.md`).
 
 ### 6. Web research
 
@@ -162,6 +163,33 @@ keeps the generated content factual and up-to-date:
    knowledge.
 5. The gathered research text is injected into the content generation
    prompt so the LLM writes from real-world information.
+
+## Content taxonomy v2
+
+Every document in WikiCode belongs to exactly one of these categories:
+
+| Category    | Path                 | What goes there                                         |
+| ----------- | -------------------- | ------------------------------------------------------- |
+| **Tool**    | `docs/tools/<slug>/`  | Developer tool documentation (install, usage, features). |
+| **Analysis**| `docs/analyses/<slug>/` | Architectural study of a platform, framework or library. |
+| **Project** | `projects/<slug>/`    | Real, runnable open-source project with setup guide.     |
+| **Guide**   | `docs/guides/`        | Long-form, topic-oriented tutorial or how-to.            |
+| **Report**  | `reports/YYYY/MM/`    | Time-stamped execution record, immutable after commit.   |
+| **Memory**  | `memory/`             | Agent context: mission, rules, decisions, knowledge, state, quality. |
+
+The separation is semantic, not cosmetic:
+
+- **Tools vs Analyses** — a tool page teaches *how to use* something
+  (install → configure → run). An analysis studies *architecture and
+  trade-offs* (compare alternatives, evaluate design decisions).
+- **Guides vs Tools** — a guide is a narrative walkthrough across
+  multiple tools or concepts. A tool page is a single reference card.
+- **Reports as records** — reports are immutable after commit. They
+  are organized by `YYYY/MM/` to prevent flat-directory bloat and
+  enable chronological browsing.
+- **Memory as agent contract** — every file in `memory/` has a distinct
+  role (declared in `memory/knowledge.md`). The agent reads all of them
+  on startup; `state.md` is also written after each run.
 
 ## Frontmatter contract
 

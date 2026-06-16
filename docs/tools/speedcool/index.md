@@ -9,6 +9,7 @@ tags:
   - thermal-management
   - root
 status: draft
+ecosystem: android
 ---
 
 # SpeedCool Magisk Module

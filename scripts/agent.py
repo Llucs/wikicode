@@ -12,7 +12,7 @@ from lib import (
     log, git, read_memory, parse_queue, enrich_task,
     discover_one_tool, discover_one_project, discover_one_article,
     add_task_to_queue, research_topic, generate_content,
-    write_files, write_report, update_task_lists,
+    write_files, write_report, update_task_lists, write_state,
     validate, commit_and_push,
 )
 
@@ -68,6 +68,7 @@ def run():
         sys.exit(1)
 
     commit_and_push(files, task)
+    write_state(task, report)
     log("Done.")
 
 if __name__ == "__main__":

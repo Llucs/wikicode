@@ -19,6 +19,19 @@ issue, article).
 <span class="wikicode-meta-updated">Last updated: auto (git)</span>
 </div>
 
+## Memory structure
+
+Each file in `memory/` has a distinct role:
+
+| File         | Role |
+|--------------|------|
+| `mission.md` | What we are building and why |
+| `rules.md`   | Permanent operational rules (normative) |
+| `knowledge.md` | Long-term technical knowledge (this file) |
+| `decisions.md` | Architectural decisions with rationale |
+| `state.md`   | Current agent state (last run, focus) |
+| `quality.md` | Quality criteria and validation rules |
+
 ## Stack
 
 - **Static site generator:** MkDocs + Material theme.

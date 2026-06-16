@@ -9,6 +9,7 @@ tags:
   - productivity
   - terminal
 status: draft
+ecosystem: cli
 ---
 
 # fzf – General-Purpose Command-Line Fuzzy Finder

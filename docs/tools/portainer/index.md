@@ -12,6 +12,7 @@ tags:
   - self-hosted
   - portainer-ce
 status: draft
+ecosystem: containers
 ---
 
 # Portainer

@@ -9,6 +9,7 @@ tags:
   - cli
   - dependency-management
 status: draft
+ecosystem: javascript
 ---
 
 # npm – Node Package Manager

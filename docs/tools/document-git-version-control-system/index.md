@@ -6,6 +6,7 @@ tags:
   - Source_Control
   - Versioning
 status: draft
+ecosystem: vcs
 ---
 
 Git is a powerful and widely-used distributed version control system (VCS) designed to handle everything from small to very large projects with speed and efficiency. It was created by Linus Torvalds in 2005 for the Linux kernel development team, but has since become an industry standard tool for managing changes to software code.

@@ -9,6 +9,7 @@ tags:
   - argocd
   - devops-tools
 status: draft
+ecosystem: kubernetes
 ---
 
 # ArgoCD – GitOps Continuous Delivery for Kubernetes

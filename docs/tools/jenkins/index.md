@@ -10,6 +10,7 @@ tags:
   - automation
   - java
 status: draft
+ecosystem: ci-cd
 ---
 
 # Jenkins CI/CD Automation Server

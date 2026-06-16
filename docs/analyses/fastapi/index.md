@@ -3,10 +3,11 @@ title: FastAPI
 description: A modern, fast web framework for building APIs with Python, based on standard Python type hints.
 created: 2026-06-15
 tags:
+  - analysis
   - python
   - api
   - web-framework
-  - fastapi
+  - framework-study
 status: draft
 ---
 

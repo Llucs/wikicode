@@ -3,12 +3,11 @@ title: Zustand — Minimalistic State Management for React
 description: A comprehensive guide to Zustand, a lightweight, hook-based state management library for React and vanilla JavaScript, including installation, core concepts, middleware, and advanced patterns.
 created: 2026-06-15
 tags:
+  - analysis
   - state-management
   - react
   - javascript
-  - hooks
-  - zustand
-  - pmndrs
+  - library-study
 status: draft
 ---
 

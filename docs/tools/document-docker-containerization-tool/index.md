@@ -7,6 +7,7 @@ tags:
   - development
   - deployment
 status: draft
+ecosystem: containers
 ---
 
 ## What is Docker?

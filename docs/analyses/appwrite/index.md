@@ -3,18 +3,12 @@ title: Appwrite: Self-Hosted Backend-as-a-Service Platform
 description: Open-source BaaS providing APIs for authentication, databases, storage, serverless functions, and messaging – a Firebase alternative you control.
 created: 2026-06-15
 tags:
+  - analysis
   - backend-as-a-service
   - self-hosted
   - firebase-alternative
   - serverless
-  - nocode-api
-  - php
-  - docker
-  - open-source
-  - authentication
-  - database
-  - realtime
-  - graphql
+  - platform-study
 status: draft
 ---
 

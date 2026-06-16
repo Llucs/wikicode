@@ -9,6 +9,7 @@ tags:
   - collaboration
   - newman
 status: draft
+ecosystem: api
 ---
 
 # Postman - API Development and Testing Platform

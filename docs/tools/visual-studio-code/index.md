@@ -8,6 +8,7 @@ tags:
   - microsoft
   - open-source
 status: draft
+ecosystem: editors
 ---
 
 # Visual Studio Code

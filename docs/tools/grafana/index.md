@@ -9,6 +9,7 @@ tags:
   - dashboards
   - open-source
 status: draft
+ecosystem: observability
 ---
 
 # Grafana: The Open Observability Platform

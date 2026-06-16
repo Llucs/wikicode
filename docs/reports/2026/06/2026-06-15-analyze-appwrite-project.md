@@ -1,5 +1,5 @@
 ---
-title: "Analyze Zustand project"
+title: "Analyze Appwrite project"
 description: Agent execution report
 created: 2026-06-15
 tags:
@@ -7,18 +7,18 @@ tags:
 status: completed
 ---
 
-# Report: Analyze Zustand project
+# Report: Analyze Appwrite project
 
 **Date:** 2026-06-15
 **Agent:** WikiCode autonomous (OpenCode API)
 
 ## Summary
 
-Executed task: **Analyze Zustand project**
+Executed task: **Analyze Appwrite project**
 
 ### Files
 
-- `docs/tools/analyze-zustand-project/index.md`
+- `docs/analyses/appwrite/index.md`
 
 ### Result
 

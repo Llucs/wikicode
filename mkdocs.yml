@@ -118,6 +118,8 @@ nav:
   - Learning paths: learning-paths.md
   - Guides:
       - guides/index.md
+      - REST API Go: guides/rest-api-go.md
+      - Navigation audit: improve-navigation.md
   - Reference:
       - Glossary: reference/glossary.md
       - Architecture: reference/architecture.md
@@ -126,6 +128,8 @@ nav:
       - topics/index.md
   - Tools:
       - tools/index.md
+  - Analyses:
+      - analyses/index.md
   - Tags: tags.md
   - Blog:
       - blog/index.md

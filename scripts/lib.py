@@ -396,7 +396,8 @@ def write_files(task, content):
 
 def write_report(task, files):
     slug = slugify(task["title"])
-    rdir = WORKSPACE / "docs" / "reports"
+    year, month, _ = TODAY.split("-")
+    rdir = WORKSPACE / "docs" / "reports" / year / month
     rdir.mkdir(parents=True, exist_ok=True)
     path = rdir / f"{TODAY}-{slug}.md"
     lines = [
@@ -456,6 +457,30 @@ def validate():
         return False
     log("Build passed.")
     return True
+
+def write_state(task, report):
+    path = WORKSPACE / "memory" / "state.md"
+    content = f"""---
+title: Agent State
+description: Current state and context of the WikiCode agent.
+created: 2026-06-15
+---
+# Agent State
+
+Last execution state. Updated by the agent after each run.
+
+```yaml
+last_run: {TODAY}
+last_task: {task['title']}
+last_result: completed
+current_focus: tools
+queue_empty: true
+```
+
+This file is read by the agent at startup and updated after each
+execution to maintain continuity across runs.
+"""
+    path.write_text(content, encoding="utf-8")
 
 def commit_and_push(files, task):
     git("add", "-A")

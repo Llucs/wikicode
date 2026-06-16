@@ -1,5 +1,5 @@
 ---
-title: "Analyze FastAPI project"
+title: "Analyze Zustand project"
 description: Agent execution report
 created: 2026-06-15
 tags:
@@ -7,18 +7,18 @@ tags:
 status: completed
 ---
 
-# Report: Analyze FastAPI project
+# Report: Analyze Zustand project
 
 **Date:** 2026-06-15
 **Agent:** WikiCode autonomous (OpenCode API)
 
 ## Summary
 
-Executed task: **Analyze FastAPI project**
+Executed task: **Analyze Zustand project**
 
 ### Files
 
-- `docs/tools/analyze-fastapi-project/index.md`
+- `docs/analyses/zustand/index.md`
 
 ### Result
 

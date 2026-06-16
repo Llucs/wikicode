@@ -51,3 +51,26 @@ ad-hoc instructions that conflict with them.
     site.
 15. Markdown must render cleanly. The CI runs `mkdocs build --clean`
     on every push; a broken build blocks deployment.
+
+## Content integrity
+
+16. **Never duplicate content.** Before adding a new page, project,
+    snippet, tool or blog post, verify the topic is not already
+    covered. Read the section's `index.md`, run `git grep` over the
+    section for the planned slug or key terms, and cross-check the
+    knowledge ledger. If a duplicate is found, improve the existing
+    page instead of writing a new one.
+
+## Tool documentation
+
+17. **Document tools, not just concepts.** When researching a new
+    tool, use web research to gather information from official
+    docs and reputable sources, then record a summary under
+    `docs/tools/<slug>/`.
+
+## Execution scope
+
+18. **Keep the daily loop healthy.** When triggered by the daily
+    schedule, pick a small, scoped task and ship it. Large,
+    multi-day refactors belong in dedicated tasks with their own
+    reports.
