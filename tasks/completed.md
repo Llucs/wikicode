@@ -46,3 +46,4 @@ describes the execution in detail.
 | 2026-06-16 | Traefik | [Traefik](../docs/reports/2026/06/2026-06-16-traefik.md) |
 | 2026-06-16 | Ollama | [Ollama](../docs/reports/2026/06/2026-06-16-ollama.md) |
 | 2026-06-16 | Observer | [Observer](../docs/reports/2026/06/2026-06-16-observer.md) |
+| 2026-06-16 | Caddy | [Caddy](../docs/reports/2026/06/2026-06-16-caddy.md) |
