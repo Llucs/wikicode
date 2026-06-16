@@ -2,7 +2,7 @@
 """WikiCode Agent — entry point.
 
 FOCUS=tools   → discover/document developer tools
-FOCUS=content → discover/document articles, projects, snippets
+FOCUS=content → discover/document concepts, articles, projects, snippets
 """
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lib import (
     WORKSPACE, GITHUB_TOKEN, GITHUB_REPO, TODAY,
     log, git, read_memory, parse_queue, enrich_task,
-    discover_one_tool, discover_one_project, discover_one_article,
+    discover_one_tool, discover_one_project, discover_one_concept,
     add_task_to_queue, research_topic, generate_content,
     write_files, write_report, update_task_lists, write_state,
     validate, commit_and_push,
@@ -23,9 +23,9 @@ def get_next_task():
     if not tasks:
         log(f"Queue empty. Discovering from focus={FOCUS}...")
         if FOCUS == "content":
-            item = discover_one_project()
+            item = discover_one_concept()
             if not item:
-                item = discover_one_article()
+                item = discover_one_project()
             if not item:
                 item = discover_one_tool()
         else:

@@ -264,19 +264,20 @@ ARTICLE_SEARCHES = [
     ("API design", "API design best practices REST GraphQL API versioning WebSocket gRPC"),
 ]
 
-def discover_one_article():
-    existing_titles = set()
-    for f in (WORKSPACE / "docs").rglob("*.md"):
-        existing_titles.add(f.stem)
+def discover_one_concept():
+    existing = set()
+    for f in (WORKSPACE / "docs" / "concepts").rglob("*.md"):
+        existing.add(f.stem)
+    existing_lower = [t.lower() for t in existing]
 
     for cat_name, search_query in ARTICLE_SEARCHES:
         web_data = web_search_deep(search_query)
         if not web_data:
             continue
-        existing_str = "\n".join(f"- {t}" for t in existing_titles) if existing_titles else "None yet."
+        existing_str = "\n".join(f"- {t}" for t in existing) if existing else "None yet."
         messages = [
-            {"role": "system", "content": "You are a content curator reading web search results. Pick ONE technical article topic from the results that is NOT already documented. Output exactly:\n- **Article Title.** One-sentence description.\nONLY pick a real topic mentioned in the search results."},
-            {"role": "user", "content": f"Already documented topics:\n{existing_str}\n\nWeb search results for '{cat_name}':\n{web_data}\n\nPick 1 real article topic from these results."},
+            {"role": "system", "content": "You are a content curator reading web search results. Pick ONE technical concept topic from the results that is NOT already documented. Output exactly:\n- **Concept Title.** One-sentence description.\nONLY pick a real topic mentioned in the search results."},
+            {"role": "user", "content": f"Already documented concepts:\n{existing_str}\n\nWeb search results for '{cat_name}':\n{web_data}\n\nPick 1 real concept from these results."},
         ]
         try:
             raw = api_chat(messages)
@@ -285,10 +286,10 @@ def discover_one_article():
                 if m:
                     title = clean_title(m.group(1))
                     desc = m.group(2).strip() if m.group(2) else ""
-                    if slugify(title) not in existing_titles and not topic_exists(slugify(title)):
-                        return {"title": title, "desc": desc, "kind": "article"}
+                    if slugify(title) not in existing_lower and not topic_exists(slugify(title)):
+                        return {"title": title, "desc": desc, "kind": "concept"}
         except Exception as e:
-            log(f"Article discovery '{cat_name}' failed: {e}")
+            log(f"Concept discovery '{cat_name}' failed: {e}")
     return None
 
 def add_task_to_queue(title, desc):
@@ -352,6 +353,8 @@ def generate_content(task, research, memory):
         parts += ["", "Generate an index.md for a code snippet. Include code with explanation, copy-paste-ready."]
     elif kind == "tool":
         parts += ["", "Document a REAL developer tool. Cover: what, why, install, usage, key features with command examples. DO NOT invent fictional tools."]
+    elif kind == "concept":
+        parts += ["", "Write a developer guide on this concept. Cover: what it is, why it matters, how it works with real code examples, trade-offs, and best practices. Include diagrams in ASCII if helpful."]
     else:
         parts += ["", "Generate a developer article with code examples and best practices."]
     system = "\n".join(parts)
@@ -384,6 +387,12 @@ def write_files(task, content):
         created.append(idx)
     elif kind == "tool":
         base = WORKSPACE / "docs" / "tools" / slug
+        base.mkdir(parents=True, exist_ok=True)
+        idx = base / "index.md"
+        idx.write_text(content, encoding="utf-8")
+        created.append(idx)
+    elif kind == "concept":
+        base = WORKSPACE / "docs" / "concepts" / slug
         base.mkdir(parents=True, exist_ok=True)
         idx = base / "index.md"
         idx.write_text(content, encoding="utf-8")

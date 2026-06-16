@@ -124,6 +124,8 @@ nav:
       - Glossary: reference/glossary.md
       - Architecture: reference/architecture.md
       - Changelog: reference/changelog.md
+  - Concepts:
+      - concepts/index.md
   - Topics:
       - topics/index.md
   - Tools:

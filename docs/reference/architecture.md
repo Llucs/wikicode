@@ -64,6 +64,7 @@ Plain Markdown. Authoring requires no special tooling.
 | Path             | Purpose                                                            |
 | ---------------- | ------------------------------------------------------------------ |
 | `docs/`          | Articles, guides, reference, the things you read on the site.      |
+| `docs/concepts/` | Architecture patterns, design principles, technical concepts.      |
 | `docs/guides/`   | Long-form, topic-oriented guides.                                  |
 | `docs/tools/`    | One folder per documented developer tool.                          |
 | `docs/analyses/` | Technical analysis and architectural studies of platforms/libs.    |
@@ -170,15 +171,20 @@ Every document in WikiCode belongs to exactly one of these categories:
 
 | Category    | Path                 | What goes there                                         |
 | ----------- | -------------------- | ------------------------------------------------------- |
-| **Tool**    | `docs/tools/<slug>/`  | Developer tool documentation (install, usage, features). |
-| **Analysis**| `docs/analyses/<slug>/` | Architectural study of a platform, framework or library. |
-| **Project** | `projects/<slug>/`    | Real, runnable open-source project with setup guide.     |
-| **Guide**   | `docs/guides/`        | Long-form, topic-oriented tutorial or how-to.            |
-| **Report**  | `reports/YYYY/MM/`    | Time-stamped execution record, immutable after commit.   |
+| **Concept** | `docs/concepts/<slug>/` | Architecture pattern, design principle, or technical concept. |
+| **Tool**    | `docs/tools/<slug>/`  | Developer tool documentation (install, usage, features).     |
+| **Analysis**| `docs/analyses/<slug>/` | Architectural study of a platform, framework or library.    |
+| **Project** | `projects/<slug>/`    | Real, runnable open-source project with setup guide.          |
+| **Guide**   | `docs/guides/`        | Long-form, topic-oriented tutorial or how-to.                 |
+| **Report**  | `reports/YYYY/MM/`    | Time-stamped execution record, immutable after commit.        |
 | **Memory**  | `memory/`             | Agent context: mission, rules, decisions, knowledge, state, quality. |
 
 The separation is semantic, not cosmetic:
 
+- **Concepts vs Guides** — a concept page explains a pattern,
+  principle, or technique (e.g., microservices, CQRS, OAuth).
+  A guide is a narrative walkthrough that may span multiple
+  concepts or tools.
 - **Tools vs Analyses** — a tool page teaches *how to use* something
   (install → configure → run). An analysis studies *architecture and
   trade-offs* (compare alternatives, evaluate design decisions).

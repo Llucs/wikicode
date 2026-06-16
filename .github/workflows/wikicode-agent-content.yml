@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   agent:
-    name: Discover & document articles, projects, snippets
+    name: Discover & document concepts, projects, tools
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
