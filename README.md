@@ -6,8 +6,6 @@ created: 2026-06-03
 
 # WikiCode
 
-> 🌐 **Live site:** [https://llucs.github.io/wikicode/](https://llucs.github.io/wikicode/)
-
 WikiCode is a living developer wiki built and maintained over time.
 It is a documentation-first repository that gathers technical
 knowledge, real projects, code snippets and developer resources in a
