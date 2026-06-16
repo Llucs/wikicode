@@ -40,3 +40,4 @@ describes the execution in detail.
 | 2026-06-15 | SpeedCool | [SpeedCool](../docs/reports/2026/06/2026-06-15-speedcool.md) |
 | 2026-06-15 | fzf | [fzf](../docs/reports/2026/06/2026-06-15-fzf.md) |
 | 2026-06-15 | Analyze Zustand project | [Analyze Zustand project](../docs/reports/2026/06/2026-06-15-analyze-zustand-project.md) |
+| 2026-06-16 | SonarQube | [SonarQube](../docs/reports/2026/06/2026-06-16-sonarqube.md) |
