@@ -20,5 +20,3 @@ searching for popular developer tools and projects on the web.
 ## Pending tasks
 
 *(Queue is empty — the agent auto-discovers new tasks on each run.)*
-
-- [ ] **Ollama.** Ollama is an open-source tool for running and managing large language models (LLMs) locally. It provides a simple CLI and local API to download, serve, and interact with AI models directly on your device.
