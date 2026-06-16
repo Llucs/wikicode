@@ -43,3 +43,4 @@ describes the execution in detail.
 | 2026-06-16 | SonarQube | [SonarQube](../docs/reports/2026/06/2026-06-16-sonarqube.md) |
 | 2026-06-16 | Sharding | [Sharding](../docs/reports/2026/06/2026-06-16-sharding.md) |
 | 2026-06-16 | Event-Driven Architecture | [Event-Driven Architecture](../docs/reports/2026/06/2026-06-16-event-driven-architecture.md) |
+| 2026-06-16 | Traefik | [Traefik](../docs/reports/2026/06/2026-06-16-traefik.md) |
