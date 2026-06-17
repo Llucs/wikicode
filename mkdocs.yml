@@ -1,6 +1,7 @@
 site_name: WikiCode
 site_description: A living developer wiki — articles, projects and snippets maintained over time.
 site_author: Llucs
+site_url: https://llucs.github.io/wikicode/
 copyright: Copyright &copy; 2026 Llucs
 
 repo_url: https://github.com/Llucs/wikicode
