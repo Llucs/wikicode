@@ -20,5 +20,3 @@ searching for popular developer tools and projects on the web.
 ## Pending tasks
 
 *(Queue is empty — the agent auto-discovers new tasks on each run.)*
-
-- [ ] **TWRP.** (Team Win Recovery Project) is a custom Android recovery that lets users install ROMs, create backups, and manage system modifications.

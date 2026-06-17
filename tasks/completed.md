@@ -49,3 +49,4 @@ describes the execution in detail.
 | 2026-06-16 | Caddy | [Caddy](../docs/reports/2026/06/2026-06-16-caddy.md) |
 | 2026-06-17 | Modular Monolith | [Modular Monolith](../docs/reports/2026/06/2026-06-17-modular-monolith.md) |
 | 2026-06-17 | HAProxy | [HAProxy](../docs/reports/2026/06/2026-06-17-haproxy.md) |
+| 2026-06-17 | TWRP | [TWRP](../docs/reports/2026/06/2026-06-17-twrp.md) |
