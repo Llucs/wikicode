@@ -1,6 +1,7 @@
 import os, re, subprocess, sys, time, html as html_mod
 from datetime import date
 from pathlib import Path
+import concurrent.futures
 import httpx
 
 API_BASE = "https://opencode.ai/zen/v1"
@@ -10,6 +11,15 @@ WORKSPACE = Path(os.environ.get("GITHUB_WORKSPACE", os.getcwd()))
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GITHUB_REPO = os.environ.get("GITHUB_REPOSITORY", "")
 TODAY = date.today().isoformat()
+
+LANGUAGES = [
+    ("pt", "Portugu\u00eas", "Portuguese"),
+    ("es", "Espa\u00f1ol", "Spanish"),
+    ("fr", "Fran\u00e7ais", "French"),
+    ("de", "Deutsch", "German"),
+    ("ja", "\u65e5\u672c\u8a9e", "Japanese"),
+    ("zh", "\u4e2d\u6587", "Chinese"),
+]
 
 def log(msg):
     print(f"[agent] {msg}", flush=True)
@@ -99,6 +109,24 @@ def ai_research(query):
     except Exception as e:
         log(f"AI research failed: {e}")
         return ""
+
+def translate_content(markdown_text, target_language):
+    messages = [
+        {"role": "system", "content": (
+            "You are a professional technical translator. Translate the following Markdown document "
+            f"to {target_language}. "
+            "Rules:\n"
+            "1. Translate the YAML frontmatter 'title' and 'description' fields only. Keep all other frontmatter fields unchanged.\n"
+            "2. Preserve ALL Markdown syntax exactly: headings, lists, bold, italic, links, images, tables, code fences, admonitions.\n"
+            "3. DO NOT translate content inside code blocks (```...```) or inline code (`...`).\n"
+            "4. DO NOT translate URLs, file paths, command-line examples, or technical terms (API, REST, Git, Docker, HTTP, JSON, YAML, etc.).\n"
+            "5. Keep proper nouns, brand names, and tool names in their original form.\n"
+            "6. Output ONLY the translated Markdown file content. No explanations, no notes.\n"
+            "7. Do NOT wrap the output in ```md fences."
+        )},
+        {"role": "user", "content": markdown_text},
+    ]
+    return api_chat(messages)
 
 def slugify(text):
     s = text.lower().strip(" .:;,!?")
@@ -369,12 +397,13 @@ def write_files(task, content):
     kind = task.get("kind", "tool")
     slug = slugify(task["title"])
     created = []
+
     if kind == "project":
         base = WORKSPACE / "projects" / slug
         base.mkdir(parents=True, exist_ok=True)
-        idx = base / "index.md"
-        idx.write_text(content, encoding="utf-8")
-        created.append(idx)
+        en_path = base / "index.en.md"
+        en_path.write_text(content, encoding="utf-8")
+        created.append(en_path)
         readme = base / "README.md"
         if not readme.exists():
             readme.write_text(f"# {task['title']}\n\n{task['desc']}\n", encoding="utf-8")
@@ -382,25 +411,38 @@ def write_files(task, content):
     elif kind == "snippet":
         base = WORKSPACE / "snippets" / slug
         base.mkdir(parents=True, exist_ok=True)
-        idx = base / "index.md"
-        idx.write_text(content, encoding="utf-8")
-        created.append(idx)
+        en_path = base / "index.en.md"
+        en_path.write_text(content, encoding="utf-8")
+        created.append(en_path)
     elif kind == "tool":
         base = WORKSPACE / "docs" / "tools" / slug
         base.mkdir(parents=True, exist_ok=True)
-        idx = base / "index.md"
-        idx.write_text(content, encoding="utf-8")
-        created.append(idx)
-    elif kind == "concept":
-        base = WORKSPACE / "docs" / "concepts" / slug
-        base.mkdir(parents=True, exist_ok=True)
-        idx = base / "index.md"
-        idx.write_text(content, encoding="utf-8")
-        created.append(idx)
+        en_path = base / "index.en.md"
+        en_path.write_text(content, encoding="utf-8")
+        created.append(en_path)
     else:
-        fpath = WORKSPACE / "docs" / f"{slug}.md"
-        fpath.write_text(content, encoding="utf-8")
-        created.append(fpath)
+        en_path = WORKSPACE / "docs" / f"{slug}.en.md"
+        en_path.write_text(content, encoding="utf-8")
+        created.append(en_path)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        futures = {}
+        for locale, native, english_name in LANGUAGES:
+            if kind in ("project", "snippet", "tool"):
+                tx_path = base / f"index.{locale}.md"
+            else:
+                tx_path = WORKSPACE / "docs" / f"{slug}.{locale}.md"
+            future = executor.submit(translate_content, content, english_name)
+            futures[future] = tx_path
+        for future in concurrent.futures.as_completed(futures):
+            tx_path = futures[future]
+            try:
+                translated = future.result()
+                tx_path.write_text(translated, encoding="utf-8")
+                created.append(tx_path)
+                log(f"Translated to {tx_path.suffix.split('.')[1]}")
+            except Exception as e:
+                log(f"Translation failed for {tx_path}: {e}")
     return created
 
 def write_report(task, files):
