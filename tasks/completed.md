@@ -53,3 +53,4 @@ describes the execution in detail.
 | 2026-06-17 | Database Sharding | [Database Sharding](../docs/reports/2026/06/2026-06-17-database-sharding.md) |
 | 2026-06-17 | Trivy | [Trivy](../docs/reports/2026/06/2026-06-17-trivy.md) |
 | 2026-06-17 | DBeaver | [DBeaver](../docs/reports/2026/06/2026-06-17-dbeaver.md) |
+| 2026-06-17 | HashiCorp Vault | [HashiCorp Vault](../docs/reports/2026/06/2026-06-17-hashicorp-vault.md) |
