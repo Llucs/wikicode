@@ -56,3 +56,4 @@ describes the execution in detail.
 | 2026-06-17 | HashiCorp Vault | [HashiCorp Vault](../docs/reports/2026/06/2026-06-17-hashicorp-vault.md) |
 | 2026-06-18 | Vertical Slice Architecture | [Vertical Slice Architecture](../docs/reports/2026/06/2026-06-18-vertical-slice-architecture.md) |
 | 2026-06-18 | Analyze Tailwind CSS project | [Analyze Tailwind CSS project](../docs/reports/2026/06/2026-06-18-analyze-tailwind-css-project.md) |
+| 2026-06-18 | Pulumi | [Pulumi](../docs/reports/2026/06/2026-06-18-pulumi.md) |
