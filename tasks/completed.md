@@ -59,3 +59,4 @@ describes the execution in detail.
 | 2026-06-18 | Pulumi | [Pulumi](../docs/reports/2026/06/2026-06-18-pulumi.md) |
 | 2026-06-18 | Singleton Pattern | [Singleton Pattern](../docs/reports/2026/06/2026-06-18-singleton-pattern.md) |
 | 2026-06-18 | Neon | [Neon](../docs/reports/2026/06/2026-06-18-neon.md) |
+| 2026-06-19 | Add Termux app | [Add Termux app](../docs/reports/2026/06/2026-06-19-add-termux-app.md) |
