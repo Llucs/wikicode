@@ -62,3 +62,4 @@ describes the execution in detail.
 | 2026-06-19 | Add Termux app | [Add Termux app](../docs/reports/2026/06/2026-06-19-add-termux-app.md) |
 | 2026-06-19 | Magisk | [Magisk](../docs/reports/2026/06/2026-06-19-magisk.md) |
 | 2026-06-19 | Factory pattern | [Factory pattern](../docs/reports/2026/06/2026-06-19-factory-pattern.md) |
+| 2026-06-19 | Analyze Playwright project | [Analyze Playwright project](../docs/reports/2026/06/2026-06-19-analyze-playwright-project.md) |
