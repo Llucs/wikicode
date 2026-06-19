@@ -61,3 +61,4 @@ describes the execution in detail.
 | 2026-06-18 | Neon | [Neon](../docs/reports/2026/06/2026-06-18-neon.md) |
 | 2026-06-19 | Add Termux app | [Add Termux app](../docs/reports/2026/06/2026-06-19-add-termux-app.md) |
 | 2026-06-19 | Magisk | [Magisk](../docs/reports/2026/06/2026-06-19-magisk.md) |
+| 2026-06-19 | Factory pattern | [Factory pattern](../docs/reports/2026/06/2026-06-19-factory-pattern.md) |
