@@ -1,0 +1,64 @@
+name: wikicode-agent-issue
+
+on:
+  issue_comment:
+    types: [created]
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: wikicode-agent
+  cancel-in-progress: true
+
+jobs:
+  agent:
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@agent')) ||
+      (github.event_name == 'issues' && github.event.label.name == 'agent')
+    name: Process issue request
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - run: |
+          python -m pip install --quiet --upgrade pip
+          python -m pip install --quiet -r requirements.txt
+
+      - run: |
+          git config user.name "wikicode-bot"
+          git config user.email "wikicode-bot@users.noreply.github.com"
+
+      - name: Process issue via agent
+        id: agent
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          python scripts/agent.py 2>&1 | tee /tmp/agent.log
+          echo "exitcode=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: agent-log-issue
+          path: /tmp/agent.log
+          if-no-files-found: ignore
+          retention-days: 7

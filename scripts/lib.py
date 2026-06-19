@@ -500,6 +500,50 @@ def update_task_lists(task, report):
         content = content.rstrip() + "\n" + row
         cpath.write_text(content, encoding="utf-8")
 
+def post_comment(issue_number, comment):
+    if not GITHUB_TOKEN or not GITHUB_REPO:
+        log("Cannot post comment: missing GITHUB_TOKEN or GITHUB_REPO")
+        return
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/issues/{issue_number}/comments"
+    try:
+        resp = httpx.post(url, headers={
+            "Authorization": f"Bearer {GITHUB_TOKEN}",
+            "Content-Type": "application/json",
+            "Accept": "application/vnd.github.v3+json",
+        }, json={"body": comment}, timeout=30)
+        resp.raise_for_status()
+        log(f"Posted comment on issue #{issue_number}")
+    except Exception as e:
+        log(f"Failed to post comment: {e}")
+
+def add_label(issue_number, label):
+    if not GITHUB_TOKEN or not GITHUB_REPO:
+        return
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/issues/{issue_number}/labels"
+    try:
+        resp = httpx.post(url, headers={
+            "Authorization": f"Bearer {GITHUB_TOKEN}",
+            "Content-Type": "application/json",
+            "Accept": "application/vnd.github.v3+json",
+        }, json={"labels": [label]}, timeout=30)
+        resp.raise_for_status()
+        log(f"Added label '{label}' to issue #{issue_number}")
+    except Exception as e:
+        log(f"Failed to add label: {e}")
+
+def classify_request(text):
+    messages = [
+        {"role": "system", "content": "Classify this developer request as one word: 'tool', 'concept', or 'project'. Output only that word."},
+        {"role": "user", "content": text[:1000]},
+    ]
+    try:
+        result = api_chat(messages).strip().lower().rstrip(".")
+        if result in ("tool", "concept", "project"):
+            return result
+    except Exception:
+        pass
+    return "tool"
+
 def validate():
     log("Running mkdocs build validation...")
     result = subprocess.run(["mkdocs", "build", "--clean"], cwd=WORKSPACE, capture_output=True, text=True, timeout=120)
