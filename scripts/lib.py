@@ -1,4 +1,4 @@
-import os, re, subprocess, sys, time, html as html_mod
+import os, re, subprocess, sys, time, json, html as html_mod
 from datetime import date
 from pathlib import Path
 import concurrent.futures
@@ -531,18 +531,59 @@ def add_label(issue_number, label):
     except Exception as e:
         log(f"Failed to add label: {e}")
 
-def classify_request(text):
+def close_issue(issue_number):
+    if not GITHUB_TOKEN or not GITHUB_REPO:
+        log("Cannot close issue: missing GITHUB_TOKEN or GITHUB_REPO")
+        return
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/issues/{issue_number}"
+    try:
+        resp = httpx.patch(url, headers={
+            "Authorization": f"Bearer {GITHUB_TOKEN}",
+            "Content-Type": "application/json",
+            "Accept": "application/vnd.github.v3+json",
+        }, json={"state": "closed"}, timeout=30)
+        resp.raise_for_status()
+        log(f"Closed issue #{issue_number}")
+    except Exception as e:
+        log(f"Failed to close issue: {e}")
+
+def analyze_request(title, body):
+    text = f"Title: {title}\n\nDescription: {body}"[:2000]
     messages = [
-        {"role": "system", "content": "Classify this developer request as one word: 'tool', 'concept', or 'project'. Output only that word."},
-        {"role": "user", "content": text[:1000]},
+        {"role": "system", "content": (
+            "You are a gatekeeper for a developer wiki. Analyze the following issue request.\n"
+            "Decide if this is a legitimate request to document a real developer tool, concept, or project.\n"
+            "REJECT if:\n"
+            "- The request is spam, gibberish, or nonsensical\n"
+            "- The topic doesn't exist or is made up\n"
+            "- The request is inappropriate, offensive, or malicious\n"
+            "- The request is a bug report or support question, not a documentation request\n"
+            "- The topic is not developer/tech related\n\n"
+            "If VALID, extract:\n"
+            "- The real topic name/title to document\n"
+            "- A short description\n"
+            "- Kind: 'tool', 'concept', or 'project'\n\n"
+            "Output JSON only, no markdown:\n"
+            '{"valid": true/false, "title": "...", "description": "...", "kind": "tool|concept|project", "reason": "why rejected if invalid"}'
+        )},
+        {"role": "user", "content": text},
     ]
     try:
-        result = api_chat(messages).strip().lower().rstrip(".")
-        if result in ("tool", "concept", "project"):
-            return result
-    except Exception:
-        pass
-    return "tool"
+        raw = api_chat(messages)
+        result = json.loads(raw)
+        if not isinstance(result, dict):
+            return {"valid": False, "reason": "Invalid analysis response format.", "title": title}
+        if result.get("valid") and result.get("kind") not in ("tool", "concept", "project"):
+            result["valid"] = False
+            result["reason"] = "Could not classify request type."
+        if result.get("valid"):
+            result.setdefault("title", title)
+            result.setdefault("description", "")
+            result.setdefault("kind", "tool")
+        return result
+    except Exception as e:
+        log(f"Request analysis failed: {e}")
+        return {"valid": False, "reason": f"Analysis error: {e}", "title": title}
 
 def validate():
     log("Running mkdocs build validation...")

@@ -13,7 +13,8 @@ from lib import (
     discover_one_tool, discover_one_project, discover_one_concept,
     add_task_to_queue, research_topic, generate_content,
     write_files, write_report, update_task_lists, write_state,
-    validate, commit_and_push, post_comment, add_label, classify_request,
+    validate, commit_and_push, post_comment, add_label,
+    close_issue, analyze_request,
 )
 
 FOCUS = os.environ.get("FOCUS", "tools").lower()
@@ -72,14 +73,29 @@ def handle_issue_event():
         log("No issue number found in event payload.")
         return
 
-    log(f"Processing issue #{issue_number}: {issue_title}")
-    post_comment(issue_number, f"Thanks! I'll process this request: **{issue_title}**")
+    log(f"Analyzing issue #{issue_number}: {issue_title}")
     add_label(issue_number, "agent")
 
-    task_title = issue_title or "Untitled request"
-    task_desc = issue_body if issue_body else comment_body if comment_body else ""
-    kind = classify_request(task_title + " " + task_desc)
-    task = {"title": task_title, "desc": task_desc[:500], "kind": kind}
+    full_body = issue_body or comment_body or ""
+    analysis = analyze_request(issue_title, full_body)
+
+    if not analysis.get("valid"):
+        reason = analysis.get("reason", "Request does not appear to be a valid documentation request.")
+        log(f"Issue #{issue_number} rejected: {reason}")
+        post_comment(issue_number, (
+            f"Thanks for the request, but I can't process this one.\n\n"
+            f"**Reason:** {reason}\n\n"
+            f"If you believe this is a mistake, please provide more details about the developer tool, concept, or project you'd like documented."
+        ))
+        return
+
+    real_title = analysis.get("title", issue_title)
+    real_desc = analysis.get("description", full_body)
+    real_kind = analysis.get("kind", "tool")
+
+    log(f"Request validated: {real_title} ({real_kind})")
+    post_comment(issue_number, f"I'll document **{real_title}** ({real_kind}). This may take a few minutes.")
+    task = {"title": real_title, "desc": real_desc[:500], "kind": real_kind}
 
     git("pull", "--rebase", "origin", "main")
 
@@ -88,7 +104,8 @@ def handle_issue_event():
 
     if ok:
         post_comment(issue_number, f"Done! I've documented **{task['title']}** and pushed it to the wiki.")
-        log(f"Issue #{issue_number} completed successfully.")
+        close_issue(issue_number)
+        log(f"Issue #{issue_number} completed and closed.")
     else:
         post_comment(issue_number, f"Sorry, I couldn't complete the request for **{task['title']}**. Check the workflow logs for details.")
         log(f"Issue #{issue_number} failed.")
