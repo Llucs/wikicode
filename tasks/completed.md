@@ -65,3 +65,4 @@ describes the execution in detail.
 | 2026-06-19 | Analyze Playwright project | [Analyze Playwright project](../docs/reports/2026/06/2026-06-19-analyze-playwright-project.md) |
 | 2026-06-19 | CQRS (Command Query Responsibility Segregation) | [CQRS (Command Query Responsibility Segregation)](../docs/reports/2026/06/2026-06-19-cqrs-command-query-responsibility-segregation.md) |
 | 2026-06-19 | Strawberry | [Strawberry](../docs/reports/2026/06/2026-06-19-strawberry.md) |
+| 2026-06-20 | Strategy Pattern | [Strategy Pattern](../docs/reports/2026/06/2026-06-20-strategy-pattern.md) |
