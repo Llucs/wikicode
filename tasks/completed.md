@@ -69,3 +69,4 @@ describes the execution in detail.
 | 2026-06-20 | DBGate | [DBGate](../docs/reports/2026/06/2026-06-20-dbgate.md) |
 | 2026-06-20 | Lazy Loading | [Lazy Loading](../docs/reports/2026/06/2026-06-20-lazy-loading.md) |
 | 2026-06-20 | lazygit | [lazygit](../docs/reports/2026/06/2026-06-20-lazygit.md) |
+| 2026-06-21 | Ahead-of-Time (AOT) Compilation | [Ahead-of-Time (AOT) Compilation](../docs/reports/2026/06/2026-06-21-ahead-of-time-aot-compilation.md) |
