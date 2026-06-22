@@ -73,3 +73,4 @@ describes the execution in detail.
 | 2026-06-21 | esbuild | [esbuild](../docs/reports/2026/06/2026-06-21-esbuild.md) |
 | 2026-06-21 | CAP Theorem | [CAP Theorem](../docs/reports/2026/06/2026-06-21-cap-theorem.md) |
 | 2026-06-21 | OpenTofu | [OpenTofu](../docs/reports/2026/06/2026-06-21-opentofu.md) |
+| 2026-06-22 | Command Query Responsibility Segregation (CQRS) | [Command Query Responsibility Segregation (CQRS)](../docs/reports/2026/06/2026-06-22-command-query-responsibility-segregation-cqrs.md) |
