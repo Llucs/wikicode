@@ -76,3 +76,4 @@ describes the execution in detail.
 | 2026-06-22 | Command Query Responsibility Segregation (CQRS) | [Command Query Responsibility Segregation (CQRS)](../docs/reports/2026/06/2026-06-22-command-query-responsibility-segregation-cqrs.md) |
 | 2026-06-22 | Analyze Next.js project | [Analyze Next.js project](../docs/reports/2026/06/2026-06-22-analyze-nextjs-project.md) |
 | 2026-06-22 | JWT kid parameter injection | [JWT kid parameter injection](../docs/reports/2026/06/2026-06-22-jwt-kid-parameter-injection.md) |
+| 2026-06-22 | PlanetScale | [PlanetScale](../docs/reports/2026/06/2026-06-22-planetscale.md) |
