@@ -79,3 +79,4 @@ describes the execution in detail.
 | 2026-06-22 | PlanetScale | [PlanetScale](../docs/reports/2026/06/2026-06-22-planetscale.md) |
 | 2026-06-23 | OAuth 2.1 with PKCE | [OAuth 2.1 with PKCE](../docs/reports/2026/06/2026-06-23-oauth-21-with-pkce.md) |
 | 2026-06-23 | Test Pyramid | [Test Pyramid](../docs/reports/2026/06/2026-06-23-test-pyramid.md) |
+| 2026-06-23 | Immutable infrastructure | [Immutable infrastructure](../docs/reports/2026/06/2026-06-23-immutable-infrastructure.md) |
