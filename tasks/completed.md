@@ -81,3 +81,4 @@ describes the execution in detail.
 | 2026-06-23 | Test Pyramid | [Test Pyramid](../docs/reports/2026/06/2026-06-23-test-pyramid.md) |
 | 2026-06-23 | Immutable infrastructure | [Immutable infrastructure](../docs/reports/2026/06/2026-06-23-immutable-infrastructure.md) |
 | 2026-06-23 | Analyze Vitest project | [Analyze Vitest project](../docs/reports/2026/06/2026-06-23-analyze-vitest-project.md) |
+| 2026-06-24 | API versioning strategies | [API versioning strategies](../docs/reports/2026/06/2026-06-24-api-versioning-strategies.md) |
