@@ -83,3 +83,4 @@ describes the execution in detail.
 | 2026-06-23 | Analyze Vitest project | [Analyze Vitest project](../docs/reports/2026/06/2026-06-23-analyze-vitest-project.md) |
 | 2026-06-24 | API versioning strategies | [API versioning strategies](../docs/reports/2026/06/2026-06-24-api-versioning-strategies.md) |
 | 2026-06-24 | Analyze PyTorch project | [Analyze PyTorch project](../docs/reports/2026/06/2026-06-24-analyze-pytorch-project.md) |
+| 2026-06-24 | Microkernel Architecture | [Microkernel Architecture](../docs/reports/2026/06/2026-06-24-microkernel-architecture.md) |
