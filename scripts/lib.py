@@ -199,7 +199,14 @@ def topic_exists(slug):
 
 def list_documented_tools():
     td = WORKSPACE / "docs" / "tools"
-    return [d.name for d in td.iterdir() if d.is_dir() and (d / "index.md").exists()] if td.exists() else []
+    if not td.exists():
+        return []
+    result = []
+    for d in td.iterdir():
+        if d.is_dir() and d.name != "archive":
+            if (d / "index.en.md").exists() or (d / "index.md").exists():
+                result.append(d.name)
+    return result
 
 def list_documented_projects():
     pd = WORKSPACE / "projects"
