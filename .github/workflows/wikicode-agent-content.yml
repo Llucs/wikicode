@@ -69,8 +69,8 @@ jobs:
         run: |
           wget -q https://github.com/ggml-org/llama.cpp/releases/download/b9771/llama-b9771-bin-ubuntu-x64.tar.gz
           tar -xzf llama-b9771-bin-ubuntu-x64.tar.gz
-          sudo mv llama-b9771-bin-ubuntu-x64/* /usr/local/bin/
-          rm -rf llama-b9771-bin-ubuntu-x64*
+          sudo mv llama-b9771/* /usr/local/bin/
+          rm -rf llama-b9771*
 
       - name: Iniciar llama-server
         run: |
