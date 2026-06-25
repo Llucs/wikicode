@@ -6,7 +6,7 @@ import httpx
 
 API_BASE = "http://127.0.0.1:8080/v1"
 API_KEY = ""
-MODEL = "qwen3.6-27b-mtp"
+MODEL = "Qwen3.6-27B-IQ2_M-mtp"
 WORKSPACE = Path(os.environ.get("GITHUB_WORKSPACE", os.getcwd()))
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GITHUB_REPO = os.environ.get("GITHUB_REPOSITORY", "")
@@ -573,6 +573,7 @@ def analyze_request(title, body):
     ]
     try:
         raw = api_chat(messages)
+        raw = raw.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
         result = json.loads(raw)
         if not isinstance(result, dict):
             return {"valid": False, "reason": "Invalid analysis response format.", "title": title}
