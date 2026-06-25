@@ -61,7 +61,7 @@ jobs:
         run: |
           sudo mkdir -p /models
           sudo chmod 777 /models
-          curl -L --retry 3 -o /models/Qwen3.6-27B-IQ2_M-mtp.gguf \
+          curl -L --retry 3 --retry-all-errors -o /models/Qwen3.6-27B-IQ2_M-mtp.gguf \
             https://huggingface.co/froggeric/Qwen3.6-27B-MTP-GGUF/resolve/main/Qwen3.6-27B-IQ2_M-mtp.gguf
           ls -lh /models/
 
