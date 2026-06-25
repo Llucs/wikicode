@@ -69,6 +69,54 @@ reports/   execution reports
 
 ---
 
+## 0003 — Use OpenCode API for AI generation
+
+**Date:** 2026-06-03
+**Status:** Superseded by 0005
+
+**Context**
+The autonomous agent needs to generate high-quality technical
+content without requiring external API keys or paid services.
+
+**Decision**
+Use the OpenCode API (`deepseek-v4-flash-free`) as the AI provider
+for content generation, research, and task analysis. The API is
+free, requires no API key, and provides a capable model for
+technical content.
+
+**Consequences**
+- No API keys or secrets needed in the repository.
+- Content generation depends on cloud API availability.
+- Limited to the capabilities of the free-tier model.
+
+---
+
+## 0004 — Repository-first site generation
+
+**Date:** 2026-06-03
+**Status:** Accepted
+
+**Context**
+The published site must always reflect the source of truth, and
+autonomous agents must be able to grow the wiki without manual
+publishing steps.
+
+**Decision**
+The site is generated exclusively from the repository contents
+(`docs/`, `projects/`, `snippets/`, `memory/`, `tasks/`, `reports/`).
+There is no separate database, no CMS, and no manual editing of the
+published site. Every push to `main` triggers
+`.github/workflows/pages.yml`, which rebuilds and deploys the site
+through the official GitHub Pages actions.
+
+**Consequences**
+- Contributors (humans or agents) only ever edit the repository.
+- The published site is always derived state and never drifts.
+- The local AI agent grows the wiki by writing to the repo; the site
+  picks up the change automatically on the next push.
+
+---
+
 ## 0005 — Qwen3.6-27B local inference (replaces OpenCode API)
 
 **Date:** 2026-06-25
@@ -99,8 +147,6 @@ GitHub Actions runner using llama.cpp server:
 - Model cached between runs via GitHub Actions cache.
 
 ---
-
-## 0004 — Repository-first site generation
 
 **Date:** 2026-06-03
 **Status:** Accepted

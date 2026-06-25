@@ -38,8 +38,8 @@ acting.
 - Do not run destructive automation (force push, mass delete,
   etc.).
 - Do not store secrets in the repository.
-- No external API keys are required. The agent uses the OpenCode API
-  (free public key) and web research via Wikipedia / DuckDuckGo.
+- No external API keys are required. The agent uses a local Qwen3.6-27B
+  model via llama.cpp and web research via Wikipedia / DuckDuckGo.
 
 ## Triggers
 

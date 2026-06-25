@@ -10,7 +10,7 @@ The full changelog is also rendered on the site at
 ## 1.0.0 — 2026-06-03 — Bootstrap
 
 Initial production-oriented structure. See
-[reports/2026-06-03-bootstrap.md](reports/2026-06-03-bootstrap.md)
+[docs/reports/2026/06/2026-06-03-bootstrap.md](docs/reports/2026/06/2026-06-03-bootstrap.md)
 for the full bootstrap report.
 
 ### Added

@@ -74,8 +74,8 @@ Plain Markdown. Authoring requires no special tooling.
   installs Python dependencies and runs `scripts/agent.py` to
   read `memory/`, discover and pick a task from `tasks/queue.md`,
   research the topic via Wikipedia + DuckDuckGo APIs, generate
-  content using the OpenCode API, validate with `mkdocs build`,
-  and push.
+  content using a local Qwen3.6-27B model via llama.cpp, validate
+  with `mkdocs build`, and push.
 
 ## Secrets
 

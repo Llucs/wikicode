@@ -443,7 +443,7 @@ def write_files(task, content):
                 translated = future.result()
                 tx_path.write_text(translated, encoding="utf-8")
                 created.append(tx_path)
-                log(f"Translated to {tx_path.suffix.split('.')[1]}")
+                log(f"Translated to {locale}")
             except Exception as e:
                 log(f"Translation failed for {tx_path}: {e}")
     return created
