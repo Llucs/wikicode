@@ -69,37 +69,34 @@ reports/   execution reports
 
 ---
 
-## 0003 — OpenCode API agent (replaces Ollama local inference)
+## 0005 — Qwen3.6-27B local inference (replaces OpenCode API)
 
-**Date:** 2026-06-15
+**Date:** 2026-06-25
 **Status:** Accepted
-**Supersedes:** 0003 (original Ollama decision)
+**Supersedes:** 0003
 
 **Context**
-The local Ollama + Qwen2.5 stack required ~4.5 GB model downloads,
-consumed significant CPU/RAM on the CI runner, and the model quality
-was limited for technical content generation. Web research via
-DuckDuckGo/Wikipedia was described but never implemented in code.
+The OpenCode API (`deepseek-v4-flash-free`) required a cloud
+dependency. To make the agent fully self-contained and run entirely
+on GitHub Actions free tier, replace the cloud API with a local
+model running on the CI runner itself.
 
 **Decision**
-Replace the local Ollama inference with the OpenCode API
-(`deepseek-v4-flash-free` model), a free cloud LLM service:
+Run Qwen3.6-27B-MTP at IQ2_M quantization (10.8 GB) inside the
+GitHub Actions runner using llama.cpp server:
 
-1. **`scripts/agent.py`** orchestrates the agent loop: read memory →
-   pick task → research (web) → generate content → validate →
-   commit → push.
-2. **Web research** is implemented via Wikipedia API (page search +
-   extract retrieval) and DuckDuckGo Instant Answer API — both free
-   and requiring no API keys.
-3. **Content generation** uses the OpenCode API at
-   `https://opencode.ai/zen/v1/chat/completions`.
+1. **Model:** Qwen3.6-27B-MTP GGUF (IQ2_M, 10.8 GB) — 77.2%
+   SWE-bench Verified, multilingual (201 languages), dense 27B.
+2. **Runtime:** llama.cpp `llama-server` with mmap + 16 GB swap.
+3. **API:** OpenAI-compatible endpoint at `http://127.0.0.1:8080/v1`.
+4. **Cache:** Model cached via `actions/cache` to avoid re-download.
 
 **Consequences**
-- Zero cost. The OpenCode API uses a free public key.
-- Higher quality content generation with `deepseek-v4-flash-free`.
-- No model downloads, no CPU/RAM pressure on the CI runner.
-- Real web research via Wikipedia + DuckDuckGo APIs.
-- The agent depends on the OpenCode cloud service being available.
+- Zero external dependencies — no cloud API required.
+- Maximum quality for code and technical content (Qwen3.6-27B).
+- Slower inference (~1-3 tok/s on CPU) increases workflow time.
+- 10.8 GB model file requires disk cleanup and swap on the runner.
+- Model cached between runs via GitHub Actions cache.
 
 ---
 

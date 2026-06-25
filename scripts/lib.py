@@ -4,9 +4,9 @@ from pathlib import Path
 import concurrent.futures
 import httpx
 
-API_BASE = "https://opencode.ai/zen/v1"
-API_KEY = "public"
-MODEL = "deepseek-v4-flash-free"
+API_BASE = "http://127.0.0.1:8080/v1"
+API_KEY = ""
+MODEL = "qwen3.6-27b-mtp"
 WORKSPACE = Path(os.environ.get("GITHUB_WORKSPACE", os.getcwd()))
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GITHUB_REPO = os.environ.get("GITHUB_REPOSITORY", "")
@@ -30,11 +30,14 @@ def git(*args):
 def api_chat(messages, max_retries=3):
     for attempt in range(1, max_retries + 1):
         try:
+            headers = {"Content-Type": "application/json"}
+            if API_KEY:
+                headers["Authorization"] = f"Bearer {API_KEY}"
             resp = httpx.post(
                 f"{API_BASE}/chat/completions",
-                headers={"Authorization": f"Bearer {API_KEY}", "Content-Type": "application/json"},
+                headers=headers,
                 json={"model": MODEL, "messages": messages},
-                timeout=180,
+                timeout=3600,
             )
             if resp.status_code == 500:
                 log(f"API 500: {resp.text[:300]}")
@@ -464,7 +467,7 @@ def write_report(task, files):
         f"# Report: {task['title']}",
         "",
         f"**Date:** {TODAY}",
-        "**Agent:** WikiCode autonomous (OpenCode API)",
+        f"**Agent:** WikiCode autonomous (Qwen3.6-27B local)",
         "",
         "## Summary",
         "",

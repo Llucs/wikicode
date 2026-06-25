@@ -21,7 +21,7 @@ jobs:
   agent:
     name: Discover & document developer tools
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 360
     steps:
       - uses: actions/checkout@v5
         with:
@@ -32,6 +32,63 @@ jobs:
         with:
           python-version: '3.12'
           cache: pip
+
+      - name: Liberar espaço em disco
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost
+          sudo rm -rf /usr/local/lib/android /opt/hostedtoolcache/CodeQL
+          sudo docker system prune -af
+          sudo rm -rf /usr/lib/jvm /usr/local/share/powershell
+
+      - name: Criar swap
+        run: |
+          sudo fallocate -l 16G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+
+      - name: Cache do modelo GGUF
+        id: cache-model
+        uses: actions/cache@v4
+        with:
+          path: /models
+          key: qwen3.6-27b-mtp-iq2m-v1
+
+      - name: Baixar modelo Qwen3.6-27B-MTP IQ2_M
+        if: steps.cache-model.outputs.cache-hit != 'true'
+        run: |
+          sudo mkdir -p /models
+          sudo chmod 777 /models
+          curl -L --retry 3 -o /models/Qwen3.6-27B-IQ2_M-mtp.gguf \
+            https://huggingface.co/froggeric/Qwen3.6-27B-MTP-GGUF/resolve/main/Qwen3.6-27B-IQ2_M-mtp.gguf
+          ls -lh /models/
+
+      - name: Baixar e instalar llama.cpp
+        run: |
+          wget -q https://github.com/ggml-org/llama.cpp/releases/download/b9771/llama-b9771-bin-ubuntu-x64.tar.gz
+          tar -xzf llama-b9771-bin-ubuntu-x64.tar.gz
+          sudo mv llama-b9771-bin-ubuntu-x64/* /usr/local/bin/
+          rm -rf llama-b9771-bin-ubuntu-x64*
+
+      - name: Iniciar llama-server
+        run: |
+          llama-server \
+            -m /models/Qwen3.6-27B-IQ2_M-mtp.gguf \
+            --spec-type none \
+            -c 2048 \
+            --cache-type-k q8_0 \
+            --cache-type-v q8_0 \
+            -ngl 0 -t 4 \
+            --mlock --host 127.0.0.1 --port 8080 \
+            > /tmp/llama-server.log 2>&1 &
+          echo "Aguardando servidor..."
+          for i in $(seq 1 120); do
+            if curl -s http://127.0.0.1:8080/health > /dev/null 2>&1; then
+              echo "Servidor pronto após ${i}s"
+              break
+            fi
+            sleep 10
+          done
 
       - run: |
           python -m pip install --quiet --upgrade pip
