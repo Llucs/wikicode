@@ -63,7 +63,7 @@ def web_search_deep(query):
         resp = httpx.get("https://html.duckduckgo.com/html/", params={"q": query},
             headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
         if resp.status_code == 200:
-            for m in re.finditer(r'class="result__snippet"[^>]*>(.*?)</(?:a|span|td)', resp.text, re.DOTALL):
+            for m in re.finditer(r'[^>]*class="result__snippet"[^>]*>(.*?)</(?:a|span|td)', resp.text, re.DOTALL):
                 text = html_mod.unescape(re.sub(r'<[^>]+>', '', m.group(1))).strip()
                 if text and len(text) > 30:
                     add(text[:500], "DDG")
