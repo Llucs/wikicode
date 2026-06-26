@@ -89,3 +89,4 @@ describes the execution in detail.
 | 2026-06-25 | AndroidIDE | [AndroidIDE](../docs/reports/2026/06/2026-06-25-androidide.md) |
 | 2026-06-26 | Promtail | [Promtail](../docs/reports/2026/06/2026-06-26-promtail.md) |
 | 2026-06-26 | Softheon Microservices Architecture | [Softheon Microservices Architecture](../docs/reports/2026/06/2026-06-26-softheon-microservices-architecture.md) |
+| 2026-06-26 | Analyze Create-a-real-world-frontend-project-in-React project | [Analyze Create-a-real-world-frontend-project-in-React project](../docs/reports/2026/06/2026-06-26-analyze-create-a-real-world-frontend-project-in-react-project.md) |
