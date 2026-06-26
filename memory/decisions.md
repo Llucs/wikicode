@@ -148,6 +148,8 @@ GitHub Actions runner using llama.cpp server:
 
 ---
 
+## 0004 — Repository-first site generation
+
 **Date:** 2026-06-03
 **Status:** Accepted
 
@@ -169,3 +171,35 @@ through the official GitHub Pages actions.
 - The published site is always derived state and never drifts.
 - The local AI agent grows the wiki by writing to the repo; the site
   picks up the change automatically on the next push.
+
+---
+
+## 0006 — Qwen2.5-7B replaces Qwen3.6-27B for CPU inference
+
+**Date:** 2026-06-25
+**Status:** Accepted
+**Supersedes:** 0005
+
+**Context**
+Qwen3.6-27B at IQ2_M quantization (10.8 GB) is too large for
+CPU-only inference on GitHub Actions runners. Generation speed of
+1-3 tok/s causes API calls to timeout (3600s) and workflows to run
+for 3+ hours without completing a single article.
+
+**Decision**
+Replace Qwen3.6-27B with Qwen2.5-7B-Instruct at Q4_K_M quantization
+(~4.7 GB) from bartowski's GGUF repository. Key changes:
+
+1. **Model:** Qwen2.5-7B-Instruct Q4_K_M — 4.7 GB, fits entirely in
+   runner RAM without swap thrashing.
+2. **Context:** 32K tokens (native Qwen2.5 support), up from 8K.
+3. **Speed:** ~20-50 tok/s on CPU, completing articles in minutes
+   instead of hours.
+4. **Cache key:** `qwen2.5-7b-instruct-q4km-v1`.
+
+**Consequences**
+- Workflow runs complete in 15-30 minutes instead of 3+ hours.
+- Slightly lower model capacity (7B vs 27B) but still excellent for
+  documentation, code, and technical content.
+- Smaller download (4.7 GB vs 10.8 GB) is faster and more reliable.
+- No swap thrashing — model fits in available RAM.

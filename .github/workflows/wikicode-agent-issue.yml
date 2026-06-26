@@ -54,15 +54,15 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /models
-          key: qwen3.6-27b-mtp-iq2m-v1
+          key: qwen2.5-7b-instruct-q4km-v1
 
-      - name: Baixar modelo Qwen3.6-27B-MTP IQ2_M
+      - name: Baixar modelo Qwen2.5-7B-Instruct Q4_K_M
         if: steps.cache-model.outputs.cache-hit != 'true'
         run: |
           sudo mkdir -p /models
           sudo chmod 777 /models
-          curl -L --retry 3 --retry-all-errors -o /models/Qwen3.6-27B-IQ2_M-mtp.gguf \
-            https://huggingface.co/froggeric/Qwen3.6-27B-MTP-GGUF/resolve/main/Qwen3.6-27B-IQ2_M-mtp.gguf
+          curl -L --retry 3 --retry-all-errors -o /models/Qwen2.5-7B-Instruct-Q4_K_M.gguf \
+            https://huggingface.co/bartowski/Qwen2.5-7B-Instruct-GGUF/resolve/main/Qwen2.5-7B-Instruct-Q4_K_M.gguf
           ls -lh /models/
 
       - name: Baixar e instalar llama.cpp
@@ -75,12 +75,9 @@ jobs:
       - name: Iniciar llama-server
         run: |
           llama-server \
-            -m /models/Qwen3.6-27B-IQ2_M-mtp.gguf \
-            --spec-type none \
-            -c 8192 \
+            -m /models/Qwen2.5-7B-Instruct-Q4_K_M.gguf \
+            -c 32768 \
             --batch-size 2048 \
-            --cache-type-k q8_0 \
-            --cache-type-v q8_0 \
             -ngl 0 -t 4 \
             --mlock --host 127.0.0.1 --port 8080 \
             > /tmp/llama-server.log 2>&1 &

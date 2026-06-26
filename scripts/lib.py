@@ -6,7 +6,7 @@ import httpx
 
 API_BASE = "http://127.0.0.1:8080/v1"
 API_KEY = ""
-MODEL = "Qwen3.6-27B-IQ2_M-mtp"
+MODEL = "Qwen2.5-7B-Instruct-Q4_K_M"
 WORKSPACE = Path(os.environ.get("GITHUB_WORKSPACE", os.getcwd()))
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GITHUB_REPO = os.environ.get("GITHUB_REPOSITORY", "")
@@ -474,7 +474,7 @@ def write_report(task, files):
         f"# Report: {task['title']}",
         "",
         f"**Date:** {TODAY}",
-        f"**Agent:** WikiCode autonomous (Qwen3.6-27B local)",
+        f"**Agent:** WikiCode autonomous (Qwen2.5-7B local)",
         "",
         "## Summary",
         "",

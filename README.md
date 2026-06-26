@@ -14,7 +14,7 @@ single, searchable place.
 The site is generated with [MkDocs](https://www.mkdocs.org/) (Material
 theme) and published automatically through GitHub Pages. All content
 is created by an AI agent that runs inside the CI runner using a
-local Qwen3.6-27B model via llama.cpp and researches topics via
+local Qwen2.5-7B model via llama.cpp and researches topics via
 Wikipedia + DuckDuckGo web search — no external API keys required.
 
 <div class="wikicode-meta" markdown>
@@ -85,7 +85,7 @@ GitHub Actions. It self-discovers what to document next.
    task queue. If the queue is empty, it proactively discovers new
    developer tools and projects to document using local inference.
 3. It researches the topic via Wikipedia + DuckDuckGo web APIs,
-   generates content using the local Qwen3.6-27B model via llama.cpp,
+   generates content using the local Qwen2.5-7B model via llama.cpp,
    and writes the files.
 4. It validates with `mkdocs build --clean` before committing.
 5. It moves the completed task to `tasks/completed.md`, commits,
