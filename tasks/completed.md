@@ -88,3 +88,4 @@ describes the execution in detail.
 | 2026-06-25 | Navicat | [Navicat](../docs/reports/2026/06/2026-06-25-navicat.md) |
 | 2026-06-25 | AndroidIDE | [AndroidIDE](../docs/reports/2026/06/2026-06-25-androidide.md) |
 | 2026-06-26 | Promtail | [Promtail](../docs/reports/2026/06/2026-06-26-promtail.md) |
+| 2026-06-26 | Softheon Microservices Architecture | [Softheon Microservices Architecture](../docs/reports/2026/06/2026-06-26-softheon-microservices-architecture.md) |
