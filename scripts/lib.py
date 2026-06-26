@@ -37,7 +37,7 @@ def api_chat(messages, max_retries=3):
                 f"{API_BASE}/chat/completions",
                 headers=headers,
                 json={"model": MODEL, "messages": messages},
-                timeout=3600,
+                timeout=7200,
             )
             if resp.status_code == 500:
                 log(f"API 500: {resp.text[:300]}")

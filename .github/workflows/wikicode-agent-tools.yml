@@ -78,6 +78,7 @@ jobs:
             -m /models/Qwen3.6-27B-IQ2_M-mtp.gguf \
             --spec-type none \
             -c 8192 \
+            --batch-size 2048 \
             --cache-type-k q8_0 \
             --cache-type-v q8_0 \
             -ngl 0 -t 4 \
