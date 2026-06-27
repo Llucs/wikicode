@@ -92,3 +92,4 @@ describes the execution in detail.
 | 2026-06-26 | Analyze Create-a-real-world-frontend-project-in-React project | [Analyze Create-a-real-world-frontend-project-in-React project](../docs/reports/2026/06/2026-06-26-analyze-create-a-real-world-frontend-project-in-react-project.md) |
 | 2026-06-26 | Space-Based Architecture | [Space-Based Architecture](../docs/reports/2026/06/2026-06-26-space-based-architecture.md) |
 | 2026-06-26 | Devtron | [Devtron](../docs/reports/2026/06/2026-06-26-devtron.md) |
+| 2026-06-27 | Proxy Pattern | [Proxy Pattern](../docs/reports/2026/06/2026-06-27-proxy-pattern.md) |
