@@ -95,3 +95,4 @@ describes the execution in detail.
 | 2026-06-27 | Proxy Pattern | [Proxy Pattern](../docs/reports/2026/06/2026-06-27-proxy-pattern.md) |
 | 2026-06-27 | Analyze Create-React-App-Example project | [Analyze Create-React-App-Example project](../docs/reports/2026/06/2026-06-27-analyze-create-react-app-example-project.md) |
 | 2026-06-27 | Network Topology | [Network Topology](../docs/reports/2026/06/2026-06-27-network-topology.md) |
+| 2026-06-27 | Analyze create-a-real-world-nextjs-app project | [Analyze create-a-real-world-nextjs-app project](../docs/reports/2026/06/2026-06-27-analyze-create-a-real-world-nextjs-app-project.md) |
