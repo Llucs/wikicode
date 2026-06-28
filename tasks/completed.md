@@ -97,3 +97,4 @@ describes the execution in detail.
 | 2026-06-27 | Network Topology | [Network Topology](../docs/reports/2026/06/2026-06-27-network-topology.md) |
 | 2026-06-27 | Analyze create-a-real-world-nextjs-app project | [Analyze create-a-real-world-nextjs-app project](../docs/reports/2026/06/2026-06-27-analyze-create-a-real-world-nextjs-app-project.md) |
 | 2026-06-28 | Modular Monolith Architecture | [Modular Monolith Architecture](../docs/reports/2026/06/2026-06-28-modular-monolith-architecture.md) |
+| 2026-06-28 | Podman Desktop | [Podman Desktop](../docs/reports/2026/06/2026-06-28-podman-desktop.md) |
