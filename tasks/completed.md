@@ -99,3 +99,4 @@ describes the execution in detail.
 | 2026-06-28 | Modular Monolith Architecture | [Modular Monolith Architecture](../docs/reports/2026/06/2026-06-28-modular-monolith-architecture.md) |
 | 2026-06-28 | Podman Desktop | [Podman Desktop](../docs/reports/2026/06/2026-06-28-podman-desktop.md) |
 | 2026-06-28 | Behavioral Design Patterns | [Behavioral Design Patterns](../docs/reports/2026/06/2026-06-28-behavioral-design-patterns.md) |
+| 2026-06-28 | DDG | [DDG](../docs/reports/2026/06/2026-06-28-ddg.md) |
