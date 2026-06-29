@@ -101,3 +101,4 @@ describes the execution in detail.
 | 2026-06-28 | Behavioral Design Patterns | [Behavioral Design Patterns](../docs/reports/2026/06/2026-06-28-behavioral-design-patterns.md) |
 | 2026-06-28 | DDG | [DDG](../docs/reports/2026/06/2026-06-28-ddg.md) |
 | 2026-06-29 | Index Compression Techniques | [Index Compression Techniques](../docs/reports/2026/06/2026-06-29-index-compression-techniques.md) |
+| 2026-06-29 | Analyze create-a-real-world-backend-with-fastapi-and-postgresql project | [Analyze create-a-real-world-backend-with-fastapi-and-postgresql project](../docs/reports/2026/06/2026-06-29-analyze-create-a-real-world-backend-with-fastapi-and-postgresql-project.md) |
