@@ -106,3 +106,4 @@ describes the execution in detail.
 | 2026-06-29 | Analyze Create-a-real-world-react-app project | [Analyze Create-a-real-world-react-app project](../docs/reports/2026/06/2026-06-29-analyze-create-a-real-world-react-app-project.md) |
 | 2026-06-30 | CAP Theorem in Practice | [CAP Theorem in Practice](../docs/reports/2026/06/2026-06-30-cap-theorem-in-practice.md) |
 | 2026-06-30 | Analyze Create-Element-UI-Components project | [Analyze Create-Element-UI-Components project](../docs/reports/2026/06/2026-06-30-analyze-create-element-ui-components-project.md) |
+| 2026-06-30 | Cloud-Native Architecture | [Cloud-Native Architecture](../docs/reports/2026/06/2026-06-30-cloud-native-architecture.md) |
