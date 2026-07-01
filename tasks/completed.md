@@ -111,3 +111,4 @@ describes the execution in detail.
 | 2026-07-01 | Event-Driven Architecture (EDA) | [Event-Driven Architecture (EDA)](../docs/reports/2026/07/2026-07-01-event-driven-architecture-eda.md) |
 | 2026-07-01 | Starbucks | [Starbucks](../docs/reports/2026/07/2026-07-01-starbucks.md) |
 | 2026-07-01 | backon | [backon](../docs/reports/2026/07/2026-07-01-backon.md) |
+| 2026-07-01 | starlette-graphene3 | [starlette-graphene3](../docs/reports/2026/07/2026-07-01-starlette-graphene3.md) |
