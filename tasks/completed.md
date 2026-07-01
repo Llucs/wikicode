@@ -108,3 +108,4 @@ describes the execution in detail.
 | 2026-06-30 | Analyze Create-Element-UI-Components project | [Analyze Create-Element-UI-Components project](../docs/reports/2026/06/2026-06-30-analyze-create-element-ui-components-project.md) |
 | 2026-06-30 | Cloud-Native Architecture | [Cloud-Native Architecture](../docs/reports/2026/06/2026-06-30-cloud-native-architecture.md) |
 | 2026-06-30 | Analyze Create-a-real-world-cloud-infrastructure-project-in-Rust project | [Analyze Create-a-real-world-cloud-infrastructure-project-in-Rust project](../docs/reports/2026/06/2026-06-30-analyze-create-a-real-world-cloud-infrastructure-project-in-rust-project.md) |
+| 2026-07-01 | Event-Driven Architecture (EDA) | [Event-Driven Architecture (EDA)](../docs/reports/2026/07/2026-07-01-event-driven-architecture-eda.md) |
