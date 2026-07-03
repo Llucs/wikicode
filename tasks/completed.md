@@ -119,3 +119,4 @@ describes the execution in detail.
 | 2026-07-03 | Caching Strategies for Lazy Loading and Code Splitting | [Caching Strategies for Lazy Loading and Code Splitting](../docs/reports/2026/07/2026-07-03-caching-strategies-for-lazy-loading-and-code-splitting.md) |
 | 2026-07-03 | Ghostty | [Ghostty](../docs/reports/2026/07/2026-07-03-ghostty.md) |
 | 2026-07-03 | Concept Title | [Concept Title](../docs/reports/2026/07/2026-07-03-concept-title.md) |
+| 2026-07-03 | Analyze Tauri project | [Analyze Tauri project](../docs/reports/2026/07/2026-07-03-analyze-tauri-project.md) |
