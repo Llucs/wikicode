@@ -122,3 +122,4 @@ describes the execution in detail.
 | 2026-07-03 | Analyze Tauri project | [Analyze Tauri project](../docs/reports/2026/07/2026-07-03-analyze-tauri-project.md) |
 | 2026-07-04 | Secrets Injection Without Baking Credentials Into Images | [Secrets Injection Without Baking Credentials Into Images](../docs/reports/2026/07/2026-07-04-secrets-injection-without-baking-credentials-into-images.md) |
 | 2026-07-04 | Analyze TanStack Query project | [Analyze TanStack Query project](../docs/reports/2026/07/2026-07-04-analyze-tanstack-query-project.md) |
+| 2026-07-04 | Network Partition Tolerance | [Network Partition Tolerance](../docs/reports/2026/07/2026-07-04-network-partition-tolerance.md) |
