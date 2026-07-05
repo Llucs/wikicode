@@ -124,3 +124,4 @@ describes the execution in detail.
 | 2026-07-04 | Analyze TanStack Query project | [Analyze TanStack Query project](../docs/reports/2026/07/2026-07-04-analyze-tanstack-query-project.md) |
 | 2026-07-04 | Network Partition Tolerance | [Network Partition Tolerance](../docs/reports/2026/07/2026-07-04-network-partition-tolerance.md) |
 | 2026-07-04 | Analyze Create-React-App-Template project | [Analyze Create-React-App-Template project](../docs/reports/2026/07/2026-07-04-analyze-create-react-app-template-project.md) |
+| 2026-07-05 | Kid Parameter Security in OAuth 2.0 | [Kid Parameter Security in OAuth 2.0](../docs/reports/2026/07/2026-07-05-kid-parameter-security-in-oauth-20.md) |
