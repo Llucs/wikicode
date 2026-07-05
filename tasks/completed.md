@@ -127,3 +127,4 @@ describes the execution in detail.
 | 2026-07-05 | Kid Parameter Security in OAuth 2.0 | [Kid Parameter Security in OAuth 2.0](../docs/reports/2026/07/2026-07-05-kid-parameter-security-in-oauth-20.md) |
 | 2026-07-05 | Analyze Create-a-real-world-web-app-project-in-Vue project | [Analyze Create-a-real-world-web-app-project-in-Vue project](../docs/reports/2026/07/2026-07-05-analyze-create-a-real-world-web-app-project-in-vue-project.md) |
 | 2026-07-05 | Microservices with Clean Architecture and CQRS Implementation | [Microservices with Clean Architecture and CQRS Implementation](../docs/reports/2026/07/2026-07-05-microservices-with-clean-architecture-and-cqrs-implementation.md) |
+| 2026-07-05 | Network Partitioning Resiliency | [Network Partitioning Resiliency](../docs/reports/2026/07/2026-07-05-network-partitioning-resiliency.md) |
