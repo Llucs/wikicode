@@ -133,3 +133,4 @@ describes the execution in detail.
 | 2026-07-06 | Proxy Design Pattern | [Proxy Design Pattern](../docs/reports/2026/07/2026-07-06-proxy-design-pattern.md) |
 | 2026-07-06 | Analyze Create-A-Real-World-SPA-Using-Vue project | [Analyze Create-A-Real-World-SPA-Using-Vue project](../docs/reports/2026/07/2026-07-06-analyze-create-a-real-world-spa-using-vue-project.md) |
 | 2026-07-07 | JWT Key Injection Prevention | [JWT Key Injection Prevention](../docs/reports/2026/07/2026-07-07-jwt-key-injection-prevention.md) |
+| 2026-07-07 | Microservices Architecture Microservices Design Patterns: The Comprehensive Architectural Guide | [Microservices Architecture Microservices Design Patterns: The Comprehensive Architectural Guide](../docs/reports/2026/07/2026-07-07-microservices-architecture-microservices-design-patterns-the-comprehensive-architectural-guide.md) |
