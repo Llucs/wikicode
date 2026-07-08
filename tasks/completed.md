@@ -135,3 +135,4 @@ describes the execution in detail.
 | 2026-07-07 | JWT Key Injection Prevention | [JWT Key Injection Prevention](../docs/reports/2026/07/2026-07-07-jwt-key-injection-prevention.md) |
 | 2026-07-07 | Microservices Architecture Microservices Design Patterns: The Comprehensive Architectural Guide | [Microservices Architecture Microservices Design Patterns: The Comprehensive Architectural Guide](../docs/reports/2026/07/2026-07-07-microservices-architecture-microservices-design-patterns-the-comprehensive-architectural-guide.md) |
 | 2026-07-08 | SQL Injection Vulnerability in Key Identification (kid) | [SQL Injection Vulnerability in Key Identification (kid)](../docs/reports/2026/07/2026-07-08-sql-injection-vulnerability-in-key-identification-kid.md) |
+| 2026-07-08 | Analyze UnoCSS project | [Analyze UnoCSS project](../docs/reports/2026/07/2026-07-08-analyze-unocss-project.md) |
