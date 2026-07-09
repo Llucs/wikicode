@@ -139,3 +139,4 @@ describes the execution in detail.
 | 2026-07-08 | Monorepo Architecture | [Monorepo Architecture](../docs/reports/2026/07/2026-07-08-monorepo-architecture.md) |
 | 2026-07-08 | tRPC | [tRPC](../docs/reports/2026/07/2026-07-08-trpc.md) |
 | 2026-07-09 | Monorepo Pattern | [Monorepo Pattern](../docs/reports/2026/07/2026-07-09-monorepo-pattern.md) |
+| 2026-07-09 | Saga Pattern | [Saga Pattern](../docs/reports/2026/07/2026-07-09-saga-pattern.md) |
