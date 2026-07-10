@@ -141,3 +141,4 @@ describes the execution in detail.
 | 2026-07-09 | Monorepo Pattern | [Monorepo Pattern](../docs/reports/2026/07/2026-07-09-monorepo-pattern.md) |
 | 2026-07-09 | Saga Pattern | [Saga Pattern](../docs/reports/2026/07/2026-07-09-saga-pattern.md) |
 | 2026-07-10 | Network Consistency Protocols | [Network Consistency Protocols](../docs/reports/2026/07/2026-07-10-network-consistency-protocols.md) |
+| 2026-07-10 | Caching Eviction Policies | [Caching Eviction Policies](../docs/reports/2026/07/2026-07-10-caching-eviction-policies.md) |
