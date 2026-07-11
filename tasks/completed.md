@@ -145,3 +145,4 @@ describes the execution in detail.
 | 2026-07-10 | Analyze Create-a-real-world-single-page-application-with-Vue.js project | [Analyze Create-a-real-world-single-page-application-with-Vue.js project](../docs/reports/2026/07/2026-07-10-analyze-create-a-real-world-single-page-application-with-vuejs-project.md) |
 | 2026-07-11 | SQL Injection Vulnerability in JWT Kid Parameter | [SQL Injection Vulnerability in JWT Kid Parameter](../docs/reports/2026/07/2026-07-11-sql-injection-vulnerability-in-jwt-kid-parameter.md) |
 | 2026-07-11 | Analyze Django Rest Framework project | [Analyze Django Rest Framework project](../docs/reports/2026/07/2026-07-11-analyze-django-rest-framework-project.md) |
+| 2026-07-11 | Index Routing | [Index Routing](../docs/reports/2026/07/2026-07-11-index-routing.md) |
