@@ -150,3 +150,4 @@ describes the execution in detail.
 | 2026-07-12 | Microservices Resilience Patterns | [Microservices Resilience Patterns](../docs/reports/2026/07/2026-07-12-microservices-resilience-patterns.md) |
 | 2026-07-12 | Analyze FrontendFrameworksPopularity.md project | [Analyze FrontendFrameworksPopularity.md project](../docs/reports/2026/07/2026-07-12-analyze-frontendframeworkspopularitymd-project.md) |
 | 2026-07-12 | OAuth 2.1 PKCE with Code Verifier Length Recommendations | [OAuth 2.1 PKCE with Code Verifier Length Recommendations](../docs/reports/2026/07/2026-07-12-oauth-21-pkce-with-code-verifier-length-recommendations.md) |
+| 2026-07-12 | Analyze Uno Platform project | [Analyze Uno Platform project](../docs/reports/2026/07/2026-07-12-analyze-uno-platform-project.md) |
