@@ -147,3 +147,4 @@ describes the execution in detail.
 | 2026-07-11 | Analyze Django Rest Framework project | [Analyze Django Rest Framework project](../docs/reports/2026/07/2026-07-11-analyze-django-rest-framework-project.md) |
 | 2026-07-11 | Index Routing | [Index Routing](../docs/reports/2026/07/2026-07-11-index-routing.md) |
 | 2026-07-11 | Analyze Stack Overflow Developer Survey 2023 project | [Analyze Stack Overflow Developer Survey 2023 project](../docs/reports/2026/07/2026-07-11-analyze-stack-overflow-developer-survey-2023-project.md) |
+| 2026-07-12 | Microservices Resilience Patterns | [Microservices Resilience Patterns](../docs/reports/2026/07/2026-07-12-microservices-resilience-patterns.md) |
