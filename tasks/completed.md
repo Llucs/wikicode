@@ -152,3 +152,4 @@ describes the execution in detail.
 | 2026-07-12 | OAuth 2.1 PKCE with Code Verifier Length Recommendations | [OAuth 2.1 PKCE with Code Verifier Length Recommendations](../docs/reports/2026/07/2026-07-12-oauth-21-pkce-with-code-verifier-length-recommendations.md) |
 | 2026-07-12 | Analyze Uno Platform project | [Analyze Uno Platform project](../docs/reports/2026/07/2026-07-12-analyze-uno-platform-project.md) |
 | 2026-07-13 | Command Query Separation (CQRS) | [Command Query Separation (CQRS)](../docs/reports/2026/07/2026-07-13-command-query-separation-cqrs.md) |
+| 2026-07-13 | OAuth 2.1 with PKCE Best Practices | [OAuth 2.1 with PKCE Best Practices](../docs/reports/2026/07/2026-07-13-oauth-21-with-pkce-best-practices.md) |
