@@ -1,108 +1,73 @@
 ---
-title: Erstellen-eines-echten-Vue-Projekts: Ein umfassender Leitfaden für die Erstellung von echten Vue.js-Anwendungen
-description: Ein praktischer Leitfaden zur Erstellung einer echten Anwendung mit Vue.js, der die Setup- und Bereitstellungsprozesse sowie beste Praktiken abdeckt.
-created: 2026-07-09
+title: Erstellen-eines-echten-Vue-Projekts: Vorlage zur Entwicklung von Anwendungen
+description: Ein umfassendes Handbuch und Vorlage zur Entwicklung von Anwendungen mit Vue.js.
+created: 2026-07-14
 tags:
   - Vue.js
-  - Echte Anwendung
-  - Entwicklungsleitfaden
-status:草稿
+  - Echte-Anwendungen
+  - Webentwicklung
+status: Entwurf
 ---
 
-# Erstellen-eines-echten-Vue-Projekts: Ein umfassender Leitfaden für die Erstellung von echten Vue.js-Anwendungen
+# Erstellen-eines-echten-Vue-Projekts: Vorlage zur Entwicklung von Anwendungen
 
-## Übersicht
-
-**Erstellen-eines-echten-Vue-Projekts** ist ein umfassender Leitfaden und Vorlage zur Erstellung einer echten Vue.js-Anwendung. Dieses Projekt dient als praktisches Ressource für Entwickler, die sich von theoretischem Wissen auf die Entwicklung echter Anwendungen in Vue.js verlagern. Es abdeckt den gesamten Entwicklungsbetrieb, vom Setup bis zur Bereitstellung, mit einem Schwerpunkt auf beste Praktiken und praktischen Überlegungen.
+Das "Erstellen-eines-echten-Vue-Projekts" ist ein umfassendes Handbuch und Vorlage zur Entwicklung von Anwendungen mit Vue.js. Dieses Projekt soll den Entwicklern helfen, zu verstehen, wie man einen kompletten Vue.js-Anwendung strukturiert, entwickelt und bereitstellt, und deckt verschiedene Aspekte der Webentwicklung und Anwendungsentwicklung ab.
 
 ## Hauptfunktionen
 
-1. **Detaillierte Dokumentation**: Der Leitfaden bietet Schritt-für-Schritt-Anleitungen und Erklärungen für jedes Projektkomponenten.
-2. **Echte Lebensläufe**: Das Projekt adressiert alltägliche Herausforderungen und Anforderungen echter Lebensläufe, wie Benutzerauthentifizierung, Datenabfrage und Zustandsverwaltung.
-3. **Integrierung von Vue.js und verwandten Technologien**: Das Projekt integriert Vue.js mit anderen popularen Technologien wie Axios für HTTP-Anfragen, Vuex für Zustandsverwaltung und Vuetify für UI-Komponenten.
-4. **Modulares Konstrukt**: Das Projekt ist in einem modularen Konstrukt organisiert, was es einfacher macht, einzelne Komponenten zu verstehen und zu modifizieren.
-5. **Testung und Qualitätssicherung**: Der Leitfaden enthält Informationen zur Einrichtung von Tests und zur Sicherstellung der Qualität und Zuverlässigkeit der Anwendung.
-6. **Bereitstellungsleitfaden**: Schritt-für-Schritt-Anleitungen zur Bereitstellung der Anwendung in einen Produktionsumgebung werden bereitgestellt.
+1. **Umfangreiche Dokumentation**: Detaillierte Dokumentation und Erklärungen von der Einrichtung der Entwicklungsumgebung bis zur Bereitstellung der endgültigen Anwendung.
+2. **Echte-Szenarien**: Echte-Szenarien, um praktische Anwendungen von Vue.js zu demonstrieren.
+3. **Modulare Struktur**: Modulare Struktur für einfache Navigation und Verständnis von verschiedenen Komponenten und Funktionen.
+4. **Versionierung**: Verwendet Git für die Versionierung.
+5. **Integration in das Vue.js-Ecosystem**: Integriert sich mit anderen Vue.js-Werkzeugen und Bibliotheken, wie Vuex für den Zustandsmanagement und Vue Router für die Navigationsfunktion.
 
 ## Geschichte
 
-Das Projekt wurde ursprünglich in Reaktion auf das wachsende Bedürfnis nach praktischer und umfassenderer Ressourcen für Vue.js-Entwickler erstellt. Es wurde ursprünglich als Reihe von Blog-Beiträgen und Tutorials entwickelt, die dann zu einem zusammenhängenden Leitfaden zusammengefasst wurden. Mit der Zeit ist es zu einer detaillierteren Dokumentation und zusätzlichen Funktionen erweitert worden, um ein wertvolles Ressource sowohl für Anfänger als auch für erfahrene Vue.js-Entwickler zu sein.
+Der Begriff des "Erstellen-eines-echten-Vue-Projekts"-Projekts entstand aus dem Wachstum der Nachfrage nach umfassenderen Tutorials und Ressourcen für Entwickler, die Vue.js verwenden. Da Vue.js zunehmend beliebt geworden ist, hat sich die Nachfrage nach detaillierten, praktischen Leitfäden, die Entwickler bei der Erstellung robuster Anwendungen unterstützen, auch erhöht.
+
+## Nutzungsmöglichkeiten
+
+1. **Bildungszwecke**: Ideal für die Darbietung von Webentwicklungs-Kursen oder Bootcamps, die sich auf Vue.js konzentrieren.
+2. **Persönliche Projekte**: Hilfreich für Entwickler, die ihre eigenen Anwendungen bauen möchten.
+3. **Professionelles Wachstum**: Hilft professionellen Entwicklern, ihre Fähigkeiten zu verbessern und die besten Praktiken für die Erstellung von Webanwendungen mit Vue.js zu lernen.
+4. **Teamkollaboration**: Teams können dieses Projekt als gemeinsame Repository für die Entwicklung und den Wartung von Webanwendungen verwenden.
 
 ## Installation
 
-### Voraussetzungen
+Um das "Erstellen-eines-echten-Vue-Projekts" zu installieren, folgen Sie diesen Schritten:
 
-- Node.js und npm (Node Package Manager) sind auf Ihrem System installiert.
-- Ein Texteditor oder IDE (z. B. Visual Studio Code).
-
-### Klonen des Repositorys
-
-1. Öffnen Sie Ihr Terminal oder Eingabeaufforderung.
-2. Klonen Sie das Repository mit folgendem Befehl:
+1. **Repository klonen**:
    ```bash
-   git clone https://github.com/username/erstellen-eines-echten-vue-projekts.git
+   git clone https://github.com/username/create-a-real-world-vue-project.git
    ```
 
-### Einrichten des Projekts
-
-1.Navigieren Sie in das Projektverzeichnis:
+2. **Projektdirectory wechseln**:
    ```bash
-   cd erstellen-eines-echten-vue-projekts
+   cd create-a-real-world-vue-project
    ```
-2. Installieren Sie die erforderlichen Abhängigkeiten:
+
+3. **Abhängigkeiten installieren**:
    ```bash
    npm install
+   # oder
+   yarn install
    ```
 
-### Ausführen der Anwendung
-
-1. Starten Sie den Entwicklungsserver:
+4. **Entwicklungsserver ausführen**:
    ```bash
    npm run serve
+   # oder
+   yarn serve
    ```
-2. Öffnen Sie Ihren Webbrowser und besuchen Sie `http://localhost:8080`, um die Anwendung im Einsatz zu sehen.
 
-## Grundlegende Nutzung
+## Grundlegendes Verwenden
 
-### Durchsuchen der Projektstruktur
+1. **Verstehen der Struktur**: Erfahren Sie die Verzeichnisstruktur, um die Organisation der verschiedenen Komponenten und Funktionen zu verstehen.
+2. **Komponentenentwicklung**: Erstellen Sie benutzerdefinierte Komponenten, indem Sie die bestehende Komponentenstruktur und Konventionen folgen.
+3. **Zustandsmanagement**: Verwenden Sie Vuex, um das Anwendungszustand zu verwalten und komplexe Zustandslogik zu verstehen.
+4. **Navigationsfunktionen**: Implementieren Sie die Navigationsfunktionen mit Vue Router, um zwischen verschiedenen Seiten und Bereichen der Anwendung zu navigieren.
+5. **Bereitstellung**: Folgen Sie den in der Dokumentation bereitgestellten Anweisungen, um die Anwendung in eine Produktionsumgebung bereitzustellen.
 
-- Das Projekt ist strukturiert in verschiedene Komponenten und Verzeichnisse, die jeweils einen bestimmten Zweck erfüllen.
-- `src` Verzeichnis enthält das Hauptapplication-Code.
-- `public` Verzeichnis enthält statische Dateien wie Bilder und das `index.html`-Datei.
-- `components` Verzeichnis enthält einzelne Vue.js-Komponenten.
-- `store` Verzeichnis ist für die Vuex-Speicher und verwandte Zustandsverwaltung-Logik.
-- `router` Verzeichnis enthält die Vue-Router-Konfiguration.
+## Schlussfolgerung
 
-### Erstellen einer neuen Komponente
-
-1. Navigieren Sie zum `components` Verzeichnis.
-2. Erstellen Sie eine neue Datei mit einer `.vue`-Erweiterung, z. B. `NewComponent.vue`.
-3. Definieren Sie den Vorlagen-Teppich, das Skript und das Stil in der Komponente.
-
-### Routing
-
-1. Definieren Sie Routen in der `router/index.js`-Datei.
-2. Verwenden Sie `<router-view>` in der Hauptlayout, um die aktuelle Routen-Komponente anzuzeigen.
-
-### Zustandsverwaltung
-
-1. Verwenden Sie Vuex, um Zustände im gesamten Application zu verwalten.
-2. Definieren Sie Aktionen, Mutationen und Getter in der `store/index.js`-Datei.
-3. Dispatch Aktionen und commit Mutationen in Komponenten, wenn erforderlich.
-
-### Testen
-
-1. Setzen Sie Tests mit Vue Test Utils und Jest ein.
-2. Schreiben Sie Einheitstests und Integrierungs-Tests für Komponenten und den Vuex-Speicher.
-
-### Bereitstellen
-
-1. Bauen Sie die Anwendung für die Produktionsumgebung mit:
-   ```bash
-   npm run build
-   ```
-2. Bereiten Sie die generierten Dateien auf einen Webserver oder eine Plattform wie Netlify oder Vercel ab.
-
-## Zusammenfassung
-
-Erstellen-eines-echten-Vue-Projekts ist ein unentbehrlicher Leitfaden für Entwickler, die robuste, echte Vue.js-Anwendungen erstellen möchten. Seine umfassende Dokumentation, modulare Struktur und praktische Beispiele machen es ein wertvolles Werkzeug sowohl für das Lernen als auch für die professionelle Entwicklung.
+Das "Erstellen-eines-echten-Vue-Projekts" ist ein unentbehrliches Ressourcenwerkzeug für Entwickler, die robuste, skalierbare Vue.js-Anwendungen entwickeln möchten. Durch die Anwendung der Leitfäden und Beispiele können Entwickler einen tiefen Einblick in Vue.js und sein Ecosystem gewinnen, wobei sie besser für echte Webentwicklungsaufgaben gerüstet sind.
