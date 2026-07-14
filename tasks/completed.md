@@ -155,3 +155,4 @@ describes the execution in detail.
 | 2026-07-13 | OAuth 2.1 with PKCE Best Practices | [OAuth 2.1 with PKCE Best Practices](../docs/reports/2026/07/2026-07-13-oauth-21-with-pkce-best-practices.md) |
 | 2026-07-13 | Analyze Create-a-real-world-svelte-app project | [Analyze Create-a-real-world-svelte-app project](../docs/reports/2026/07/2026-07-13-analyze-create-a-real-world-svelte-app-project.md) |
 | 2026-07-14 | Database Indexing | [Database Indexing](../docs/reports/2026/07/2026-07-14-database-indexing.md) |
+| 2026-07-14 | PostgresPlus Advanced Server | [PostgresPlus Advanced Server](../docs/reports/2026/07/2026-07-14-postgresplus-advanced-server.md) |
