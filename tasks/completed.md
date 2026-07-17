@@ -163,3 +163,4 @@ describes the execution in detail.
 | 2026-07-16 | Algorithms AI in Architecture | [Algorithms AI in Architecture](../docs/reports/2026/07/2026-07-16-algorithms-ai-in-architecture.md) |
 | 2026-07-16 | API Gateway Security Integration | [API Gateway Security Integration](../docs/reports/2026/07/2026-07-16-api-gateway-security-integration.md) |
 | 2026-07-16 | Analyze Gin-Example-Project project | [Analyze Gin-Example-Project project](../docs/reports/2026/07/2026-07-16-analyze-gin-example-project-project.md) |
+| 2026-07-17 | Resilience Patterns in Microservices | [Resilience Patterns in Microservices](../docs/reports/2026/07/2026-07-17-resilience-patterns-in-microservices.md) |
