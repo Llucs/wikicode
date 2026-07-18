@@ -167,3 +167,4 @@ describes the execution in detail.
 | 2026-07-17 | Portabase | [Portabase](../docs/reports/2026/07/2026-07-17-portabase.md) |
 | 2026-07-17 | Serverless Microservices Architecture | [Serverless Microservices Architecture](../docs/reports/2026/07/2026-07-17-serverless-microservices-architecture.md) |
 | 2026-07-17 | Analyze Create-a-real-world-cli-project-in-Rust project | [Analyze Create-a-real-world-cli-project-in-Rust project](../docs/reports/2026/07/2026-07-17-analyze-create-a-real-world-cli-project-in-rust-project.md) |
+| 2026-07-18 | Event Storming | [Event Storming](../docs/reports/2026/07/2026-07-18-event-storming.md) |
