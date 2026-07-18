@@ -169,3 +169,4 @@ describes the execution in detail.
 | 2026-07-17 | Analyze Create-a-real-world-cli-project-in-Rust project | [Analyze Create-a-real-world-cli-project-in-Rust project](../docs/reports/2026/07/2026-07-17-analyze-create-a-real-world-cli-project-in-rust-project.md) |
 | 2026-07-18 | Event Storming | [Event Storming](../docs/reports/2026/07/2026-07-18-event-storming.md) |
 | 2026-07-18 | Caching Strategies for Lazy Loaded and Code Split Components | [Caching Strategies for Lazy Loaded and Code Split Components](../docs/reports/2026/07/2026-07-18-caching-strategies-for-lazy-loaded-and-code-split-components.md) |
+| 2026-07-18 | Analyze React-Redux-Starter-Kit project | [Analyze React-Redux-Starter-Kit project](../docs/reports/2026/07/2026-07-18-analyze-react-redux-starter-kit-project.md) |
