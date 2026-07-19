@@ -172,3 +172,4 @@ describes the execution in detail.
 | 2026-07-18 | Analyze React-Redux-Starter-Kit project | [Analyze React-Redux-Starter-Kit project](../docs/reports/2026/07/2026-07-18-analyze-react-redux-starter-kit-project.md) |
 | 2026-07-19 | API Gateway Pattern | [API Gateway Pattern](../docs/reports/2026/07/2026-07-19-api-gateway-pattern.md) |
 | 2026-07-19 | Analyze create-a-real-world-rest-api-project-in-typescript project | [Analyze create-a-real-world-rest-api-project-in-typescript project](../docs/reports/2026/07/2026-07-19-analyze-create-a-real-world-rest-api-project-in-typescript-project.md) |
+| 2026-07-19 | OAuth 2.1 with PKCE and Token Binding | [OAuth 2.1 with PKCE and Token Binding](../docs/reports/2026/07/2026-07-19-oauth-21-with-pkce-and-token-binding.md) |
