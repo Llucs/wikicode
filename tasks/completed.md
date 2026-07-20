@@ -177,3 +177,4 @@ describes the execution in detail.
 | 2026-07-20 | Define Deployment Policies | [Define Deployment Policies](../docs/reports/2026/07/2026-07-20-define-deployment-policies.md) |
 | 2026-07-20 | Analyze StateManagementBenchmark project | [Analyze StateManagementBenchmark project](../docs/reports/2026/07/2026-07-20-analyze-statemanagementbenchmark-project.md) |
 | 2026-07-20 | Lazy Loading with Server-Side Rendering (SSR) | [Lazy Loading with Server-Side Rendering (SSR)](../docs/reports/2026/07/2026-07-20-lazy-loading-with-server-side-rendering-ssr.md) |
+| 2026-07-20 | Analyze SolidJS project | [Analyze SolidJS project](../docs/reports/2026/07/2026-07-20-analyze-solidjs-project.md) |
