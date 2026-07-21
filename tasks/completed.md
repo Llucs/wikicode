@@ -180,3 +180,4 @@ describes the execution in detail.
 | 2026-07-20 | Analyze SolidJS project | [Analyze SolidJS project](../docs/reports/2026/07/2026-07-20-analyze-solidjs-project.md) |
 | 2026-07-21 | Index Sharding Pattern | [Index Sharding Pattern](../docs/reports/2026/07/2026-07-21-index-sharding-pattern.md) |
 | 2026-07-21 | Analyze create-a-real-world-cli-tool-in-rust project | [Analyze create-a-real-world-cli-tool-in-rust project](../docs/reports/2026/07/2026-07-21-analyze-create-a-real-world-cli-tool-in-rust-project.md) |
+| 2026-07-21 | Service Mesh Architecture | [Service Mesh Architecture](../docs/reports/2026/07/2026-07-21-service-mesh-architecture.md) |
