@@ -183,3 +183,4 @@ describes the execution in detail.
 | 2026-07-21 | Service Mesh Architecture | [Service Mesh Architecture](../docs/reports/2026/07/2026-07-21-service-mesh-architecture.md) |
 | 2026-07-21 | Analyze Actix project | [Analyze Actix project](../docs/reports/2026/07/2026-07-21-analyze-actix-project.md) |
 | 2026-07-22 | Serverless Event-Driven Architecture | [Serverless Event-Driven Architecture](../docs/reports/2026/07/2026-07-22-serverless-event-driven-architecture.md) |
+| 2026-07-22 | Axum | [Axum](../docs/reports/2026/07/2026-07-22-axum.md) |
