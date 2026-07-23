@@ -186,3 +186,4 @@ describes the execution in detail.
 | 2026-07-22 | Axum | [Axum](../docs/reports/2026/07/2026-07-22-axum.md) |
 | 2026-07-22 | SQL Injection Mitigation Techniques | [SQL Injection Mitigation Techniques](../docs/reports/2026/07/2026-07-22-sql-injection-mitigation-techniques.md) |
 | 2026-07-22 | Analyze Gin-Gonic/gin project | [Analyze Gin-Gonic/gin project](../docs/reports/2026/07/2026-07-22-analyze-gin-gonicgin-project.md) |
+| 2026-07-23 | Consistent Hashing in System Design | [Consistent Hashing in System Design](../docs/reports/2026/07/2026-07-23-consistent-hashing-in-system-design.md) |
