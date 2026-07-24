@@ -191,3 +191,4 @@ describes the execution in detail.
 | 2026-07-23 | gping | [gping](../docs/reports/2026/07/2026-07-23-gping.md) |
 | 2026-07-24 | SQL Injection Vulnerability in OAuth2 Kid Parameter | [SQL Injection Vulnerability in OAuth2 Kid Parameter](../docs/reports/2026/07/2026-07-24-sql-injection-vulnerability-in-oauth2-kid-parameter.md) |
 | 2026-07-24 | Analyze Create-a-real-world-frontend-app-with-Vue.js project | [Analyze Create-a-real-world-frontend-app-with-Vue.js project](../docs/reports/2026/07/2026-07-24-analyze-create-a-real-world-frontend-app-with-vuejs-project.md) |
+| 2026-07-24 | Zero-Downtime Deployments | [Zero-Downtime Deployments](../docs/reports/2026/07/2026-07-24-zero-downtime-deployments.md) |
