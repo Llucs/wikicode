@@ -89,3 +89,4 @@ describes the execution in detail.
 | 2026-06-25 | AndroidIDE | [AndroidIDE](../docs/reports/2026/06/2026-06-25-androidide.md) |
 | 2026-08-07 | backon | [backon](../docs/reports/2026/08/2026-08-07-backon.md) |
 | 2026-08-07 | Infracost | [Infracost](../docs/reports/2026/08/2026-08-07-infracost.md) |
+| 2026-08-07 | Analyze Tauri project | [Analyze Tauri project](../docs/reports/2026/08/2026-08-07-analyze-tauri-project.md) |
