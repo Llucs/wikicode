@@ -1,7 +1,13 @@
-import os, re, subprocess, sys, time, json, html as html_mod
+import os
+import re
+import subprocess
+import time
+import json
+import html as html_mod
 from datetime import date
 from pathlib import Path
 import concurrent.futures
+import glob
 import httpx
 
 API_BASE = "https://opencode.ai/zen/v1"
@@ -121,12 +127,62 @@ def translate_content(markdown_text, target_language):
             "3. DO NOT translate content inside code blocks (```...```) or inline code (`...`).\n"
             "4. DO NOT translate URLs, file paths, command-line examples, or technical terms (API, REST, Git, Docker, HTTP, JSON, YAML, etc.).\n"
             "5. Keep proper nouns, brand names, and tool names in their original form.\n"
-            "6. Output ONLY the translated Markdown file content. No explanations, no notes.\n"
-            "7. Do NOT wrap the output in ```md fences."
+            f"6. The output MUST be written in proper {target_language}. Do not output any other language.\n"
+            "7. Output ONLY the translated Markdown file content. No explanations, no notes.\n"
+            "8. Do NOT wrap the output in ```md fences."
         )},
         {"role": "user", "content": markdown_text},
     ]
     return api_chat(messages)
+
+def translate_content_checked(markdown_text, target_language, locale):
+    """Translate and verify the output is actually in the target language."""
+    best = ""
+    attempt = 0
+    while attempt < 2:
+        attempt += 1
+        try:
+            result = translate_content(markdown_text, target_language)
+        except RuntimeError as e:
+            log(f"Translation attempt {attempt} for {locale} failed: {e}")
+            continue
+        if is_likely_language(result, locale):
+            return result
+        log(f"Translation for {locale} not in target language, retrying (attempt {attempt})")
+        time.sleep(3)
+    log(f"Translation for {locale} failed language validation — falling back to generated text")
+    return best
+
+def is_likely_language(text, locale):
+    """Cheap heuristic that a translated page is in the expected language.
+
+    Script-based checks are decisive for CJK; stopword fallbacks for
+    Latin languages avoid false positives (e.g. Turkish output when
+    Japanese was requested).
+    """
+    if not text:
+        return False
+    head = text[:200]
+    def count(chars):
+        return sum(c in head for c in chars)
+    # CJK script signals
+    hira_kata = count("あいうえおかきくけこアイウエオカキクケコ")
+    han_hits = sum(1 for c in head if '\u4e00' <= c <= '\u9fff')
+    if locale == "ja":
+        return (hira_kata > 0) or (han_hits > 0)
+    if locale == "zh":
+        return han_hits > len(head) * 0.01
+    # Latin-script languages: reject if CJK leaked in (e.g. walkman)
+    if han_hits > 1:
+        return False
+    marks = {
+        "pt": [" de ", "com ", "que ", "é ", " uma"],
+        "es": [" de ", "que ", "para ", "con "],
+        "fr": [" de ", "les ", "des ", "une", " est "],
+        "de": [" der ", "die ", "und ", "ist "],
+    }
+    sig = marks.get(locale, [])
+    return sig and any(s in head for s in sig)
 
 def slugify(text):
     s = text.lower().strip(" .:;,!?")
@@ -134,6 +190,20 @@ def slugify(text):
     s = re.sub(r"[^a-z0-9\u00e0-\u00ff-]", "", s)
     s = re.sub(r"-+", "-", s).strip("-")
     return s or "untitled"
+
+def _extract_kind(raw_desc):
+    """Extract a trailing [kind: x] marker from a queue item description.
+
+    Returns (cleaned_description, kind). kind defaults to 'tool' only when
+    no marker is present and the item is auto-discovered; manual issue
+    tasks always carry an explicit kind.
+    """
+    kind = "tool"
+    m = re.search(r"\[kind:\s*([a-z]+)\s*\]\s*$", raw_desc, re.IGNORECASE)
+    if m:
+        kind = m.group(1).lower()
+        raw_desc = raw_desc[: m.start()].strip()
+    return raw_desc, kind
 
 def clean_title(text):
     return text.strip().rstrip(" .:;,!?")
@@ -162,7 +232,9 @@ def parse_queue():
             if current:
                 current["block"] = "\n".join(lines[task_block_start:i])
                 tasks.append(current)
-            current = {"title": clean_title(m.group(2)), "desc": m.group(3).strip(), "block": "", "start": task_block_start}
+            raw_desc = m.group(3).strip()
+            desc, kind = _extract_kind(raw_desc)
+            current = {"title": clean_title(m.group(2)), "desc": desc, "kind": kind, "block": "", "start": task_block_start}
             task_block_start = i
             in_task = True
         elif in_task and line.strip() and not line.startswith("- ") and not line.startswith("#") and not line.startswith("---"):
@@ -178,12 +250,23 @@ def parse_queue():
         tasks.append(current)
     return tasks, content
 
+def _slug_tokens(slug):
+    """Return a set of meaningful tokens so reordered/duplicated slugs match.
+
+    'command-query-responsibility-segregation' and
+    'cqrs-command-query-responsibility-segregation' collide when CQRS aliases
+    are involved, so we also keep a token-set signature for fuzzy matching.
+    """
+    tokens = {t for t in slug.split("-") if t and t not in ("a", "the", "for", "and", "of", "with")}
+    return tokens
+
 def topic_exists(slug):
+    tokens = _slug_tokens(slug)
     for section in [WORKSPACE / "docs", WORKSPACE / "projects", WORKSPACE / "snippets"]:
         if not section.exists():
             continue
         for subdir in section.rglob("*"):
-            if subdir.is_dir() and subdir.name == slug:
+            if subdir.is_dir() and (subdir.name == slug or _slug_tokens(subdir.name) == tokens):
                 return True
         try:
             result = subprocess.run(["git", "grep", "-l", "-i", slug.replace("-", " "), "--", str(section)],
@@ -196,7 +279,12 @@ def topic_exists(slug):
 
 def list_documented_tools():
     td = WORKSPACE / "docs" / "tools"
-    return [d.name for d in td.iterdir() if d.is_dir() and (d / "index.md").exists()] if td.exists() else []
+    if not td.exists():
+        return []
+    return [
+        d.name for d in td.iterdir()
+        if d.is_dir() and any(glob.glob(str(d / "index.*.md")) or (d / "index.md").exists())
+    ]
 
 def list_documented_projects():
     pd = WORKSPACE / "projects"
@@ -217,7 +305,6 @@ TOOL_SEARCHES = [
 
 def discover_one_tool():
     existing = list_documented_tools()
-    existing_lower = [t.lower() for t in existing]
 
     for cat_name, search_query in TOOL_SEARCHES:
         web_data = web_search_deep(search_query)
@@ -257,7 +344,6 @@ PROJECT_SEARCHES = [
 
 def discover_one_project():
     existing = list_documented_projects()
-    existing_lower = [t.lower() for t in existing]
 
     for cat_name, search_query in PROJECT_SEARCHES:
         web_data = web_search_deep(search_query)
@@ -295,7 +381,12 @@ ARTICLE_SEARCHES = [
 def discover_one_concept():
     existing = set()
     for f in (WORKSPACE / "docs" / "concepts").rglob("*.md"):
-        existing.add(f.stem)
+        stem = f.stem
+        for loc, _, _ in LANGUAGES:
+            if stem.endswith(f".{loc}"):
+                stem = stem[: -(len(loc) + 1)]
+                break
+        existing.add(stem)
     existing_lower = [t.lower() for t in existing]
 
     for cat_name, search_query in ARTICLE_SEARCHES:
@@ -320,7 +411,7 @@ def discover_one_concept():
             log(f"Concept discovery '{cat_name}' failed: {e}")
     return None
 
-def add_task_to_queue(title, desc):
+def add_task_to_queue(title, desc, kind="tool"):
     title = clean_title(title)
     qpath = WORKSPACE / "tasks" / "queue.md"
     if not qpath.exists():
@@ -328,9 +419,10 @@ def add_task_to_queue(title, desc):
     content = qpath.read_text(encoding="utf-8")
     if slugify(title) in content.lower():
         return
-    content = content.rstrip() + f"\n- [ ] **{title}.** {desc}\n"
+    marker = f" [kind: {kind}]" if kind else ""
+    content = content.rstrip() + f"\n- [ ] **{title}.** {desc}{marker}\n"
     qpath.write_text(content, encoding="utf-8")
-    log(f"Added task: {title}")
+    log(f"Added task ({kind}): {title}")
 
 def enrich_task(task):
     if task.get("desc") and len(task["desc"]) > 10:
@@ -380,13 +472,24 @@ def generate_content(task, research, memory):
     elif kind == "snippet":
         parts += ["", "Generate an index.md for a code snippet. Include code with explanation, copy-paste-ready."]
     elif kind == "tool":
-        parts += ["", "Document a REAL developer tool. Cover: what, why, install, usage, key features with command examples. DO NOT invent fictional tools."]
+        parts += ["", "Document a REAL developer tool. Cover: what, why, install, usage, key features with command examples. Code examples MUST use the tool's actual API. DO NOT invent fictional tools or fake URLs."]
     elif kind == "concept":
         parts += ["", "Write a developer guide on this concept. Cover: what it is, why it matters, how it works with real code examples, trade-offs, and best practices. Include diagrams in ASCII if helpful."]
     else:
         parts += ["", "Generate a developer article with code examples and best practices."]
     system = "\n".join(parts)
+
+    memory_context = ""
+    if memory:
+        for name in ("rules", "quality"):
+            text = memory.get(name, "")
+            text = re.sub(r"^---\n.*?\n---\n?", "", text, flags=re.DOTALL).strip()
+            if text:
+                memory_context += f"=== {name} ===\n{text}\n\n"
+
     user = f"Task: {task['title']}\nDescription: {task['desc']}\nToday: {TODAY}\n"
+    if memory_context:
+        user += f"\nFollow these repository guidelines:\n{memory_context.strip()}\n"
     if research:
         user += f"\nResearch:\n{research}\n"
     user += "\nGenerate the complete Markdown file now."
@@ -421,23 +524,30 @@ def write_files(task, content):
         en_path.write_text(content, encoding="utf-8")
         created.append(en_path)
     else:
-        en_path = WORKSPACE / "docs" / f"{slug}.en.md"
+        cdir = WORKSPACE / "docs" / "concepts"
+        cdir.mkdir(parents=True, exist_ok=True)
+        en_path = cdir / f"{slug}.en.md"
         en_path.write_text(content, encoding="utf-8")
         created.append(en_path)
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(LANGUAGES)) as executor:
         futures = {}
         for locale, native, english_name in LANGUAGES:
             if kind in ("project", "snippet", "tool"):
                 tx_path = base / f"index.{locale}.md"
+            elif kind == "concept":
+                tx_path = WORKSPACE / "docs" / "concepts" / f"{slug}.{locale}.md"
             else:
                 tx_path = WORKSPACE / "docs" / f"{slug}.{locale}.md"
-            future = executor.submit(translate_content, content, english_name)
+            future = executor.submit(translate_content_checked, content, english_name, locale)
             futures[future] = tx_path
         for future in concurrent.futures.as_completed(futures):
             tx_path = futures[future]
             try:
                 translated = future.result()
+                if not translated:
+                    log(f"Skipped invalid translation for {tx_path}")
+                    continue
                 tx_path.write_text(translated, encoding="utf-8")
                 created.append(tx_path)
                 log(f"Translated to {tx_path.suffix.split('.')[1]}")
@@ -594,7 +704,7 @@ def validate():
     log("Build passed.")
     return True
 
-def write_state(task, report):
+def write_state(task, report, queue_empty=True):
     path = WORKSPACE / "memory" / "state.md"
     content = f"""---
 title: Agent State
@@ -610,13 +720,14 @@ last_run: {TODAY}
 last_task: {task['title']}
 last_result: completed
 current_focus: tools
-queue_empty: true
+queue_empty: {str(queue_empty).lower()}
 ```
 
 This file is read by the agent at startup and updated after each
 execution to maintain continuity across runs.
 """
     path.write_text(content, encoding="utf-8")
+    return path
 
 def commit_and_push(files, task):
     git("add", "-A")

@@ -4,11 +4,11 @@
 FOCUS=tools   → discover/document developer tools
 FOCUS=content → discover/document concepts, articles, projects, snippets
 """
-import sys, os
+import sys
+import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from lib import (
-    WORKSPACE, GITHUB_TOKEN, GITHUB_REPO, TODAY,
     log, git, read_memory, parse_queue, enrich_task,
     discover_one_tool, discover_one_project, discover_one_concept,
     add_task_to_queue, research_topic, generate_content,
@@ -36,7 +36,7 @@ def get_next_task():
             if not item:
                 item = discover_one_concept()
         if item:
-            add_task_to_queue(item["title"], item["desc"])
+            add_task_to_queue(item["title"], item["desc"], item.get("kind", "tool"))
             tasks, _ = parse_queue()
     return tasks[0] if tasks else None
 
@@ -52,6 +52,7 @@ def execute_pipeline(task):
     files = write_files(task, content)
     report = write_report(task, files)
     update_task_lists(task, report)
+    state_path = write_state(task, report, queue_empty=True)
 
     if not validate():
         git("checkout", "--", ".")
@@ -59,8 +60,7 @@ def execute_pipeline(task):
         log("Build failed - reverted all changes.")
         return False
 
-    commit_and_push(files, task)
-    write_state(task, report)
+    commit_and_push(files + [report, state_path], task)
     return True
 
 def handle_issue_event():

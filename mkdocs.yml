@@ -148,6 +148,9 @@ plugins:
       categories: false
       authors: false
 
+hooks:
+  - scripts/search_split.py
+
 nav:
   - Home: index.md
   - Search: search.md
